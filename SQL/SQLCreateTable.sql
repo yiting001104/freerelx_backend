@@ -1,4 +1,7 @@
-﻿  use Hotel;
+use Hotel;
+ drop table if exists AdditionalCharges
+ drop table if exists CheckOutInspection
+ drop table if exists HousingManagement
  drop table if exists orderRoomDetail;
  drop table if exists  comment;
  drop table if exists transactionTable
@@ -149,7 +152,14 @@ create Table comment(
 
 ----------------------------------------------------------------------
 ---房務相關
-
+drop table if exists RoomManagement
+drop table if exists RoomAssignment
+drop table if exists RoomInformation
+drop table if exists RoomLevel;
+drop table if exists RoomType;
+drop table if exists RoomState;
+drop table if exists Minibar
+ 
 CREATE TABLE RoomLevel (
     room_level_Id INT PRIMARY KEY IDENTITY,
     chinese NVARCHAR(50),
@@ -158,12 +168,12 @@ CREATE TABLE RoomLevel (
 );
 
 INSERT INTO RoomLevel ( chinese, english, japanese) VALUES
-( N'精緻', 'Superior', 'スーペリアルーム'),
-( N'豪華', 'Deluxe', 'デラックスルーム'),
-( N'家庭', 'Family', 'プレミアムファミリールーム'),
-( N'貴賓', 'VIP', 'VIPスイート'),
-( N'皇家', 'Royal', 'ロイヤルスイート'),
-( N'總統', 'Presidential', 'レジデンシャル スイート');
+( N'精緻', 'Superior', N'スーペリアルーム'),
+( N'豪華', 'Deluxe', N'デラックスルーム'),
+( N'家庭', 'Family', N'プレミアムファミリールーム'),
+( N'貴賓', 'VIP', N'VIPスイート'),
+( N'皇家', 'Royal', N'ロイヤルスイート'),
+( N'總統', 'Presidential', N'レジデンシャル スイート');
 
 
 CREATE TABLE RoomType (
@@ -175,9 +185,9 @@ CREATE TABLE RoomType (
 
 
 INSERT INTO RoomType ( chinese, english, japanese) VALUES
-( N'標準套房', 'Standard Guestroom', 'スタンダードフロアー'),
-( N'商務套房', 'Executive Guestroom', 'エグぜクティブフロア'),
-( N'尊榮套房', 'Deluxe Suites', 'デラックススイート');
+( N'標準套房', 'Standard Guestroom', N'スタンダードフロアー'),
+( N'商務套房', 'Executive Guestroom', N'エグぜクティブフロア'),
+( N'尊榮套房', 'Deluxe Suites', N'デラックススイート');
 
 
 CREATE TABLE RoomInformation (
@@ -288,17 +298,20 @@ CREATE TABLE AdditionalCharges (
 );
 ----
 create table orderRoomDetail(
-	orderDetial_id INT  IDENTITY,
+	--orderDetial_id INT  IDENTITY,
 	room_Information_Id INT not null,
 	room_amount INT not null,
 	price decimal(20,6),
 	order_id int not null,
 
-		constraint PK_OrderDetialId primary key (orderDetial_id ),
+		
 
 	constraint FK_RoomInformation_Id foreign key (room_Information_Id)
 		  references Hotel.dbo.RoomInformation (room_Information_Id),
 
 		  	constraint FK_OrderId_Detial foreign key (order_id)
 		  references Hotel.dbo.orderRoom (order_id),
+
+	constraint PK_OrderDetialId primary key (order_id, room_Information_Id),
 );
+
