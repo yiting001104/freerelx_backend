@@ -143,6 +143,7 @@ create Table comment(
 	picture varbinary(max),
 	situation_type nvarchar(255) not null,
 	member_Id int not null,
+	type_instance nvarchar(255) not null,
 	score decimal(2,1) not null,
 
 	constraint PK_CommentId primary key (comment_id),
