@@ -27,6 +27,8 @@ create table member (
 	member_status varchar(255) default 'normal',
 	nationality nvarchar(255) not null,
 	total_bonus_points decimal(20,6) default 0.0,
+	login_time datetime2(6),
+	login_status nvarchar(255) default '尚未登入',
 	constraint PK_MemberId primary key (member_id),
 	constraint UQ_phone_number unique (phone_number) ,
 
@@ -114,8 +116,7 @@ create table transactionTable(
 	constraint FK_Refunde foreign key (refund_id)
 		  references Hotel.dbo.refundType (refundType_id),
 );
-
---------------------------------------------------------------------------------------
+----------------------------------------------------------------------------------
 --其他
 
 create table employee(
