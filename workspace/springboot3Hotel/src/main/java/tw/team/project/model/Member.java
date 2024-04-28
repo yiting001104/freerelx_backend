@@ -81,6 +81,14 @@ public class Member {
 		return ordersRoom;
 	}
 
+	public List<Comment> getComments() {
+		return comments;
+	}
+
+	public void setComments(List<Comment> comments) {
+		this.comments = comments;
+	}
+
 	public void setOrdersRoom(List<OrderRoom> ordersRoom) {
 		this.ordersRoom = ordersRoom;
 	}
@@ -88,6 +96,8 @@ public class Member {
 	@OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
 	private List<OrderRoom> ordersRoom;
 	
+	@OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
+	private List<Comment> comments;
 	
 	public Integer getMemberId() {
 		return memberId;
