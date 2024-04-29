@@ -46,7 +46,7 @@ public class Member {
 	@Column(name = "phone_number",nullable = false, unique = true)
 	private String phoneNumber;
 	
-	@Column(name = "credit_card", nullable = false)
+	@Column(name = "credit_card",nullable=true)
 	private String creditCard;
 	
 	@Column(name = "contact_address", nullable=false)

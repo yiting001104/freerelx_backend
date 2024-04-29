@@ -34,6 +34,16 @@ public class OrderRoom {
 	@Column(name = "order_person_name", nullable = false)
 	private String customerName;
 	
+	public String getGender() {
+		return gender;
+	}
+
+	public void setGender(String gender) {
+		this.gender = gender;
+	}
+
+	@Column(name = "gender", nullable = false)
+	private String gender;
 	
 	@DateTimeFormat(pattern = "yyyy-MM-dd")
 	@Temporal(TemporalType.DATE)
