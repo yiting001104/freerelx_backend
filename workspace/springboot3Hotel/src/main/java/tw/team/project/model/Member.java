@@ -1,6 +1,7 @@
 package tw.team.project.model;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -227,5 +228,9 @@ public class Member {
 		this.loginStatus = loginStatus;
 	}
 	
+	
+	//0002
+    @OneToMany(mappedBy = "member",cascade = CascadeType.ALL)
+    private List<Order> order=new ArrayList<>();
 	
 }
