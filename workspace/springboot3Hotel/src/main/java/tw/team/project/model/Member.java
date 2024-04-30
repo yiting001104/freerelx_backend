@@ -66,6 +66,14 @@ public class Member {
 	@Column(name = "nationality", nullable = false)
 	private String nationality;
 	
+	public byte[] getPicture() {
+		return picture;
+	}
+
+	public void setPicture(byte[] picture) {
+		this.picture = picture;
+	}
+
 	@Column(name = "total_bonus_points")
 	private BigDecimal bonusPoint;
 	
@@ -77,6 +85,8 @@ public class Member {
 	@Column(name = "login_status")
 	private String loginStatus;
 	
+	@Column(name = "picture")
+	private byte[] picture;
 	public List<OrderRoom> getOrdersRoom() {
 		return ordersRoom;
 	}

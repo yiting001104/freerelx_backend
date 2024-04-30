@@ -1,7 +1,14 @@
 use Hotel;
- drop table if exists AdditionalCharges
- drop table if exists CheckOutInspection
- drop table if exists HousingManagement
+ drop table if exists cart;
+ drop table if exists order_details;
+ drop table if exists productphoto;
+ drop table if exists orders;
+ drop table if exists product;
+ drop table if exists category
+ drop table if exists supplier;
+ drop table if exists AdditionalCharges;
+ drop table if exists CheckOutInspection;
+ drop table if exists HousingManagement;
  drop table if exists orderRoomDetail;
  drop table if exists  comment;
  drop table if exists transactionTable
@@ -29,6 +36,7 @@ create table member (
 	total_bonus_points decimal(20,6) default 0.0,
 	login_time datetime2(6),
 	login_status nvarchar(255) default '尚未登入',
+	picture varbinary(max),
 	constraint PK_MemberId primary key (member_id),
 	constraint UQ_phone_number unique (phone_number) ,
 

@@ -8,7 +8,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.configurationprocessor.json.JSONArray;
 import org.springframework.boot.configurationprocessor.json.JSONException;
 import org.springframework.boot.configurationprocessor.json.JSONObject;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -23,7 +25,7 @@ public class MemberController {
 	@Autowired
 	private MemberService memberservice;
 	
-	// 查看會員所有資料
+	// 後台查看會員所有資料
 	@PostMapping("/members/find")
 	public String findAll() throws JSONException {
 		List<Member> members = memberservice.findAll();
@@ -44,7 +46,8 @@ public class MemberController {
 					.put("contact_address", person.getContactAddress())
 					.put("nationality", person.getNationality())
 					.put("login_time", person.getLoginTime())
-					.put("login_status", person.getLoginStatus());
+					.put("login_status", person.getLoginStatus())
+					.put("picture", person.getPicture());
 			array.put(item);
 		}
 //		responseObj.put("list", array);
@@ -80,7 +83,7 @@ public class MemberController {
         
         return responseJson.toString();
 	}
-	
+	// 會員申請
 	@PostMapping("/member/apply")
 	public String applyMember(@RequestBody String json) throws Exception{
 		JSONObject responseJson = new JSONObject();
@@ -132,6 +135,30 @@ public class MemberController {
 		
 		return responseJson.toString();
 	}
+	// 會員資料更新
 	
+	@PutMapping("/member/{pk}")
+	public String updateData(@PathVariable("pk") Integer id, String json) {
+		JSONObject responseJson = new JSONObject();		
+		try {
+			if (id != null) {
+				if (memberservice.updateData(json) != null) {
+					responseJson.put("message", "更新成功");
+					responseJson.put("success", true);
+				} else {
+					responseJson.put("message", "請查資料是否完整");
+					responseJson.put("success", false);
+				}
+			}else {
+				responseJson.put("message", "用戶不存在請重新登入");
+				responseJson.put("success", false);
+			}
+		} catch (JSONException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		return responseJson.toString();
+	}
 	
 }
