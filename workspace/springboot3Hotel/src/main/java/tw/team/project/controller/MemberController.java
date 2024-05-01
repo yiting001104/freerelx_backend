@@ -8,14 +8,20 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.configurationprocessor.json.JSONArray;
 import org.springframework.boot.configurationprocessor.json.JSONException;
 import org.springframework.boot.configurationprocessor.json.JSONObject;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
+import jakarta.servlet.http.HttpSession;
 import tw.team.project.model.Member;
+import tw.team.project.model.NoteDTO;
 import tw.team.project.service.MemberService;
 
 @RestController
@@ -83,6 +89,20 @@ public class MemberController {
         
         return responseJson.toString();
 	}
+	
+	// 會員登出
+	@GetMapping("/member/logout")
+	public String logoutAction(HttpSession httpSession) {
+		
+		// 方法一 這可以做到第三方廣告的使用
+//		httpSession.removeAttribute("loginUser");
+//		httpSession.removeAttribute("loginUserId");
+		
+		// 方法二
+		httpSession.invalidate();
+		
+		return "users/logoutPage";
+	}
 	// 會員申請
 	@PostMapping("/member/apply")
 	public String applyMember(@RequestBody String json) throws Exception{
@@ -136,13 +156,12 @@ public class MemberController {
 		return responseJson.toString();
 	}
 	// 會員資料更新
-	
-	@PutMapping("/member/{pk}")
-	public String updateData(@PathVariable("pk") Integer id, String json) {
+	@PutMapping("/member/alert/{pk}")
+	public String updateData(@PathVariable("pk") Integer id, @RequestBody String json) {
 		JSONObject responseJson = new JSONObject();		
 		try {
 			if (id != null) {
-				if (memberservice.updateData(json) != null) {
+				if (memberservice.updateData(id, json) != null) {
 					responseJson.put("message", "更新成功");
 					responseJson.put("success", true);
 				} else {
@@ -159,6 +178,51 @@ public class MemberController {
 		}
 		
 		return responseJson.toString();
+	}
+	
+	// 測試更新資料含有圖片
+	@PutMapping(value = "/member/alert2/{pk}", consumes = "multipart/form-data")
+	public String updateData2(@PathVariable("pk") Integer id, @ModelAttribute NoteDTO notedto) {
+		JSONObject responseJson = new JSONObject();
+		String json = notedto.getJson();
+		System.out.println(json);
+		MultipartFile  multipartFile = notedto.getMultipartFile();
+		System.out.println(multipartFile.getName());
+		try {
+			if (id != null) {
+				if (memberservice.updateData2(id, json, multipartFile) != null) {
+					responseJson.put("message", "更新成功");
+					responseJson.put("success", true);
+				} else {
+					responseJson.put("message", "請查資料是否完整");
+					responseJson.put("success", false);
+				}
+			}else {
+				responseJson.put("message", "用戶不存在請重新登入");
+				responseJson.put("success", false);
+			}
+		} catch (JSONException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		return responseJson.toString();
+	}
+	
+	@DeleteMapping("/backend/delete/{id}")
+	public String deleteMem(@PathVariable("id") Integer id) {
+		memberservice.deleteMember(id);
+		JSONObject responseJson = new JSONObject();
+		try {
+			responseJson.put("message", "刪除成功");
+			responseJson.put("success", true);
+			return responseJson.toString();
+		} catch (JSONException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		return null;
 	}
 	
 }
