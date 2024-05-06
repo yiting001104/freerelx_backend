@@ -3,6 +3,7 @@ package tw.team.project.model;
 import java.math.BigDecimal;
 import java.util.Date;
 
+import org.hibernate.annotations.DynamicInsert;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import jakarta.persistence.CascadeType;
@@ -21,6 +22,7 @@ import jakarta.persistence.TemporalType;
 
 @Entity
 @Table(name = "orderRoom")
+@DynamicInsert // 動態生成SQL語法
 public class OrderRoom {
 
 	@Id
@@ -105,8 +107,10 @@ public class OrderRoom {
 	@Column(name = "cancellation_reason")
 	private String cancellReason;
 
-	@Column(name = "order_status")
-	private String orderStatus;
+	@DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss EEEE") 
+	@Temporal(TemporalType.TIMESTAMP)
+	@Column(name = "checkout_date")
+	private Date checkoutDate;
 	
 	@Column(name = "base_price")
 	private BigDecimal basePrice;
@@ -269,12 +273,12 @@ public class OrderRoom {
 		this.cancellReason = cancellReason;
 	}
 
-	public String getOrderStatus() {
-		return orderStatus;
+	public Date getCheckoutDate() {
+		return checkoutDate;
 	}
 
-	public void setOrderStatus(String orderStatus) {
-		this.orderStatus = orderStatus;
+	public void setCheckoutDate(Date checkoutDate) {
+		this.checkoutDate = checkoutDate;
 	}
 
 	public BigDecimal getBasePrice() {

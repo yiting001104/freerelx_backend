@@ -62,25 +62,27 @@ public class MemberController {
 	
 	// 會員登入
 	@PostMapping("/member/login")
-	public String login(@RequestBody String json) throws JSONException{
+	public String login(@RequestBody String json, HttpSession httpSession) throws JSONException{
 		JSONObject responseJson = new JSONObject();
 		JSONObject obj = new JSONObject(json);
 		
 		String email = obj.isNull("email") ? null : obj.getString("email");
 		String password = obj.isNull("password") ? null : obj.getString("password");
-        if (email == null) {
+        if (email == null || email.length()==0) {
         	responseJson.put("success", false);
             responseJson.put("acount", "email是必要欄位");
 		}
-        if (password == null) {
+        if (password == null || password.length()==0) {
             responseJson.put("success", false);
             responseJson.put("password", "密碼是必要欄位");
 		}
-        if (email != null && password != null) {
+        if (email != null && password != null && email.length()!=0 && password.length()!=0) {
         	Member member = memberservice.checkLogin(email, password);
         	if (member != null) {
                 responseJson.put("success", true);
                 responseJson.put("message", "登入成功");
+                httpSession.setAttribute("loginUserId", member.getMemberId());
+                httpSession.setAttribute("loginUserName", member.getMemberName());
         	} else {
                 responseJson.put("success", false);
                 responseJson.put("message", "帳號或密碼有錯");
@@ -113,8 +115,8 @@ public class MemberController {
 		String gender = obj.isNull("gender") ? null : obj.getString("gender");
 		String birth = obj.isNull("birth") ? null : obj.getString("birth");
 		Date birth1;
-		if (birth != null) {
-			birth1=new SimpleDateFormat("yyyy-MM-dd").parse(birth);
+		if (birth != null && birth.length()!=0) {
+			birth1 = new SimpleDateFormat("yyyy-MM-dd").parse(birth);
 		} else
 			birth1 = null;
 		

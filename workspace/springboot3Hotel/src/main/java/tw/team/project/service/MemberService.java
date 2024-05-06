@@ -26,6 +26,14 @@ public class MemberService {
 	public List<Member> findAll() {
 			return memberRepository.findAll();
 	}
+	
+	public Member findbyId(Integer id) {
+		Optional<Member> option = memberRepository.findById(id);
+		if (option.isPresent())
+			return option.get();
+		else
+			return null;
+	}
 	@Transactional
 	public Member checkLogin(String email, String password) {
 		if (EmailValidator.isValidEmail(email)) {
