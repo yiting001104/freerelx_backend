@@ -15,9 +15,11 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import jakarta.transaction.Transactional;
 import tw.team.project.model.Member;
 import tw.team.project.model.OrderRoom;
 import tw.team.project.model.OrderRoomRepository;
+import tw.team.project.util.EmailValidator;
 
 @Service
 public class OrderRoomService {
@@ -50,8 +52,59 @@ public class OrderRoomService {
 	}
 	
 	// 刪除資料
+	public boolean deleteOrder(Integer id) {
+		Optional<OrderRoom> optional = orderRoomRepo.findById(id);
+		if (optional.isPresent()) {
+			orderRoomRepo.deleteById(id);
+			return true;
+		}
+		return false;
+	}
+	// 更新部分資料：基本資料不能更改
+	@Transactional
+	public OrderRoom update(Integer id, String json) {
+		try {
+			JSONObject obj = new JSONObject(json);
+			String transaction_password = obj.isNull("transaction_password") ? null : obj.getString("transaction_password");
+			String credit_card = obj.isNull("credit_card") ? null : obj.getString("credit_card");
+			String stay_person_name = obj.isNull("stay_person_name") ? null : obj.getString("stay_person_name");
+			String stay_person_gender = obj.isNull("stay_person_gender") ? null : obj.getString("stay_person_gender");
+			
+			String birth2 = obj.isNull("stay_person_birth") ? null : obj.getString("stay_person_birth");
+			Date stay_person_birth;
+			if(birth2!=null && birth2.length()!=0) {
+				stay_person_birth = new SimpleDateFormat("yyyy-MM-dd").parse(birth2);
+			} else 
+				stay_person_birth = null;
+			
+			String stay_person_national_id = obj.isNull("stay_person_national_id") ? null : obj.getString("stay_person_national_id");
+			String stay_person_phone = obj.isNull("stay_person_phone") ? null : obj.getString("stay_person_phone");
+			String stay_person_Email = obj.isNull("stay_person_Email") ? null : obj.getString("stay_person_Email");
+
+			String remark = obj.isNull("remark") ? null : obj.getString("remark");
+			Optional<OrderRoom> op = orderRoomRepo.findById(id);
+			if (op.isPresent()) {
+				OrderRoom order = op.get();
+				order.setTransactionPassword(transaction_password);
+				order.setCreditCard(credit_card);
+				order.setSPName(stay_person_name);
+				order.setSPBirth(stay_person_birth);
+				order.setSPGender(stay_person_gender);
+				order.setSPNationId(stay_person_national_id);
+				order.setSPPhone(stay_person_phone);
+				order.setSPEmail(stay_person_Email);
+				order.setRemark(remark);
+				return order;
+			}
+		} catch (JSONException | ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		return null;
+	}
 	
-	
+	// 新增訂單
 	public OrderRoom create(String json, Integer id) {
 		try {
 			JSONObject obj = new JSONObject(json);
@@ -178,5 +231,20 @@ public class OrderRoomService {
 			e.printStackTrace();
 		}
 		return null;
+	}
+	
+	public OrderRoom inquireLogin(String email, String password) {
+		if (EmailValidator.isValidEmail(email)) {
+			Optional<OrderRoom> option = orderRoomRepo.findByEmail(email);
+			if (option.isPresent()) {
+				OrderRoom order = option.get();
+				String origin = order.getTransactionPassword();
+				if (origin.equals(password)) {
+					return order;
+				}
+			}
+		}
+		return null;
+		
 	}
 }

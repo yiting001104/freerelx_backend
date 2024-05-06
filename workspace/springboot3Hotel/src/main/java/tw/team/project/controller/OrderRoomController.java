@@ -1,17 +1,15 @@
 package tw.team.project.controller;
 
-import java.math.BigDecimal;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.configurationprocessor.json.JSONArray;
 import org.springframework.boot.configurationprocessor.json.JSONException;
 import org.springframework.boot.configurationprocessor.json.JSONObject;
 import org.springframework.data.domain.Page;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -20,8 +18,8 @@ import org.springframework.web.bind.annotation.RestController;
 import jakarta.servlet.http.HttpSession;
 import tw.team.project.model.Member;
 import tw.team.project.model.OrderRoom;
-import tw.team.project.service.MemberService;
 import tw.team.project.service.OrderRoomService;
+import tw.team.project.util.JsonContainer;
 
 @RestController
 @RequestMapping("/hotel")
@@ -38,35 +36,7 @@ public class OrderRoomController {
 		JSONArray array = new JSONArray();
 		try {
 			for (OrderRoom order:page.getContent()) {
-				JSONObject obj = new JSONObject()
-								.put("order_id", order.getOrderId())
-								.put("orderdate", order.getOrderDate())
-								.put("order_person_name", order.getCustomerName())
-								.put("gender", order.getGender())
-								.put("birth", order.getBirth())
-								.put("national_id", order.getNationId())
-								.put("email", order.getEmail())
-								.put("phone_number", order.getPhone())
-								.put("credit_card", order.getCreditCard())
-								.put("adult_pax", order.getAdultPax())
-								.put("child_pax", order.getChildPax())
-								.put("room_type_amount", order.getRoomAmount())
-								.put("arrival_date", order.getArrivateDate())
-								.put("checkout_date", order.getCheckoutDate())
-								.put("reservation_status", order.getReservationStatus())
-								.put("reservation_status_date", order.getReservationSaDate())
-								.put("transaction_password", order.getTransactionPassword())
-//								.put("member_id", order.getMember().getMemberId())
-								.put("cancellation_reason", order.getCancellReason())
-								.put("base_price", order.getBasePrice())
-								.put("stay_person_name", order.getSPName())
-								.put("stay_person_gender", order.getSPGender())
-								.put("stay_person_birth", order.getSPBirth())
-								.put("stay_person_national_id",  order.getSPNationId())
-								.put("stay_person_phone", order.getSPPhone())
-								.put("stay_person_Email", order.getSPEmail())
-								.put("remark", order.getRemark());
-				array.put(obj);
+				array.put(new JsonContainer().getOrderRoom(order));
 			}
 			responseJson.put("data", array);
 			return responseJson.toString();
@@ -84,35 +54,7 @@ public class OrderRoomController {
 		JSONArray array = new JSONArray();
 		try {
 			for (OrderRoom order:page.getContent()) {
-				JSONObject obj = new JSONObject()
-								.put("order_id", order.getOrderId())
-								.put("orderdate", order.getOrderDate())
-								.put("order_person_name", order.getCustomerName())
-								.put("gender", order.getGender())
-								.put("birth", order.getBirth())
-								.put("national_id", order.getNationId())
-								.put("email", order.getEmail())
-								.put("phone_number", order.getPhone())
-								.put("credit_card", order.getCreditCard())
-								.put("adult_pax", order.getAdultPax())
-								.put("child_pax", order.getChildPax())
-								.put("room_type_amount", order.getRoomAmount())
-								.put("arrival_date", order.getArrivateDate())
-								.put("checkout_date", order.getCheckoutDate())
-								.put("reservation_status", order.getReservationStatus())
-								.put("reservation_status_date", order.getReservationSaDate())
-								.put("transaction_password", order.getTransactionPassword())
-//								.put("member_id", order.getMember().getMemberId())
-								.put("cancellation_reason", order.getCancellReason())
-								.put("base_price", order.getBasePrice())
-								.put("stay_person_name", order.getSPName())
-								.put("stay_person_gender", order.getSPGender())
-								.put("stay_person_birth", order.getSPBirth())
-								.put("stay_person_national_id",  order.getSPNationId())
-								.put("stay_person_phone", order.getSPPhone())
-								.put("stay_person_Email", order.getSPEmail())
-								.put("remark", order.getRemark());
-				array.put(obj);
+				array.put(new JsonContainer().getOrderRoom(order));
 			}
 			responseJson.put("data", array);
 			return responseJson.toString();
@@ -151,42 +93,7 @@ public class OrderRoomController {
 		OrderRoom order = ordRoomService.findById(id);
 		try {
 			if (order != null) {
-				System.out.print(order.getMember()==null);
-				JSONObject obj  = new JSONObject()
-						.put("order_id", order.getOrderId())
-						.put("orderdate", order.getOrderDate())
-						.put("order_person_name", order.getCustomerName())
-						.put("gender", order.getGender())
-						.put("birth", order.getBirth())
-						.put("national_id", order.getNationId())
-						.put("email", order.getEmail())
-						.put("phone_number", order.getPhone())
-						.put("credit_card", order.getCreditCard())
-						.put("adult_pax", order.getAdultPax())
-						.put("child_pax", order.getChildPax())
-						.put("room_type_amount", order.getRoomAmount())
-						.put("arrival_date", order.getArrivateDate())
-						.put("checkout_date", order.getCheckoutDate())
-						.put("reservation_status", order.getReservationStatus())
-						.put("reservation_status_date", order.getReservationSaDate())
-						.put("transaction_password", order.getTransactionPassword())
-						.put("cancellation_reason", order.getCancellReason())
-						.put("base_price", order.getBasePrice())
-						.put("stay_person_name", order.getSPName())
-						.put("stay_person_gender", order.getSPGender())
-						.put("stay_person_birth", order.getSPBirth())
-						.put("stay_person_national_id",  order.getSPNationId())
-						.put("stay_person_phone", order.getSPPhone())
-						.put("stay_person_Email", order.getSPEmail())
-						.put("remark", order.getRemark());
-					
-				
-				if (order.getMember()!=null) {
-					obj.put("member_id", order.getMember().getMemberId());
-				}else
-					obj.put("member_id", "null");
-				
-				array.put(obj);
+				array.put(new JsonContainer().getOrderRoom(order));
 			}
 			responseJson.put("data", array);
 		} catch (JSONException e) {
@@ -196,4 +103,79 @@ public class OrderRoomController {
 		
 		return responseJson.toString();
 	}
+	@DeleteMapping("/orderRoom/{pk}")
+	public String deleteById(@PathVariable("pk") Integer id) {
+		JSONObject responseJson = new JSONObject();
+		boolean result = ordRoomService.deleteOrder(id);
+		try {
+			if (result) {
+			    responseJson.put("success", true);
+			    responseJson.put("message", "刪除成功");
+			}else {
+			    responseJson.put("success", false);
+			    responseJson.put("message", "刪除失敗");
+			}
+		} catch (JSONException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return responseJson.toString();
+	}
+	
+	@PutMapping("/orderRoom/alert/{pk}")
+	public String updateData(@PathVariable("pk") Integer id, @RequestBody String json) {
+		JSONObject responseJson = new JSONObject();		
+		try {
+			if (id != null) {
+				if (ordRoomService.update(id, json) != null) {
+					responseJson.put("message", "更新成功");
+					responseJson.put("success", true);
+				} else {
+					responseJson.put("message", "請查資料是否完整");
+					responseJson.put("success", false);
+				}
+			}else {
+				responseJson.put("message", "資料已過期請重新登入");
+				responseJson.put("success", false);
+			}
+		} catch (JSONException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		return responseJson.toString();
+	}
+	
+	@PostMapping("/orderRoom/InquireOrder")
+	public String login(@RequestBody String json, HttpSession httpSession) throws JSONException{
+		JSONObject responseJson = new JSONObject();
+		JSONObject obj = new JSONObject(json);
+		
+		String email = obj.isNull("email") ? null : obj.getString("email");
+		String password = obj.isNull("password") ? null : obj.getString("password");
+        if (email == null || email.length()==0) {
+        	responseJson.put("success", false);
+            responseJson.put("acount", "email是必要欄位");
+		}
+        if (password == null || password.length()==0) {
+            responseJson.put("success", false);
+            responseJson.put("password", "交易密碼是必要欄位");
+		}
+        if (email != null && password != null && email.length()!=0 && password.length()!=0) {
+        	OrderRoom order = ordRoomService.inquireLogin(email, password);
+        	if (order != null) {
+                responseJson.put("success", true);
+                responseJson.put("message", "登入成功");
+                httpSession.setAttribute("customer", order.getEmail());
+                httpSession.setAttribute("orderId", order.getOrderId());
+        	} else {
+                responseJson.put("success", false);
+                responseJson.put("message", "信箱或交易密碼有錯");
+        	}
+        }
+        
+        return responseJson.toString();
+	}
+	
+	// 新增交易記錄
 }
