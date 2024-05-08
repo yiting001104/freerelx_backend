@@ -1,7 +1,14 @@
 use Hotel;
- drop table if exists AdditionalCharges
- drop table if exists CheckOutInspection
- drop table if exists HousingManagement
+ drop table if exists cart;
+ drop table if exists order_details;
+ drop table if exists productphoto;
+ drop table if exists orders;
+ drop table if exists product;
+ drop table if exists category
+ drop table if exists supplier;
+ drop table if exists AdditionalCharges;
+ drop table if exists CheckOutInspection;
+ drop table if exists HousingManagement;
  drop table if exists orderRoomDetail;
  drop table if exists  comment;
  drop table if exists transactionTable
@@ -11,6 +18,8 @@ use Hotel;
  drop table if exists member;
  drop table if exists employee;
  drop table if exists income;
+
+ drop table if exists Minibar
 
 create table member (  
     member_id        int identity,
@@ -29,6 +38,7 @@ create table member (
 	total_bonus_points decimal(20,6) default 0.0,
 	login_time datetime2(6),
 	login_status nvarchar(255) default '尚未登入',
+	picture varbinary(max),
 	constraint PK_MemberId primary key (member_id),
 	constraint UQ_phone_number unique (phone_number) ,
 
@@ -49,12 +59,13 @@ create table orderRoom (
 	child_pax int default 0,
 	room_type_amount int not null,
 	arrival_date datetime2(6) not null,
-	reservation_status varchar(255) not null,
+	checkout_date datetime2(6) not null,
+	reservation_status varchar(255)  default 'Awaiting payment',
 	reservation_status_date datetime2(6) not null,
 	transaction_password varchar(255) not null,
 	member_id        int ,
 	cancellation_reason  nvarchar(255),
-	order_status  varchar(255) default ' not completed',
+
 	base_price decimal(20,6),
 	stay_person_name nvarchar(255),
 	stay_person_gender nvarchar(255),
@@ -201,8 +212,9 @@ CREATE TABLE RoomInformation (
     room_price DECIMAL(20, 6),
     room_picture VARBINARY(max),
     room_depiction NVARCHAR(255),
-    FOREIGN KEY (room_type) REFERENCES RoomType(room_type_Id), 
-    FOREIGN KEY (room_level) REFERENCES RoomLevel(room_level_Id) 
+
+   constraint FK_RoomInformationId FOREIGN KEY (room_type) REFERENCES RoomType(room_type_Id), 
+   constraint FK_RoomLevel FOREIGN KEY (room_level) REFERENCES RoomLevel(room_level_Id) 
 );
 
 INSERT INTO RoomInformation ( room_Information_Id, room_type, room_level, bed_type, max_occupancy, room_price, room_picture, room_depiction) VALUES
@@ -224,7 +236,7 @@ CREATE TABLE RoomAssignment (
     roomInformation_Id INT,
     rooms_left INT,
     assignment_date DATE,
-    FOREIGN KEY (roomInformation_Id) REFERENCES roomInformation ( room_Information_Id)
+    constraint FK_RoomInformationIdAss FOREIGN KEY (roomInformation_Id) REFERENCES roomInformation ( room_Information_Id)
 );
 
 CREATE TABLE RoomState (
@@ -245,8 +257,8 @@ CREATE TABLE RoomManagement (
     room_state INT,
     repair_status NVARCHAR(255),
     roomInformationId INT,
-    FOREIGN KEY (room_state) REFERENCES RoomState(room_state), 
-    FOREIGN KEY (roomInformationId) REFERENCES RoomInformation(room_Information_Id)
+   constraint FK_RoomStateMana FOREIGN KEY (room_state) REFERENCES RoomState(room_state), 
+   constraint FK_RoomInformationIdMana FOREIGN KEY (roomInformationId) REFERENCES RoomInformation(room_Information_Id)
 );
 
 
@@ -261,9 +273,9 @@ CREATE TABLE HousingManagement (
     checkOutTime DATETIME,
     total_additional_fee DECIMAL(20, 6),
     total_compensation_fee DECIMAL(20, 6),
-    FOREIGN KEY (room_id) REFERENCES  RoomManagement (room_id),
-    FOREIGN KEY (member_Id) REFERENCES Member(member_Id),
-    FOREIGN KEY (orderID) REFERENCES orderRoom(order_id)
+   constraint FK_RoomInformationIdHMana  FOREIGN KEY (room_id) REFERENCES  RoomManagement (room_id),
+   constraint FK_MemberIdHMana FOREIGN KEY (member_Id) REFERENCES Member(member_Id),
+   constraint FK_OrderIdHMana FOREIGN KEY (orderID) REFERENCES orderRoom(order_id)
 );
 
 CREATE TABLE CheckOutInspection (
@@ -271,7 +283,8 @@ CREATE TABLE CheckOutInspection (
     compensation NVARCHAR(255),
     compensation_fee DECIMAL(20, 6),
     compensation_photo varbinary(max),
-    housing_managementId INT FOREIGN KEY REFERENCES HousingManagement(housing_management_id)
+    housing_managementId INT, 
+	constraint FK_HousingManagementIdCO FOREIGN KEY (housing_managementId) REFERENCES HousingManagement(housing_management_id)
 );
 
 
@@ -296,7 +309,8 @@ CREATE TABLE AdditionalCharges (
     item_id INT FOREIGN KEY REFERENCES minibar(minibar_id),
     quantity INT,
     amount DECIMAL(10, 2),
-    housing_managementId INT FOREIGN KEY REFERENCES HousingManagement(housing_management_id)
+    housing_managementId INT ,
+	constraint FK_HousingManagementIdAC FOREIGN KEY (housing_managementId) REFERENCES HousingManagement(housing_management_id)
 );
 ----
 create table orderRoomDetail(
@@ -316,4 +330,76 @@ create table orderRoomDetail(
 
 	constraint PK_OrderDetialId primary key (order_id, room_Information_Id),
 );
+
+------------------------------------------------------------
+-- 購物車相關
+CREATE TABLE supplier (
+    product_supplier_id INT IDENTITY NOT NULL,
+    product_manufacturer_address VARCHAR(255),
+    product_manufacturer_contact_name VARCHAR(255),
+    product_manufacturer_contact_email VARCHAR(255),
+    product_manufacturer VARCHAR(255),
+    product_manufacturer_contact_phone VARCHAR(255),
+    constraint PK_SupplierId PRIMARY KEY (product_supplier_id)
+);
+
+CREATE TABLE category (
+    category_id INT IDENTITY NOT NULL,
+    category_name VARCHAR(255),
+    constraint PK_CategoryId PRIMARY KEY (category_id)
+);
+
+
+CREATE TABLE orders (
+    id INT IDENTITY NOT NULL,
+    member_id INT,
+    PRIMARY KEY (id),
+   constraint FK_MemberIdOrder FOREIGN KEY (member_id) REFERENCES member(member_id)
+);
+
+CREATE TABLE product (
+    product_id INT IDENTITY NOT NULL,
+    product_expected_arrival_day INT,
+    product_description VARCHAR(255),
+    product_name VARCHAR(255),
+    product_price INT,
+    product_stock INT,
+    product_category_id INT,
+    product_supplier_id INT,
+    constraint PK_ProductId PRIMARY KEY (product_id),
+    constraint FK_ProductCategoryId FOREIGN KEY (product_category_id) REFERENCES category(category_id),
+    constraint FK_ProductSupplierIdP FOREIGN KEY (product_supplier_id) REFERENCES supplier(product_supplier_id)
+);
+
+CREATE TABLE productphoto (
+    id INT IDENTITY NOT NULL,
+    photoFile VARBINARY(MAX),
+    photoName VARCHAR(255),
+    product_id INT,
+    constraint PK_ProductPhotoID PRIMARY KEY (id),
+    constraint FK_ProductIDPhoto FOREIGN KEY (product_id) REFERENCES product(product_id)
+);
+
+CREATE TABLE order_details (
+    detail_id INT IDENTITY NOT NULL,
+    addedTime DATETIME2(6),
+    orderstatus VARCHAR(255),
+    productmultiplequantity INT,
+    quantity INT,
+    order_id INT,
+    product_id INT,
+    constraint PK_DetailID PRIMARY KEY (detail_id),
+    constraint FK_DetailOrderID FOREIGN KEY (order_id) REFERENCES orders(id),
+    constraint FK_ProductDetailOrderID FOREIGN KEY (product_id) REFERENCES product(product_id)
+);
+
+CREATE TABLE cart (
+    quantity INT,
+    member_member_id INT NOT NULL,
+    id_product_id INT NOT NULL,
+    constraint PK_CartID PRIMARY KEY (id_product_id, member_member_id),
+    constraint PK_CartProductID FOREIGN KEY (id_product_id) REFERENCES product(product_id),
+    constraint PK_CartMMID FOREIGN KEY (member_member_id) REFERENCES member(member_id)
+);
+
 
