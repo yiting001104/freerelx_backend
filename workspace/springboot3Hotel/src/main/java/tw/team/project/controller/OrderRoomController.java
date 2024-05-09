@@ -16,7 +16,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import jakarta.servlet.http.HttpSession;
-import tw.team.project.model.Member;
 import tw.team.project.model.OrderRoom;
 import tw.team.project.service.OrderRoomService;
 import tw.team.project.util.JsonContainer;

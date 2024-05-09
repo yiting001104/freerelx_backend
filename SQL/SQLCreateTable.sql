@@ -99,7 +99,7 @@ create table transactionTable(
 	transaction_Id int identity,
 	amount decimal(20,6) not null,
 	order_id  int not null,
-	last_five_account_number varchar(255) not null,
+	last_five_account_number varchar(255) ,
 	transfer_date datetime2(6) ,
 	discount_id int,
 	taxIDNumber varchar(255),

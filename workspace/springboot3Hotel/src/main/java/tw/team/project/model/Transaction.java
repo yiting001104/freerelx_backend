@@ -5,6 +5,8 @@ import java.util.Date;
 
 import org.springframework.format.annotation.DateTimeFormat;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -33,11 +35,12 @@ public class Transaction {
 	@JoinColumn(name = "order_id",referencedColumnName = "order_id")
 	private OrderRoom orderRoom;
 	
-	@Column(name = "last_five_account_number", nullable = false)
+	@Column(name = "last_five_account_number", nullable = true)
 	private String lastFiveAccNum;
 	
-	@DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss EEEE")
+	@DateTimeFormat(pattern ="yyyy-MM-dd HH:mm:ss EEEE")
 	@Temporal(TemporalType.TIMESTAMP)
+	@JsonFormat(pattern ="yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
 	@Column(name = "transfer_date")
 	private Date transferDate;
 	

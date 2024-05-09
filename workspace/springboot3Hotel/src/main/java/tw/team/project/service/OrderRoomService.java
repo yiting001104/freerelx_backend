@@ -19,6 +19,7 @@ import jakarta.transaction.Transactional;
 import tw.team.project.model.Member;
 import tw.team.project.model.OrderRoom;
 import tw.team.project.model.OrderRoomRepository;
+import tw.team.project.model.Transaction;
 import tw.team.project.util.EmailValidator;
 
 @Service
@@ -28,6 +29,8 @@ public class OrderRoomService {
 	private OrderRoomRepository orderRoomRepo;
 	@Autowired
 	private MemberService memberservice;
+	@Autowired
+	private TransactionService transactionService;
 	
 	public Page<OrderRoom> findOrderByPage(Integer pageNumber){
 		Pageable pgb = PageRequest.of(pageNumber-1, 4, Sort.Direction.DESC, "orderDate");
@@ -220,8 +223,14 @@ public class OrderRoomService {
 				if (id!=null) {
 					order.setMember(member);
 				}
+				// 新增訂單
+				Transaction trans = new Transaction();
 				
-				return orderRoomRepo.save(order);
+				OrderRoom newOrder = orderRoomRepo.save(order);
+				trans.setAmount(basePrice);
+				trans.setOrderRoom(newOrder);
+				transactionService.insert(trans);
+				return newOrder;
 			}
 		} catch (JSONException e) {
 			// TODO Auto-generated catch block

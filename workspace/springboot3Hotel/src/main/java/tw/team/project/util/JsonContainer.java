@@ -3,7 +3,9 @@ package tw.team.project.util;
 import org.springframework.boot.configurationprocessor.json.JSONException;
 import org.springframework.boot.configurationprocessor.json.JSONObject;
 
+import tw.team.project.dto.TransactionDTO;
 import tw.team.project.model.OrderRoom;
+import tw.team.project.model.Transaction;
 
 public class JsonContainer {
 
@@ -52,6 +54,69 @@ public class JsonContainer {
 			e.printStackTrace();
 		}
 		return null;
+	}
+
+	public JSONObject getTransaction(Transaction trans){
+		try {
+			if (trans != null){
+				JSONObject obj = new JSONObject()
+			                .put("transaction_Id", trans.getTransactionId())
+			                .put("amount", trans.getAmount())
+			                .put("order_id", trans.getOrderRoom().getOrderId())
+			                .put("last_five_account_number", trans.getLastFiveAccNum())
+			                .put("transfer_date", trans.getTransferDate())
+			                .put("taxIDNumber", trans.getTaxIDNumber())
+			                .put("unsubscribe_date", trans.getUnsubscribeDate())
+			                .put("refund_amount", trans.getRffundAmount())
+			                .put("remark", trans.getRemark());
+				if (trans.getDiscounts() !=null){
+					obj.put("discount_id", trans.getDiscounts().getBankId());
+				} else {
+					obj.put("discount_id", "null");
+				}
+				if (trans.getRefundType() !=null){
+					obj.put("refund_id", trans.getRefundType().getRefundTypeId());
+				} else {
+					obj.put("refund_id", "null");
+				}
+				return obj;
+			}
+		} catch (JSONException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return null;
+
+	}
+
+	public TransactionDTO setTransaction(Transaction trans){
+			TransactionDTO transDTO = new TransactionDTO();
+			if (trans != null){
+				transDTO.setTransactionId(trans.getTransactionId());
+				transDTO.setAmount(trans.getAmount());
+				transDTO.setOrder_id(trans.getOrderRoom().getOrderId());
+				transDTO.setLastFiveAccNum(trans.getLastFiveAccNum());
+				transDTO.setTransferDate(trans.getTransferDate());
+				transDTO.setTaxIDNumber(trans.getTaxIDNumber());
+				transDTO.setUnsubscribeDate(trans.getUnsubscribeDate());
+				transDTO.setRffundAmount(trans.getRffundAmount());
+				transDTO.setRemark(trans.getRemark());
+				if (trans.getDiscounts() !=null){
+					transDTO.setDiscount_id(trans.getDiscounts().getBankId());
+				} else {
+					transDTO.setDiscount_id(null);
+				}
+				if (trans.getRefundType() !=null){
+					transDTO.setRefund_id(trans.getRefundType().getRefundTypeId());
+					
+				} else {
+					transDTO.setRefund_id(null);
+				}
+				return transDTO;
+			}
+	
+		return null;
+
 	}
 }
 
