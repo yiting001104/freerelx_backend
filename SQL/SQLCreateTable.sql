@@ -19,8 +19,6 @@ use Hotel;
  drop table if exists employee;
  drop table if exists income;
 
- drop table if exists Minibar
-
 create table member (  
     member_id        int identity,
     name          nvarchar(255) not null,
@@ -101,7 +99,7 @@ create table transactionTable(
 	transaction_Id int identity,
 	amount decimal(20,6) not null,
 	order_id  int not null,
-	last_five_account_number varchar(255) not null,
+	last_five_account_number varchar(255),
 	transfer_date datetime2(6) ,
 	discount_id int,
 	taxIDNumber varchar(255),
@@ -122,10 +120,10 @@ create table transactionTable(
 		  references Hotel.dbo.orderRoom (order_id),
 
 	constraint FK_Discount foreign key (discount_id)
-		  references Hotel.dbo.creditCardDiscount (bank_id),
+		  references Hotel.dbo.creditCardDiscount (bank_id) ON DELETE SET NULL,
 
 	constraint FK_Refunde foreign key (refund_id)
-		  references Hotel.dbo.refundType (refundType_id),
+		  references Hotel.dbo.refundType (refundType_id) ON DELETE SET NULL,
 );
 ----------------------------------------------------------------------------------
 --其他
@@ -135,7 +133,8 @@ create table employee(
 	name nvarchar(255) not null,
 	position nvarchar(255) not null,
 	premission nvarchar(255) not null,
-
+	password varchar(255) not null,
+	emoloyee_status nvarchar(255) default '在職',
 	constraint PK_EmployeeId primary key (employee_id ),
 );
 
@@ -173,164 +172,114 @@ drop table if exists RoomType;
 drop table if exists RoomState;
 drop table if exists Minibar
  
-CREATE TABLE RoomLevel (
-    room_level_Id INT PRIMARY KEY IDENTITY,
+CREATE TABLE roomLevel (
+    room_level_id INT PRIMARY KEY IDENTITY,
     chinese NVARCHAR(50),
     english NVARCHAR(50),
     japanese NVARCHAR(50)
 );
 
-INSERT INTO RoomLevel ( chinese, english, japanese) VALUES
-( N'精緻', 'Superior', N'スーペリアルーム'),
-( N'豪華', 'Deluxe', N'デラックスルーム'),
-( N'家庭', 'Family', N'プレミアムファミリールーム'),
-( N'貴賓', 'VIP', N'VIPスイート'),
-( N'皇家', 'Royal', N'ロイヤルスイート'),
-( N'總統', 'Presidential', N'レジデンシャル スイート');
-
-
-CREATE TABLE RoomType (
-    room_type_Id INT PRIMARY KEY IDENTITY,
+CREATE TABLE roomType (
+    room_type_id INT PRIMARY KEY IDENTITY,
     chinese NVARCHAR(50),
     english NVARCHAR(50),
     japanese NVARCHAR(50)
 );
 
-
-INSERT INTO RoomType ( chinese, english, japanese) VALUES
-( N'標準套房', 'Standard Guestroom', N'スタンダードフロアー'),
-( N'商務套房', 'Executive Guestroom', N'エグぜクティブフロア'),
-( N'尊榮套房', 'Deluxe Suites', N'デラックススイート');
-
-
-CREATE TABLE RoomInformation (
-    room_Information_Id INT PRIMARY KEY,
-    room_type INT,
-    room_level INT,
+CREATE TABLE roomInformation (
+    room_information_id INT PRIMARY KEY IDENTITY,
+    room_type_id INT,
+    room_level_id INT,
     bed_type NVARCHAR(50),
     max_occupancy INT,
     room_price DECIMAL(20, 6),
-    room_picture VARBINARY(max),
+    room_photo VARBINARY(max),
     room_depiction NVARCHAR(255),
-
-   constraint FK_RoomInformationId FOREIGN KEY (room_type) REFERENCES RoomType(room_type_Id), 
-   constraint FK_RoomLevel FOREIGN KEY (room_level) REFERENCES RoomLevel(room_level_Id) 
+    constraint FK_RoomInformationId FOREIGN KEY (room_type_id) REFERENCES roomType(room_type_id), 
+    constraint FK_RoomLevel FOREIGN KEY (room_level_id) REFERENCES roomLevel(room_level_id) 
 );
 
-INSERT INTO RoomInformation ( room_Information_Id, room_type, room_level, bed_type, max_occupancy, room_price, room_picture, room_depiction) VALUES
-(1, 1, 1, 'Twin Bed', 2, 12800, NULL, NULL),
-(2, 1, 1, 'Queen Bed', 2, 12800, NULL, NULL),
-(3, 1, 2, 'Twin Bed', 2, 15800, NULL, NULL),
-(4, 1, 2, 'Queen Bed', 2, 15800, NULL, NULL),
-(5, 1, 3, 'Two Double Bed', 4, 22800, NULL, NULL),
-(6, 2, 1, 'Queen Bed', 2, 20800, NULL, NULL),
-(7, 2, 2, 'Queen Bed', 2, 24800, NULL, NULL),
-(8, 3, 2, 'Queen Bed', 2, 30000, NULL, NULL),
-(9, 3, 4, 'Queen Bed', 2, 42000, NULL, NULL),
-(10, 3, 5, 'Queen Bed', 2, 150000, NULL, NULL),
-(11, 3, 6, 'Queen Bed', 2, 300000, NULL, NULL);
-
-
-CREATE TABLE RoomAssignment (
-    assignment_id INT PRIMARY KEY IDENTITY,
-    roomInformation_Id INT,
-    rooms_left INT,
-    assignment_date DATE,
-    constraint FK_RoomInformationIdAss FOREIGN KEY (roomInformation_Id) REFERENCES roomInformation ( room_Information_Id)
-);
-
-CREATE TABLE RoomState (
-    room_state INT PRIMARY KEY,
-    state NVARCHAR(255)
-);
-
-INSERT INTO RoomState (room_state, state)
-VALUES
-(1, '入住'),
-(2, '尚未入住'),
-(3, '已退房(未清潔)'),
-(4, '準備完成(已清潔)');
-
-CREATE TABLE RoomManagement (
-    room_management_id INT PRIMARY KEY IDENTITY,
-    room_id INT  UNIQUE,
-    room_state INT,
-    repair_status NVARCHAR(255),
-    roomInformationId INT,
-   constraint FK_RoomStateMana FOREIGN KEY (room_state) REFERENCES RoomState(room_state), 
-   constraint FK_RoomInformationIdMana FOREIGN KEY (roomInformationId) REFERENCES RoomInformation(room_Information_Id)
-);
-
-
-
-CREATE TABLE HousingManagement (
-    housing_management_id INT PRIMARY KEY IDENTITY,
-    room_id INT,
-    member_Id INT,
-    orderID INT,
-    Remarks NVARCHAR(255),
-    checkInTime DATETIME,
-    checkOutTime DATETIME,
-    total_additional_fee DECIMAL(20, 6),
-    total_compensation_fee DECIMAL(20, 6),
-   constraint FK_RoomInformationIdHMana  FOREIGN KEY (room_id) REFERENCES  RoomManagement (room_id),
-   constraint FK_MemberIdHMana FOREIGN KEY (member_Id) REFERENCES Member(member_Id),
-   constraint FK_OrderIdHMana FOREIGN KEY (orderID) REFERENCES orderRoom(order_id)
-);
-
-CREATE TABLE CheckOutInspection (
-    id INT PRIMARY KEY IDENTITY,
-    compensation NVARCHAR(255),
-    compensation_fee DECIMAL(20, 6),
-    compensation_photo varbinary(max),
-    housing_managementId INT, 
-	constraint FK_HousingManagementIdCO FOREIGN KEY (housing_managementId) REFERENCES HousingManagement(housing_management_id)
-);
-
-
-CREATE TABLE Minibar (
-    minibar_id INT PRIMARY KEY IDENTITY,
-    item NVARCHAR(50),
-    price DECIMAL(10, 2)
-);
-
-INSERT INTO Minibar (item, price) VALUES
-('whisky', 800),
-('vodka', 800),
-('wine', 800),
-('soda drink', 120),
-('sparkling water', 120),
-('coffee', 120),
-('instant noodles', 80),
-('mineral water', 80);
-
-CREATE TABLE AdditionalCharges (
-    id INT PRIMARY KEY IDENTITY,
-    item_id INT FOREIGN KEY REFERENCES minibar(minibar_id),
-    quantity INT,
-    amount DECIMAL(10, 2),
-    housing_managementId INT ,
-	constraint FK_HousingManagementIdAC FOREIGN KEY (housing_managementId) REFERENCES HousingManagement(housing_management_id)
-);
-----
-create table orderRoomDetail(
-	--orderDetial_id INT  IDENTITY,
+	create table orderRoomDetail(
+	--orderDetial_id  INT PRIMARY KEY IDENTITY,
 	room_Information_Id INT not null,
 	room_amount INT not null,
 	price decimal(20,6),
 	order_id int not null,
-
-		
-
-	constraint FK_RoomInformation_Id foreign key (room_Information_Id)
-		  references Hotel.dbo.RoomInformation (room_Information_Id),
-
-		  	constraint FK_OrderId_Detial foreign key (order_id)
-		  references Hotel.dbo.orderRoom (order_id),
-
-	constraint PK_OrderDetialId primary key (order_id, room_Information_Id),
+	constraint FK_RoomInformation_Id foreign key (room_Information_Id)references Hotel.dbo.RoomInformation (room_Information_Id),
+	constraint FK_OrderId_Detial foreign key (order_id)references Hotel.dbo.orderRoom (order_id),
+	constraint PK_OrderDetialId primary key (order_id, room_Information_Id)
 );
 
+CREATE TABLE roomAssignment (
+    assignment_id INT PRIMARY KEY IDENTITY,
+    room_information_id INT,
+    rooms_left INT,
+    assignment_date DATETIME2(6),
+	order_room_detail_id INT
+    --constraint FK_OrderIdHMana FOREIGN KEY (order_room_detail_id) REFERENCES  orderRoomDetail(order_id, room_Information_Id),
+	constraint FK_RoomInformationIdAss FOREIGN KEY (room_information_id) REFERENCES roomInformation (room_information_id)
+);
+
+CREATE TABLE roomState (
+    room_state_id INT PRIMARY KEY IDENTITY,
+    state NVARCHAR(255)
+);
+
+CREATE TABLE roomManagement (
+    room_management_id INT PRIMARY KEY IDENTITY,
+    room_number INT  UNIQUE,
+    room_state_id INT,
+    repair_status NVARCHAR(255),
+    room_information_id INT,
+	constraint FK_RoomStateMana FOREIGN KEY (room_state_id) REFERENCES roomState(room_state_id), 
+	constraint FK_RoomInformationIdMana FOREIGN KEY (room_information_id) REFERENCES roomInformation(room_information_id)
+);
+
+CREATE TABLE housingManagement (
+    housing_management_id INT PRIMARY KEY IDENTITY,
+    room_management_id INT,
+    order_id INT,
+    remarks NVARCHAR(255),
+    checkInTime DATETIME,
+    checkOutTime DATETIME,
+    total_compensation_fee DECIMAL(20, 6),
+    total_additional_fee DECIMAL(20, 6),
+   constraint FK_RoomManagementHmana  FOREIGN KEY (room_management_id) REFERENCES  roomManagement (room_management_id),
+   constraint FK_OrderIdHMana FOREIGN KEY (order_id) REFERENCES  Hotel.dbo.orderRoom(order_id)
+);
+
+CREATE TABLE checkOutInspection (
+    id INT PRIMARY KEY IDENTITY,
+    compensation NVARCHAR(255),
+    compensation_fee DECIMAL(20, 6),
+    compensation_photo varbinary(max),
+    housing_management_id INT, 
+	constraint FK_HousingManagementIdCO FOREIGN KEY (housing_management_id) REFERENCES housingManagement(housing_management_id)
+);
+
+
+CREATE TABLE minibar (
+    minibar_id INT PRIMARY KEY IDENTITY,
+	minibar_price DECIMAL(20, 6),
+	minibar_make　DATETIME2(6),
+	minibar_expire　INT,
+    minibar_item NVARCHAR(50),
+	minibar_photo varbinary(max),
+);
+
+
+	CREATE TABLE additionalCharges (
+    fk_minibar_id INT,
+    fk_housingmanagement_id INT,
+    quantity INT,
+    amount DECIMAL(20, 6),
+	constraint Fk_minibar foreign key (fk_minibar_id)references minibar (minibar_id),
+	constraint Fk_housingmanagement foreign key (fk_housingmanagement_id)references housingManagement (housing_management_id),
+	constraint PK_additionalCharges primary key (fk_minibar_id, fk_housingmanagement_id)
+);
+
+
+----
 ------------------------------------------------------------
 -- 購物車相關
 CREATE TABLE supplier (
@@ -401,5 +350,3 @@ CREATE TABLE cart (
     constraint PK_CartProductID FOREIGN KEY (id_product_id) REFERENCES product(product_id),
     constraint PK_CartMMID FOREIGN KEY (member_member_id) REFERENCES member(member_id)
 );
-
-
