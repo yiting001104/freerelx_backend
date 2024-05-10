@@ -35,7 +35,7 @@ create table member (
 	nationality nvarchar(255) not null,
 	total_bonus_points decimal(20,6) default 0.0,
 	login_time datetime2(6),
-	login_status nvarchar(255) default '©|¥¼µn¤J',
+	login_status nvarchar(255) default 'å°šæœªç™»å…¥',
 	picture varbinary(max),
 	constraint PK_MemberId primary key (member_id),
 	constraint UQ_phone_number unique (phone_number) ,
@@ -126,7 +126,7 @@ create table transactionTable(
 		  references Hotel.dbo.refundType (refundType_id) ON DELETE SET NULL,
 );
 ----------------------------------------------------------------------------------
---¨ä¥L
+--å…¶ä»–
 
 create table employee(
 	employee_id int identity,
@@ -134,7 +134,7 @@ create table employee(
 	position nvarchar(255) not null,
 	premission nvarchar(255) not null,
 	password varchar(255) not null,
-	emoloyee_status nvarchar(255) default '¦bÂ¾',
+	emoloyee_status nvarchar(255) default 'åœ¨è·',
 	constraint PK_EmployeeId primary key (employee_id ),
 );
 
@@ -163,7 +163,7 @@ create Table comment(
 );
 
 ----------------------------------------------------------------------
----©Ğ°È¬ÛÃö
+---æˆ¿å‹™ç›¸é—œ
 drop table if exists RoomManagement
 drop table if exists RoomAssignment
 drop table if exists RoomInformation
@@ -261,8 +261,8 @@ CREATE TABLE checkOutInspection (
 CREATE TABLE minibar (
     minibar_id INT PRIMARY KEY IDENTITY,
 	minibar_price DECIMAL(20, 6),
-	minibar_make¡@DATETIME2(6),
-	minibar_expire¡@INT,
+	minibar_makeã€€DATETIME2(6),
+	minibar_expireã€€INT,
     minibar_item NVARCHAR(50),
 	minibar_photo varbinary(max),
 );
@@ -281,9 +281,9 @@ CREATE TABLE minibar (
 
 ----
 ------------------------------------------------------------
--- ÁÊª«¨®¬ÛÃö
+-- è³¼ç‰©è»Šç›¸é—œ
 
--- «Ø¥ß orders ªí®æ
+-- å»ºç«‹ orders è¡¨æ ¼
 CREATE TABLE orders (
     id INT IDENTITY(1,1) PRIMARY KEY,
     addedTime DATETIME2(6),
@@ -291,7 +291,7 @@ CREATE TABLE orders (
     FOREIGN KEY (member_id) REFERENCES member(member_id)
 );
 
--- «Ø¥ß supplier ªí®æ
+-- å»ºç«‹ supplier è¡¨æ ¼
 CREATE TABLE supplier (
     product_supplier_id INT IDENTITY(1,1) PRIMARY KEY,
     product_manufacturer_address NVARCHAR(255),
@@ -300,7 +300,7 @@ CREATE TABLE supplier (
     product_manufacturer NVARCHAR(255),
     product_manufacturer_contact_phone NVARCHAR(255)
 );
--- «Ø¥ß product ªí®æ
+-- å»ºç«‹ product è¡¨æ ¼
 CREATE TABLE product (
     product_id INT IDENTITY(1,1) PRIMARY KEY,
     product_expected_arrival_day INT,
@@ -312,14 +312,14 @@ CREATE TABLE product (
     FOREIGN KEY (product_supplier_id) REFERENCES supplier(product_supplier_id)
 );
 
--- «Ø¥ß productphoto ªí®æ
+-- å»ºç«‹ productphoto è¡¨æ ¼
 CREATE TABLE productphoto (
     id INT IDENTITY(1,1) PRIMARY KEY,
     photoFile VARBINARY(MAX),
     product_id INT,
     FOREIGN KEY (product_id) REFERENCES product(product_id)
 );
--- 1. «Ø¥ß cart ªí®æ
+-- 1. å»ºç«‹ cart è¡¨æ ¼
 CREATE TABLE cart (
     checkout BIT,
     quantity INT,
@@ -330,7 +330,7 @@ CREATE TABLE cart (
     FOREIGN KEY (member_member_id) REFERENCES member(member_id)
 );
 
--- «Ø¥ß order_details ªí®æ
+-- å»ºç«‹ order_details è¡¨æ ¼
 CREATE TABLE order_details (
     detail_id INT IDENTITY(1,1) PRIMARY KEY,
     orderstatus NVARCHAR(255),
