@@ -34,6 +34,16 @@ public class OrderRoom {
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date orderDate;
 	
+	public String getGender() {
+		return gender;
+	}
+
+	public void setGender(String gender) {
+		this.gender = gender;
+	}
+
+	private String gender;
+	
 	@Column(name = "order_person_name", nullable = false)
 	private String customerName;
 	
