@@ -63,5 +63,5 @@ public class TransactionController {
         return ResponseEntity.notFound().build();
     }
     
-    // 刪除必須和訂單同時進行
+    // 刪除由訂單那邊進行同時進行因為CascadeType.ALL關係
 }

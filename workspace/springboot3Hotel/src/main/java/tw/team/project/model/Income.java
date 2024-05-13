@@ -3,6 +3,7 @@ package tw.team.project.model;
 import java.math.BigDecimal;
 import java.util.Date;
 
+import org.hibernate.annotations.DynamicInsert;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import jakarta.persistence.Column;
@@ -16,6 +17,7 @@ import jakarta.persistence.TemporalType;
 
 @Entity
 @Table(name = "income")
+@DynamicInsert // 動態生成SQL語法
 public class Income {
 
 	@Id
@@ -60,11 +62,20 @@ public class Income {
 	
 	@DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss EEEE") 
 	@Temporal(TemporalType.TIMESTAMP)
-	@Column(name = "create_date", nullable = false)
+	@Column(name = "create_date")
 	private Date createDate;
 	
 	@Column(name = "income_type", nullable = false)
 	private String incomeType;
 	
-	
+	@Column(name = "item_name", nullable=true)
+	private String itemName;
+
+	public String getItemName() {
+		return itemName;
+	}
+
+	public void setItemName(String itemName) {
+		this.itemName = itemName;
+	}
 }

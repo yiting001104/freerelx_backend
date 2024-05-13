@@ -231,6 +231,10 @@ public class OrderRoomService {
 				trans.setOrderRoom(newOrder);
 				transactionService.insert(trans);
 				return newOrder;
+
+				// 新增 orderdetail
+				// 調整roomAssint
+
 			}
 		} catch (JSONException e) {
 			// TODO Auto-generated catch block

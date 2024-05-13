@@ -8,6 +8,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.configurationprocessor.json.JSONArray;
 import org.springframework.boot.configurationprocessor.json.JSONException;
 import org.springframework.boot.configurationprocessor.json.JSONObject;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatusCode;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -16,6 +20,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -23,6 +28,7 @@ import jakarta.servlet.http.HttpSession;
 import tw.team.project.model.Member;
 import tw.team.project.model.NoteDTO;
 import tw.team.project.service.MemberService;
+import tw.team.project.util.JsonWebTokenUtility;
 
 @RestController
 @RequestMapping("/hotel")
@@ -30,7 +36,8 @@ public class MemberController {
 
 	@Autowired
 	private MemberService memberservice;
-	
+	@Autowired
+	private JsonWebTokenUtility jsonWebTokenUtility;
 	// 後台查看會員所有資料
 	@PostMapping("/members/find")
 	public String findAll() throws JSONException {
@@ -83,6 +90,14 @@ public class MemberController {
                 responseJson.put("message", "登入成功");
                 httpSession.setAttribute("loginUserId", member.getMemberId());
                 httpSession.setAttribute("loginUserName", member.getMemberName());
+                
+    			JSONObject user = new JSONObject()
+    					.put("custid", member.getMemberId())
+    					.put("email", member.getEmail());
+    			String token = jsonWebTokenUtility.createEncryptedToken(user.toString(), null);
+    			responseJson.put("token", token);
+    			responseJson.put("user", member.getEmail());
+                
         	} else {
                 responseJson.put("success", false);
                 responseJson.put("message", "帳號或密碼有錯");
@@ -227,4 +242,18 @@ public class MemberController {
 		return null;
 	}
 	
+	//顯示照片
+	@GetMapping("/photos/download")
+	public ResponseEntity<byte[]> downloadImage(@RequestParam Integer id){
+		Member member = memberservice.findbyId(id);
+		byte[] photoFile = member.getPicture();
+		
+		HttpHeaders headers = new HttpHeaders();//用來記錄content type，servlet是用response 的setContent 可以看來一個大括號-spring作業參考(老師的channel)
+		headers.setContentType(MediaType.IMAGE_JPEG);
+		
+		//                                  資料     Header   HttpStatusCode
+		return new ResponseEntity<byte[]>(photoFile,headers,HttpStatusCode.valueOf(200));
+		// 另一種寫法，他已經幫妳寫好了
+		//return new ResponseEntity<byte[]>(photoFile,headers,HttpStatus.OK);
+	}
 }

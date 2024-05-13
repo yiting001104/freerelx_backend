@@ -58,6 +58,7 @@ public class Transaction {
 	
 	@DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss EEEE")
 	@Temporal(TemporalType.TIMESTAMP)
+	@JsonFormat(pattern ="yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
 	@Column(name = "unsubscribe_date")
 	private Date unsubscribeDate;
 	

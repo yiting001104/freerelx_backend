@@ -28,7 +28,7 @@ public class CreditCardDiscount {
 	private BigDecimal discount;
 	
 	
-	@OneToMany(mappedBy = "discounts",cascade = CascadeType.ALL)
+	@OneToMany(mappedBy = "discounts",cascade = {CascadeType.PERSIST,CascadeType.REFRESH})
 	private List<Transaction> transactions;
 	
 	

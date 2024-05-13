@@ -3,6 +3,7 @@ package tw.team.project.model;
 import java.math.BigDecimal;
 import java.util.Date;
 
+import org.hibernate.annotations.DynamicInsert;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -21,6 +22,7 @@ import jakarta.persistence.TemporalType;
 
 @Entity
 @Table(name = "comment")
+@DynamicInsert // 動態生成SQL語法
 public class Comment {
 	
 	@Id
@@ -33,7 +35,7 @@ public class Comment {
 	
 	@DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss EEEE") 
 	@Temporal(TemporalType.TIMESTAMP)
-	@Column(name = "create_date", nullable = false)
+	@Column(name = "create_date", nullable = true)
 	private Date createDate;
 	
 	@JsonIgnore // 當回傳形式是JSON形式時就會忽略

@@ -3,8 +3,12 @@ package tw.team.project.util;
 import org.springframework.boot.configurationprocessor.json.JSONException;
 import org.springframework.boot.configurationprocessor.json.JSONObject;
 
+import tw.team.project.dto.CreditCardDiscountDTO;
+import tw.team.project.dto.RefundTypeDTO;
 import tw.team.project.dto.TransactionDTO;
+import tw.team.project.model.CreditCardDiscount;
 import tw.team.project.model.OrderRoom;
+import tw.team.project.model.RefundType;
 import tw.team.project.model.Transaction;
 
 public class JsonContainer {
@@ -117,6 +121,28 @@ public class JsonContainer {
 	
 		return null;
 
+	}
+
+	public CreditCardDiscountDTO setCrediteCard(CreditCardDiscount banks){
+		CreditCardDiscountDTO bankDTO = new CreditCardDiscountDTO();
+		if (banks != null){
+			bankDTO.setBankId(banks.getBankId());
+			bankDTO.setBankName(banks.getBankName());
+			bankDTO.setDiscount(banks.getDiscount());
+			return bankDTO;
+		}
+		return null;
+	}
+
+	public RefundTypeDTO setRefundType(RefundType refundTypes){
+		RefundTypeDTO refundTypeDTO = new RefundTypeDTO();
+		if (refundTypes != null){
+			refundTypeDTO.setRefundTypeId(refundTypes.getRefundTypeId());
+			refundTypeDTO.setRefundRatio(refundTypes.getRefundRatio());
+			refundTypeDTO.setType(refundTypes.getType());
+			return refundTypeDTO;
+		}
+		return null;
 	}
 }
 

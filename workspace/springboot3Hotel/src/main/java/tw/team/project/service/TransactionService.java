@@ -71,6 +71,7 @@ public class TransactionService {
                         bank = optional2.get();
                         trans.setDiscounts(bank);
                     }
+                    return null;
                 }
                 if (transDTO.getRefund_id()!=null){
                     Optional<RefundType> optional3 = refundTypeRepository.findById(transDTO.getRefund_id());
@@ -78,6 +79,7 @@ public class TransactionService {
                         refundType = optional3.get();
                         trans.setRefundType(refundType);
                     }
+                    return null;
                 }
                 return transDTO;
             }
@@ -86,21 +88,21 @@ public class TransactionService {
     }
     
     public boolean existById(Integer id) {
-    	if (id!=null && id!=0) {
-    		return transactionRepository.existsById(id);
-    	} else {
-    		return false;
-    	}    	
+        if (id!=null && id!=0) {
+            return transactionRepository.existsById(id);
+        } else {
+            return false;
+        }    	
     }
     
     public boolean deleteById(Integer id) {
-    	if (id!=null) {
-    		if (transactionRepository.existsById(id)) {
-    			transactionRepository.deleteById(id);
-    			return true;
-    		}
-    	}
-    	return false;
+        if (id!=null) {
+            if (transactionRepository.existsById(id)) {
+                transactionRepository.deleteById(id);
+                return true;
+            }
+        }
+        return false;
     }
 
 }

@@ -27,7 +27,7 @@ public class RefundType {
 	@Column(name = "refund_ratio", nullable = false)
 	private BigDecimal refundRatio;
 	
-	@OneToMany(mappedBy = "refundType",cascade = CascadeType.ALL)
+	@OneToMany(mappedBy = "refundType",cascade = {CascadeType.PERSIST,CascadeType.REFRESH})
 	private List<Transaction> transcations;
 	
 
