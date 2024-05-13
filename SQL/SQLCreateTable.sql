@@ -352,3 +352,25 @@ CREATE TABLE cart (
     constraint PK_CartProductID FOREIGN KEY (id_product_id) REFERENCES product(product_id),
     constraint PK_CartMMID FOREIGN KEY (member_member_id) REFERENCES member(member_id)
 );
+
+--------------------------------------------------------
+-- 公設
+create table Facility (
+        FACILITY int not null,
+        MAXIMUM_CAPACITY int,
+        FACILITY_NAME varchar(255),
+        FACILITY_TYPE varchar(255),
+        primary key (FACILITY)
+    );
+    
+ create table FacilityOrder (
+        FACILITY_BOOKING_DATE date,
+        FACILITY_ORDER_ID int identity not null,
+        MEMBER_ID int,
+        END_TIME datetime2(6),
+        START_TIME datetime2(6),
+        FACILITY_ID varchar(255),
+        FACILITY_STATUS varchar(255),
+        PHONE_NUMBER varchar(255),
+        primary key (FACILITY_ORDER_ID)
+    );
