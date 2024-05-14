@@ -37,6 +37,9 @@ public class RoomInformation {
 	@JoinColumn(name="room_level_id", referencedColumnName = "room_level_id")
 	private RoomLevel roomLevel;
 	
+//	@OneToMany()
+//	private 
+	
 	@Column(name="bed_type", nullable = false)
 	private String bedType;
 	

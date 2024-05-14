@@ -1,6 +1,5 @@
 package tw.team.project.model;
 
-
 import java.io.Serializable;
 import java.util.Objects;
 
@@ -52,8 +51,5 @@ public class CartId implements Serializable {
 		CartId other = (CartId) obj;
 		return Objects.equals(id, other.id) && Objects.equals(memberId, other.memberId);
 	}
-	
-	
 
-	
 }

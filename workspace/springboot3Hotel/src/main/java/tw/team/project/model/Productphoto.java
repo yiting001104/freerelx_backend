@@ -16,8 +16,6 @@ public class Productphoto {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer id;
 
-	private String photoName;
-
 	@Lob
 	private byte[] photoFile;
 
@@ -43,14 +41,6 @@ public class Productphoto {
 
 	public void setId(Integer id) {
 		this.id = id;
-	}
-
-	public String getPhotoName() {
-		return photoName;
-	}
-
-	public void setPhotoName(String photoName) {
-		this.photoName = photoName;
 	}
 
 	public byte[] getPhotoFile() {

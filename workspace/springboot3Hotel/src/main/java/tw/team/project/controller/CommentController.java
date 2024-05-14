@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import tw.team.project.model.Comment;
-import tw.team.project.model.CreditCardDiscount;
 import tw.team.project.service.CommentService;
 
 @RestController
