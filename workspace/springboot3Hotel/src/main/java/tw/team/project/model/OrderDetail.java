@@ -28,10 +28,11 @@ public class OrderDetail {
 	private Product product;
 
 	private Integer quantity;
-
+	
 	private Integer productmultiplequantity;
-
-	private String orderstatus;
+	
+	
+	
 
 	public Integer getProductmultiplequantity() {
 		return productmultiplequantity;
@@ -79,11 +80,4 @@ public class OrderDetail {
 		this.quantity = quantity;
 	}
 
-	public String getOrderstatus() {
-		return orderstatus;
-	}
-
-	public void setOrderstatus(String orderstatus) {
-		this.orderstatus = orderstatus;
-	}
 }

@@ -289,6 +289,11 @@ CREATE TABLE minibar (
 CREATE TABLE orders (
     id INT IDENTITY(1,1) PRIMARY KEY,
     addedTime DATETIME2(6),
+	arriveddTime DATETIME2(6),
+    contactAddress VARCHAR(255),
+    memberName VARCHAR(255),
+    orderstatus VARCHAR(255),
+    phoneNumber VARCHAR(255),
     member_id INT,
     FOREIGN KEY (member_id) REFERENCES member(member_id)
 );
@@ -335,7 +340,6 @@ CREATE TABLE cart (
 -- 建立 order_details 表格
 CREATE TABLE order_details (
     detail_id INT IDENTITY(1,1) PRIMARY KEY,
-    orderstatus NVARCHAR(255),
     productmultiplequantity INT,
     quantity INT,
     order_id INT,

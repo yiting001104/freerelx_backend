@@ -119,6 +119,7 @@ public class CartAjaxController {
 		List<Cart> carts = cartService.findByMemberIdAndcheckout(json);
 		if (carts != null && !carts.isEmpty()) {
 				Order order=new Order();
+				order.setOrderstatus("待取貨");
 			for (Cart membercart : carts) {
 				JSONObject item = new JSONObject()
 						.put("memberid", membercart.getCartId().getMemberId())
@@ -129,7 +130,6 @@ public class CartAjaxController {
 				cartService.deletecart(membercart.getCartId().getMemberId(), membercart.getCartId().getId());
 				OrderDetail orderDetail=new OrderDetail();
 				orderDetail.setOrder(order);
-				orderDetail.setOrderstatus("待取貨");
 				orderDetail.setQuantity(membercart.getQuantity());
 				orderDetail.setProduct(membercart.getId());
 //新增為了算金額			
