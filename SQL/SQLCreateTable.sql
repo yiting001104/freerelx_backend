@@ -1,17 +1,17 @@
 use Hotel;
- drop table if exists cart;
- drop table if exists order_details;
- drop table if exists productphoto;
- drop table if exists orders;
- drop table if exists product;
- drop table if exists category
- drop table if exists supplier;
+ drop table  if exists order_details;
+ drop table if exists cart ;
+ drop table  if exists productphoto;
+ drop table  if exists product;
+ drop table  if exists orders;
+ drop table  if exists supplier;
+
  drop table if exists AdditionalCharges;
  drop table if exists CheckOutInspection;
  drop table if exists HousingManagement;
  drop table if exists orderRoomDetail;
  drop table if exists  comment;
- drop table if exists transactionTable
+ drop table if exists transactionTable;
  drop table if exists creditCardDiscount;
  drop table if exists  transactionTable;
  drop table if exists orderRoom;
@@ -302,31 +302,42 @@ CREATE TABLE category (
 );
 
 
+-- 建立 orders 表格
 CREATE TABLE orders (
-    id INT IDENTITY NOT NULL,
+    id INT IDENTITY(1,1) PRIMARY KEY,
+    addedTime DATETIME2(6),
     member_id INT,
     PRIMARY KEY (id),
    constraint FK_MemberIdOrder FOREIGN KEY (member_id) REFERENCES member(member_id)
 );
 
+-- 建立 supplier 表格
+CREATE TABLE supplier (
+    product_supplier_id INT IDENTITY(1,1) PRIMARY KEY,
+    product_manufacturer_address NVARCHAR(255),
+    product_manufacturer_contact_name NVARCHAR(255),
+    product_manufacturer_contact_email NVARCHAR(255),
+    product_manufacturer NVARCHAR(255),
+    product_manufacturer_contact_phone NVARCHAR(255)
+);
+-- 建立 product 表格
 CREATE TABLE product (
-    product_id INT IDENTITY NOT NULL,
+    product_id INT IDENTITY(1,1) PRIMARY KEY,
     product_expected_arrival_day INT,
-    product_description VARCHAR(255),
-    product_name VARCHAR(255),
+    product_description NVARCHAR(255),
+    product_name NVARCHAR(255),
     product_price INT,
     product_stock INT,
-    product_category_id INT,
     product_supplier_id INT,
     constraint PK_ProductId PRIMARY KEY (product_id),
     constraint FK_ProductCategoryId FOREIGN KEY (product_category_id) REFERENCES category(category_id),
     constraint FK_ProductSupplierIdP FOREIGN KEY (product_supplier_id) REFERENCES supplier(product_supplier_id)
 );
 
+-- 建立 productphoto 表格
 CREATE TABLE productphoto (
-    id INT IDENTITY NOT NULL,
+    id INT IDENTITY(1,1) PRIMARY KEY,
     photoFile VARBINARY(MAX),
-    photoName VARCHAR(255),
     product_id INT,
     constraint PK_ProductPhotoID PRIMARY KEY (id),
     constraint FK_ProductIDPhoto FOREIGN KEY (product_id) REFERENCES product(product_id)
@@ -346,6 +357,7 @@ CREATE TABLE order_details (
 );
 
 CREATE TABLE cart (
+    checkout BIT,
     quantity INT,
     member_member_id INT NOT NULL,
     id_product_id INT NOT NULL,

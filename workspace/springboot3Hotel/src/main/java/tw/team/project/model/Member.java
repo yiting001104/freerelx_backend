@@ -23,9 +23,8 @@ import jakarta.persistence.Table;
 import jakarta.persistence.Temporal;
 import jakarta.persistence.TemporalType;
 
-
 @Entity
-@Table(name="member")
+@Table(name = "member")
 @DynamicInsert // 動態生成SQL語法
 public class Member {
 
@@ -33,70 +32,68 @@ public class Member {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "member_id")
 	private Integer memberId;
-	
-	@Column(name="name", nullable = false)
+
+	@Column(name = "name", nullable = false)
 	private String memberName;
-	
+
 	@Column(name = "gender", nullable = false)
 	private String gender;
-	
+
 	@DateTimeFormat(pattern = "yyyy-MM-dd")
 	@Temporal(TemporalType.DATE)
-	@JsonFormat(pattern="yyyy-MM-dd")
+	@JsonFormat(pattern = "yyyy-MM-dd")
 	private Date birth;
-	
+
 	@Column(name = "national_id", nullable = false)
 	private String nationId;
-	
-	
+
 	@Column(name = "email", nullable = false)
 	private String email;
-	
-	@Column(name = "phone_number",nullable = false, unique = true)
+
+	@Column(name = "phone_number", nullable = false, unique = true)
 	private String phoneNumber;
-	
-	@Column(name = "credit_card",nullable=true)
+
+	@Column(name = "credit_card", nullable = true)
 	private String creditCard;
-	
-	@Column(name = "contact_address", nullable=false)
+
+	@Column(name = "contact_address", nullable = false)
 	private String contactAddress;
-	
+
 	@Column(name = "password", nullable = false)
 	private String password;
-	
+
 	@DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss EEEE")
 	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name = "registration_date", nullable = false)
 	private Date registrationDate;
-	
+
 	@Column(name = "member_status")
 	private String memberStatus;
-	
-	@Column(name = "nationality", nullable = false)
-	private String nationality;
-	
-	@Lob
-	public byte[] getPicture() {
-		return picture;
-	}
 
-	public void setPicture(byte[] picture) {
+	@Column(name = "nationality", nullable = false)
+	private String nationality;	
+
+	publ
+			retur
+
+	 public void setPicture(byte[] picture) {
 		this.picture = picture;
 	}
 
 	@Column(name = "total_bonus_points")
 	private BigDecimal bonusPoint;
-	
+
 	@DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss EEEE")
 	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name = "login_time")
 	private Date loginTime;
-	
+
 	@Column(name = "login_status")
 	private String loginStatus;
-	
+
 	@Column(name = "picture")
 	private byte[] picture;
+
 	public List<OrderRoom> getOrdersRoom() {
 		return ordersRoom;
 	}
@@ -115,10 +112,10 @@ public class Member {
 
 	@OneToMany(mappedBy = "member", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	private List<OrderRoom> ordersRoom;
-	
+
 	@OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
 	private List<Comment> comments;
-	
+
 	public Integer getMemberId() {
 		return memberId;
 	}
@@ -249,11 +246,11 @@ public class Member {
 	
 	@OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
 	private List<Order> order = new ArrayList<>();
+	publicList
 
-	public List<Order> getOrder() {
-		return order;
 	}
 
+	
 	public void setOrder(List<Order> order) {
 		this.order = order;
 	}

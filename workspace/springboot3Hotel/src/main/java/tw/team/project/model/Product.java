@@ -17,7 +17,7 @@ import jakarta.persistence.Table;
 @Entity
 @Table(name = "product")
 public class Product {
-	 //0001
+	// 0001
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "product_id")
@@ -39,9 +39,9 @@ public class Product {
 	@JoinColumn(name = "product_supplier_id")
 	private Supplier productSupplierId;
 
-//	@ManyToOne
-//	@JoinColumn(name = "product_category_id")
-//	private Category productCategoryId;
+	// @ManyToOne
+	// @JoinColumn(name = "product_category_id")
+	// private Category productCategoryId;
 
 	@OneToMany(mappedBy = "productid", cascade = CascadeType.ALL)
 	private List<Productphoto> productphoto = new ArrayList<>();
@@ -101,13 +101,13 @@ public class Product {
 		this.productDescription = productDescription;
 	}
 
-//	public Category getProductCategoryId() {
-//		return productCategoryId;
-//	}
-//
-//	public void setProductCategoryId(Category productCategoryId) {
-//		this.productCategoryId = productCategoryId;
-//	}
+	// public Category getProductCategoryId() {
+	// return productCategoryId;
+	// }
+	//
+	// public void setProductCategoryId(Category productCategoryId) {
+	// this.productCategoryId = productCategoryId;
+	// }
 
 	public Integer getProductArrivalDay() {
 		return productArrivalDay;
