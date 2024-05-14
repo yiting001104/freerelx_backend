@@ -1,12 +1,15 @@
 package tw.team.project.controller;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.configurationprocessor.json.JSONException;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -14,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import tw.team.project.model.Cart;
+import tw.team.project.model.Member;
 import tw.team.project.model.MemberRepository;
 import tw.team.project.model.Order;
 import tw.team.project.model.OrderDeatilRepository;
@@ -170,25 +174,23 @@ public class CartAjaxController {
 		}
 	return responseJson.toString();
 	}
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////
-//	@GetMapping("/products/{pk}")
-//	public String findById(@PathVariable(name = "pk") Integer id) throws JSONException {
-//		JSONObject responseJson = new JSONObject();
-//		JSONArray array = new JSONArray();
-//		Optional<Member> member= memberRepository.findById(id);
-//		if (member.get() != null) {
-//			JSONObject item = new JSONObject()
-//					.put("id", product.getId()).put("productName", product.getProductName())
-//					.put("productPrice", product.getProductPrice()).put("productStock", product.getProductStock())
-//					.put("productSupplierId", product.getProductSupplierId().getId())
-//					.put("productDescription", product.getProductDescription())
-//					.put("productArrivalDay", product.getProductArrivalDay());
-//			array.put(item);
-//			System.out.println(product.getProductName());
-//		}
-//		responseJson.put("listt", array);
-//		System.out.print(responseJson.toString());
-//		return responseJson.toString();
-//	}
+////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	//結帳時需要個資
+	@GetMapping("/carts/mes/{pk}")
+	public String findById(@PathVariable(name = "pk") Integer id) throws JSONException {
+		JSONObject responseJson = new JSONObject();
+		JSONArray array = new JSONArray();
+		Optional<Member> member= memberRepository.findById(id);
+		if (member.get() != null) {
+			JSONObject item = new JSONObject()
+					.put("MemberName",member.get().getMemberName())
+					.put("contactAddress", member.get().getContactAddress())
+					.put("phoneNumber", member.get().getPhoneNumber());
+			array.put(item);
+		}
+		responseJson.put("listt", array);
+		System.out.print(responseJson.toString());
+		return responseJson.toString();
+	}
 }
 
