@@ -1,9 +1,5 @@
 package tw.team.project.model;
 
-import java.util.Date;
-
-import org.springframework.format.annotation.DateTimeFormat;
-
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -12,10 +8,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
-import jakarta.persistence.PrePersist;
 import jakarta.persistence.Table;
-import jakarta.persistence.Temporal;
-import jakarta.persistence.TemporalType;
 
 @Entity
 @Table(name = "order_details")
@@ -35,11 +28,10 @@ public class OrderDetail {
 	private Product product;
 
 	private Integer quantity;
-	
+
 	private Integer productmultiplequantity;
-	
+
 	private String orderstatus;
-	
 
 	public Integer getProductmultiplequantity() {
 		return productmultiplequantity;
@@ -48,18 +40,6 @@ public class OrderDetail {
 	public void setProductmultiplequantity(Integer productmultiplequantity) {
 		this.productmultiplequantity = productmultiplequantity;
 	}
-
-	@DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss EEEE") // ${{latestMsg.added}}讀取左邊設定
-	@Temporal(TemporalType.TIMESTAMP)
-	private Date addedTime;
-
-	@PrePersist // 物件狀態轉到PERSISTENT 以前先執行這個方法
-	public void onCreate() {
-		if (addedTime == null) {
-			addedTime = new Date();
-		}
-	}
-
 	// 其他訂單詳細資料相關屬性
 
 	public OrderDetail() {
@@ -106,14 +86,4 @@ public class OrderDetail {
 	public void setOrderstatus(String orderstatus) {
 		this.orderstatus = orderstatus;
 	}
-
-	public Date getAddedTime() {
-		return addedTime;
-	}
-
-	public void setAddedTime(Date addedTime) {
-		this.addedTime = addedTime;
-	}
-	
-	
 }
