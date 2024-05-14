@@ -285,30 +285,12 @@ CREATE TABLE minibar (
 ----
 ------------------------------------------------------------
 -- 購物車相關
-CREATE TABLE supplier (
-    product_supplier_id INT IDENTITY NOT NULL,
-    product_manufacturer_address VARCHAR(255),
-    product_manufacturer_contact_name VARCHAR(255),
-    product_manufacturer_contact_email VARCHAR(255),
-    product_manufacturer VARCHAR(255),
-    product_manufacturer_contact_phone VARCHAR(255),
-    constraint PK_SupplierId PRIMARY KEY (product_supplier_id)
-);
-
-CREATE TABLE category (
-    category_id INT IDENTITY NOT NULL,
-    category_name VARCHAR(255),
-    constraint PK_CategoryId PRIMARY KEY (category_id)
-);
-
-
 -- 建立 orders 表格
 CREATE TABLE orders (
     id INT IDENTITY(1,1) PRIMARY KEY,
     addedTime DATETIME2(6),
     member_id INT,
-    PRIMARY KEY (id),
-   constraint FK_MemberIdOrder FOREIGN KEY (member_id) REFERENCES member(member_id)
+    FOREIGN KEY (member_id) REFERENCES member(member_id)
 );
 
 -- 建立 supplier 表格
@@ -329,9 +311,7 @@ CREATE TABLE product (
     product_price INT,
     product_stock INT,
     product_supplier_id INT,
-    constraint PK_ProductId PRIMARY KEY (product_id),
-    constraint FK_ProductCategoryId FOREIGN KEY (product_category_id) REFERENCES category(category_id),
-    constraint FK_ProductSupplierIdP FOREIGN KEY (product_supplier_id) REFERENCES supplier(product_supplier_id)
+    FOREIGN KEY (product_supplier_id) REFERENCES supplier(product_supplier_id)
 );
 
 -- 建立 productphoto 表格
@@ -339,31 +319,29 @@ CREATE TABLE productphoto (
     id INT IDENTITY(1,1) PRIMARY KEY,
     photoFile VARBINARY(MAX),
     product_id INT,
-    constraint PK_ProductPhotoID PRIMARY KEY (id),
-    constraint FK_ProductIDPhoto FOREIGN KEY (product_id) REFERENCES product(product_id)
+    FOREIGN KEY (product_id) REFERENCES product(product_id)
 );
-
-CREATE TABLE order_details (
-    detail_id INT IDENTITY NOT NULL,
-    addedTime DATETIME2(6),
-    orderstatus VARCHAR(255),
-    productmultiplequantity INT,
-    quantity INT,
-    order_id INT,
-    product_id INT,
-    constraint PK_DetailID PRIMARY KEY (detail_id),
-    constraint FK_DetailOrderID FOREIGN KEY (order_id) REFERENCES orders(id),
-    constraint FK_ProductDetailOrderID FOREIGN KEY (product_id) REFERENCES product(product_id)
-);
-
+-- 1. 建立 cart 表格
 CREATE TABLE cart (
     checkout BIT,
     quantity INT,
     member_member_id INT NOT NULL,
     id_product_id INT NOT NULL,
-    constraint PK_CartID PRIMARY KEY (id_product_id, member_member_id),
-    constraint PK_CartProductID FOREIGN KEY (id_product_id) REFERENCES product(product_id),
-    constraint PK_CartMMID FOREIGN KEY (member_member_id) REFERENCES member(member_id)
+    PRIMARY KEY (id_product_id, member_member_id),
+    FOREIGN KEY (id_product_id) REFERENCES product(product_id),
+    FOREIGN KEY (member_member_id) REFERENCES member(member_id)
+);
+
+-- 建立 order_details 表格
+CREATE TABLE order_details (
+    detail_id INT IDENTITY(1,1) PRIMARY KEY,
+    orderstatus NVARCHAR(255),
+    productmultiplequantity INT,
+    quantity INT,
+    order_id INT,
+    product_id INT,
+    FOREIGN KEY (order_id) REFERENCES orders(id),
+    FOREIGN KEY (product_id) REFERENCES product(product_id)
 );
 
 --------------------------------------------------------
