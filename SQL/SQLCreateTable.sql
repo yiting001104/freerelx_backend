@@ -197,6 +197,7 @@ CREATE TABLE roomInformation (
     room_price DECIMAL(20, 6),
     room_photo VARBINARY(max),
     room_depiction NVARCHAR(255),
+	room_total int default 5,
     constraint FK_RoomInformationId FOREIGN KEY (room_type_id) REFERENCES roomType(room_type_id), 
     constraint FK_RoomLevel FOREIGN KEY (room_level_id) REFERENCES roomLevel(room_level_id) 
 );
@@ -229,8 +230,8 @@ CREATE TABLE roomState (
 
 CREATE TABLE roomManagement (
     room_management_id INT PRIMARY KEY IDENTITY,
-    room_number INT  UNIQUE,
-    room_state_id INT,
+     room_number NVARCHAR(50) UNIQUE,
+    room_state_id INT default 4,
     repair_status NVARCHAR(255),
     room_information_id INT,
 	constraint FK_RoomStateMana FOREIGN KEY (room_state_id) REFERENCES roomState(room_state_id), 
@@ -355,6 +356,8 @@ CREATE TABLE cart (
 
 --------------------------------------------------------
 -- 公設
+drop table if exists Facility
+drop table if exists FacilityOrder
 create table Facility (
         FACILITY int not null,
         MAXIMUM_CAPACITY int,
