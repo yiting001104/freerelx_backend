@@ -293,7 +293,9 @@ CREATE TABLE orders (
     contactAddress VARCHAR(255),
     memberName VARCHAR(255),
     orderstatus VARCHAR(255),
+	payment VARCHAR(255),
     phoneNumber VARCHAR(255),
+	total INT,
     member_id INT,
     FOREIGN KEY (member_id) REFERENCES member(member_id)
 );

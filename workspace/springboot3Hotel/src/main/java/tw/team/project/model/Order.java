@@ -42,6 +42,16 @@ public class Order {
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss EEEE") // ${{latestMsg.added}}讀取左邊設定
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date arriveddTime;
+    
+    private Integer total;
+
+	public Integer getTotal() {
+		return total;
+	}
+
+	public void setTotal(Integer total) {
+		this.total = total;
+	}
 
 	@PrePersist // 物件狀態轉到PERSISTENT 以前先執行這個方法
 	public void onCreate() {
@@ -51,7 +61,16 @@ public class Order {
 	}
 	private String memberName;
 	
+	private String payment;
+	
 
+	public String getPayment() {
+		return payment;
+	}
+
+	public void setPayment(String payment) {
+		this.payment = payment;
+	}
 	private String contactAddress;
 	
 	public String getMemberName() {
