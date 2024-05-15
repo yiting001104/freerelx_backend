@@ -122,8 +122,15 @@ public class CartAjaxController {
 		JSONArray array = new JSONArray();
 		List<Cart> carts = cartService.findByMemberIdAndcheckout(json);
 		if (carts != null && !carts.isEmpty()) {
+			JSONObject jsonobject = new JSONObject(json);
+			String name = jsonobject.isNull("name") ? null : jsonobject.getString("name");
+			String phone = jsonobject.isNull("phone") ? null : jsonobject.getString("phone");
+			String address = jsonobject.isNull("address") ? null : jsonobject.getString("address");
 				Order order=new Order();
 				order.setOrderstatus("待取貨");
+				order.setMemberName(name);
+				order.setPhoneNumber(phone);
+				order.setContactAddress(address);
 			for (Cart membercart : carts) {
 				JSONObject item = new JSONObject()
 						.put("memberid", membercart.getCartId().getMemberId())
