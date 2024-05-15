@@ -199,5 +199,26 @@ public class CartAjaxController {
 		System.out.print(responseJson.toString());
 		return responseJson.toString();
 	}
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	@PostMapping("/carts/check") // 顧客真的要結帳了
+	public String check(@RequestBody String json) throws JSONException {
+		JSONObject responseJson = new JSONObject();
+		JSONArray array = new JSONArray();
+		List<Cart> carts = cartService.findByMemberIdAndcheckout(json);
+		if (carts != null && !carts.isEmpty()) {
+			for (Cart membercart : carts) {
+				JSONObject item = new JSONObject().put("memberid", membercart.getCartId().getMemberId())
+						.put("productid", membercart.getCartId().getId())
+						.put("quantity", membercart.getQuantity())
+						.put("productname",productService.findById(membercart.getCartId().getId()).getProductName())
+						.put("productprice",productService.findById(membercart.getCartId().getId()).getProductPrice())
+						.put("productStock",productService.findById(membercart.getCartId().getId()).getProductStock())
+						.put("check", membercart.isCheckout());
+				array.put(item);
+			}
+		}
+		responseJson.put("list", array);
+		return responseJson.toString();
+	}
 }
 
