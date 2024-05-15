@@ -34,7 +34,8 @@ public class OrderShopAjaxController {
 				JSONObject item = new JSONObject()
 						.put("AddedTime",order.getAddedTime())
 						.put("Orderstatus", order.getOrderstatus())
-						.put("total", order.getTotal());
+						.put("total", order.getTotal())
+						.put("orderid", order.getId());
 				array.put(item);
 			}
 		}
