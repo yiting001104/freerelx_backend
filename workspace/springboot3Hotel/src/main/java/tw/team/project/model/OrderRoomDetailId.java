@@ -3,18 +3,13 @@ package tw.team.project.model;
 import java.io.Serializable;
 import java.util.Objects;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Embeddable;
 
-@Embeddable
 public class OrderRoomDetailId implements Serializable{
 	
 	private static final long serialVersionUID = 1L;
 	
-	@Column(name = "order_id", nullable = false)
 	private Integer orderId;
 	
-	@Column(name = "room_Information_Id", nullable = false)
 	private Integer roomInformationId;
 	
 	public OrderRoomDetailId() {

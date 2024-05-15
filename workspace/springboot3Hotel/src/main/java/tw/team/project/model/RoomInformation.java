@@ -2,7 +2,9 @@ package tw.team.project.model;
 
 
 import java.math.BigDecimal;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -40,6 +42,9 @@ public class RoomInformation {
 //	@OneToMany()
 //	private 
 	
+	@OneToMany(mappedBy = "roomInformationId", cascade = CascadeType.ALL)
+	private Set<OrderRoomDetail> orderRooms = new HashSet<>();
+	 
 	@Column(name="bed_type", nullable = false)
 	private String bedType;
 	

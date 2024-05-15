@@ -11,7 +11,7 @@ import tw.team.project.model.OrderRoomDetailId;
 
 public interface OrderRoomDetailRepository extends JpaRepository<OrderRoomDetail, OrderRoomDetailId>{
 
-	@Query("from OrderRoomDetail ord where ord.orderRoomDetailId.orderId = :orderId")
+	@Query("from OrderRoomDetail ord where ord.orderId = :orderId")
 	public Page<OrderRoomDetail> findOrderDetail(@Param("orderId") Integer orderId,Pageable pgb);
 }
 //

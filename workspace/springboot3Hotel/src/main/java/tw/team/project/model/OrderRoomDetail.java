@@ -3,35 +3,44 @@ package tw.team.project.model;
 import java.math.BigDecimal;
 
 import jakarta.persistence.Column;
-import jakarta.persistence.EmbeddedId;
 import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.MapsId;
+import jakarta.persistence.Id;
+import jakarta.persistence.IdClass;
 import jakarta.persistence.Table;
 
+@IdClass(OrderRoomDetailId.class)
 @Entity
 @Table(name = "orderRoomDetail")
 public class OrderRoomDetail {
 
 	
-	@EmbeddedId
-	private OrderRoomDetailId orderRoomDetailId;
+//	@EmbeddedId
+//	private OrderRoomDetailId orderRoomDetailId;
+
+	@Id
+	@Column(name = "order_id")
+	private Integer orderId;
+	
+	@Id
+	@Column(name = "room_Information_Id")
+	private Integer roomInformationId;
+	
 	
 	@Column(name = "room_amount")
 	private Integer roomAmount;
 	
 	private BigDecimal price;
 	
-	public OrderRoomDetailId getOrderRoomDetailId() {
-		return orderRoomDetailId;
+	public OrderRoomDetailId getId() {
+		return new OrderRoomDetailId(orderId, roomInformationId);
 	}
-
-	public void setOrderRoomDetailId(OrderRoomDetailId orderRoomDetailId) {
-		this.orderRoomDetailId = orderRoomDetailId;
+	
+	public void setId(OrderRoomDetailId id) {
+		this.orderId = id.getOrderId();
+		this.roomInformationId = id.getRoomInformationId();
 	}
-
+	
+	
 	public Integer getRoomAmount() {
 		return roomAmount;
 	}
@@ -47,30 +56,8 @@ public class OrderRoomDetail {
 	public void setPrice(BigDecimal price) {
 		this.price = price;
 	}
-
-	public OrderRoom getOrderRoom() {
-		return orderRoom;
-	}
-
-	public void setOrderRoom(OrderRoom orderRoom) {
-		this.orderRoom = orderRoom;
-	}
-
-	public RoomInformation getRoInformation() {
-		return roInformation;
-	}
-
-	public void setRoInformation(RoomInformation roInformation) {
-		this.roInformation = roInformation;
-	}
-
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name="order_id", referencedColumnName = "order_id")
-	@MapsId("orderId")
-	private OrderRoom orderRoom;
 	
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name="room_Information_Id",referencedColumnName = "room_information_id")
-	@MapsId("roomInformationId")
-	private RoomInformation roInformation;
+	
+
+
 }

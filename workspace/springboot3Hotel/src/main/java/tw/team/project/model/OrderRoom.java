@@ -2,6 +2,8 @@ package tw.team.project.model;
 
 import java.math.BigDecimal;
 import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
 
 import org.hibernate.annotations.DynamicInsert;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -15,6 +17,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import jakarta.persistence.Temporal;
@@ -88,6 +91,9 @@ public class OrderRoom {
 	
 	@Column(name = "transaction_password", nullable = false)
 	private String transactionPassword;
+	
+	@OneToMany(mappedBy = "orderId", cascade = CascadeType.ALL)
+	private Set<OrderRoomDetail> roomInformations = new HashSet<>();
 	
 	@ManyToOne
 	@JoinColumn(name = "member_id",referencedColumnName = "member_id")

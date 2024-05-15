@@ -260,4 +260,11 @@ public class OrderRoomService {
 		return null;
 		
 	}
+	
+	public boolean existById(Integer id) {
+		if (id!=null) {
+			return orderRoomRepo.existsById(id);
+		}
+		return false;
+	}
 }

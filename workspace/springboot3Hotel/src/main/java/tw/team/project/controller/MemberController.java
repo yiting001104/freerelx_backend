@@ -39,7 +39,7 @@ public class MemberController {
 	@Autowired
 	private JsonWebTokenUtility jsonWebTokenUtility;
 	// 後台查看會員所有資料
-	@PostMapping("/members/find")
+	@PostMapping(value = "/members/find")
 	public String findAll() throws JSONException {
 		List<Member> members = memberservice.findAll();
 //		JSONObject responseObj = new JSONObject();
