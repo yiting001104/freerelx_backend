@@ -1,14 +1,19 @@
 package tw.team.project.dto;
 
+import tw.team.project.model.RoomInformation;
+import tw.team.project.model.RoomState;
+
 public class RoomManagementDTO {
 
 	private Integer id;
 	
-	private String number;
+	private Integer number;
 	
 	private String repairStatus;
 
+	private RoomInformation roomInformation;
 	
+	private RoomState roomstate;
 
 	public Integer getId() {
 		return id;
@@ -18,11 +23,11 @@ public class RoomManagementDTO {
 		this.id = id;
 	}
 
-	public String getNumber() {
+	public Integer getNumber() {
 		return number;
 	}
 
-	public void setNumber(String number) {
+	public void setNumber(Integer number) {
 		this.number = number;
 	}
 
@@ -33,7 +38,22 @@ public class RoomManagementDTO {
 	public void setRepairStatus(String repairStatus) {
 		this.repairStatus = repairStatus;
 	}
-	
-//	private RoomInfomation roomInfomation
+
+
+	public RoomInformation getRoomInformation() {
+		return roomInformation;
+	}
+
+	public void setRoomInformation(RoomInformation roomInformation) {
+		this.roomInformation = roomInformation;
+	}
+
+	public RoomState getRoomstate() {
+		return roomstate;
+	}
+
+	public void setRoomstate(RoomState roomstate) {
+		this.roomstate = roomstate;
+	}
 	
 }

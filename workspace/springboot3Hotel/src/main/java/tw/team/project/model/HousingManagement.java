@@ -2,10 +2,14 @@ package tw.team.project.model;
 
 import java.math.BigDecimal;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.hibernate.annotations.DynamicInsert;
 import org.springframework.format.annotation.DateTimeFormat;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -36,6 +40,8 @@ public class HousingManagement {
 	@Column(name="housing_management_id")
 	private Integer id;
 	
+//	@JsonManagedReference
+	@JsonIgnore
 	@ManyToOne
 	@JoinColumn(name="room_management_id", referencedColumnName = "room_management_id")
 	private RoomManagement  roomManagement;
@@ -56,15 +62,22 @@ public class HousingManagement {
 	private Date checkOutTime;
 	
 	@Column(name="total_compensation_fee")
-	private BigDecimal totalAdditional;
-	
-	@Column(name="total_additional_fee")
 	private BigDecimal totalCompensation;
 	
+	@Column(name="total_additional_fee")
+	private BigDecimal totalAdditional;
+	
+//	@JsonBackReference
+	@JsonIgnore
 	@OneToMany(mappedBy="housingManagement", cascade=CascadeType.ALL)
 	private List<CheckOutInspection> checkOutInspection;
 
-//	@OneToMany(mappedBy="AdditionalCharges", cascade=CascadeType.ALL)
+//	@JsonIgnore
+//	@OneToMany(mappedBy="housingManagement", cascade=CascadeType.ALL)
 //	private List<AdditionalCharges> additionalCharges = new ArrayList<>();
+	
+	@JsonIgnore
+	@OneToMany(mappedBy = "housingManagementId", cascade=CascadeType.ALL)
+	private Set<AdditionalCharges> additionalCharges = new HashSet<>();
 
 }

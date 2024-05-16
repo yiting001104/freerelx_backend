@@ -1,11 +1,11 @@
 package tw.team.project.controller;
 
 import java.net.URI;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.configurationprocessor.json.JSONObject;
+import org.springframework.data.domain.Page;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -19,8 +19,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import tw.team.project.dto.RoomAssignmentDTO;
 import tw.team.project.model.RoomAssignment;
 import tw.team.project.service.RoomAssignmentService;
+import tw.team.project.util.JsonContainer2;
 
 
 @RestController
@@ -38,15 +40,32 @@ public class RoomAssignmentController {
 	
 
 	
-	//查詢多筆資料
+	//查詢多筆資料~
 	@GetMapping("/roomAssignment")
-	public ResponseEntity<?> find(@RequestParam Map<String, String> param) {
-		JSONObject obj = new JSONObject(param);
-		List<RoomAssignment> room = roomAssignmentService.find(obj.toString());
-		return ResponseEntity.ok(room);
+	public ResponseEntity<?> listRoomAssignment(@RequestParam(value = "p", defaultValue = "1") Integer Number) {
+		Page<RoomAssignment> page = roomAssignmentService.findAll(Number);
+		List<RoomAssignmentDTO> roomList = new ArrayList<>();
+		for (RoomAssignment rooms : page.getContent()) {
+			roomList.add(new JsonContainer2().setRoomAssignment(rooms));
+		}
+		return ResponseEntity.ok(roomList);
 	}
+	
+	//findById~
+	  @GetMapping("/roomAssignment/{pk}")
+	  public ResponseEntity<?> findById(@PathVariable(name = "pk") Integer id) {
+	  	RoomAssignment room = roomAssignmentService.findById(id);
+	  	if(room!=null) {
+	  		RoomAssignmentDTO roomDTO = new JsonContainer2().setRoomAssignment(room);
+	  		ResponseEntity<RoomAssignmentDTO> ok = ResponseEntity.ok(roomDTO);
+	  		return ok;
+	  	} else {
+	  		ResponseEntity<Void> notfound = ResponseEntity.notFound().build();
+	  		return notfound;
+	  	}
+	  }
 
-	//delete
+	//delete~
 	@DeleteMapping("/roomAssignment/{pk}")
 	public ResponseEntity<Void> remove(@PathVariable(name = "pk") Integer id) {
 		if (id != null && id != 0) {
@@ -90,31 +109,5 @@ public class RoomAssignmentController {
     		}
     	}return ResponseEntity.noContent().build();
     }
-	
-  @GetMapping("/roomAssignment/{pk}")
-  public ResponseEntity<?> findById(@PathVariable(name = "pk") Integer id) {
-  	RoomAssignment room = roomAssignmentService.findById(id);
-  	if(room!=null) {
-  		ResponseEntity<RoomAssignment> ok = ResponseEntity.ok(room);
-  		return ok;
-  	} else {
-  		ResponseEntity<Void> notfound = ResponseEntity.notFound().build();
-  		return notfound;
-  	}
-  }
-	
-	
-//	//有問題
-//    @GetMapping("/roomAssignment/{pk}")
-//    public ResponseEntity<?> findByDate(@PathVariable(name = "pk") Date date) {
-//    	RoomAssignment room = roomAssignmentService.findByDate(date);
-//    	if(room!=null) {
-//    		ResponseEntity<RoomAssignment> ok = ResponseEntity.ok(room);
-//    		return ok;
-//    	} else {
-//    		ResponseEntity<Void> notfound = ResponseEntity.notFound().build();
-//    		return notfound;
-//    	}
-//    }
-	
+
 }

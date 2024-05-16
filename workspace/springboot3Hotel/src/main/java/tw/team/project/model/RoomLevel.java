@@ -2,6 +2,8 @@ package tw.team.project.model;
 
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -36,6 +38,8 @@ public class RoomLevel {
 	@Column(name="japanese")
 	private String japanese;
 	
+//	@JsonBackReference
+	@JsonIgnore
 	@OneToMany(mappedBy="roomLevel", cascade=CascadeType.ALL)
 	private List<RoomInformation> roomInformation;
 

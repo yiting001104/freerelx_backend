@@ -1,12 +1,11 @@
 package tw.team.project.controller;
 
 import java.net.URI;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.configurationprocessor.json.JSONArray;
-import org.springframework.boot.configurationprocessor.json.JSONException;
-import org.springframework.boot.configurationprocessor.json.JSONObject;
+import org.springframework.data.domain.Page;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -16,10 +15,13 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import tw.team.project.dto.CheckOutInspectionDTO;
 import tw.team.project.model.CheckOutInspection;
 import tw.team.project.service.CheckOutInspectionService;
+import tw.team.project.util.JsonContainer2;
 
 
 @RestController
@@ -28,36 +30,31 @@ import tw.team.project.service.CheckOutInspectionService;
 public class CheckOutInspectionController {
 
 	
+	//更新OR新增 時更改 housingMangement totalfee
+	
 	@Autowired
 	private CheckOutInspectionService checkOutInspectionService;
 	
 	// findAll~
-	@PostMapping("/checkOutInspection/findall")
-	public String findAll() throws JSONException {
-		List<CheckOutInspection> checks = checkOutInspectionService.findAll();
-		JSONArray array = new JSONArray();
-		
-		if (checks != null && !checks.isEmpty())
-		for (CheckOutInspection check : checks) {
-			JSONObject item = new JSONObject()
-					.put("id", check.getId())
-					.put("compensation", check.getCompensation())
-					.put("fee", check.getFee())
-					.put("photo", check.getPhoto())
-					.put("housing_management_id", check.getHousingManagement());
-					
-			array.put(item);
-		}
-
-		return array.toString();
-	}
 	
-	// findById
+    @GetMapping("/checkOutInspection")
+    public ResponseEntity<?> LisgCheckOutInspection(@RequestParam(value = "p",defaultValue = "1") Integer pageNumber){
+        Page<CheckOutInspection> page = checkOutInspectionService.findAll(pageNumber);
+        List<CheckOutInspectionDTO> checkOutInspectionList = new ArrayList<>();
+        for (CheckOutInspection checkOutInspection : page.getContent()){
+        	checkOutInspectionList.add(new JsonContainer2().setCheckOutInspection(checkOutInspection));
+        }
+        return ResponseEntity.ok(checkOutInspectionList);
+        
+    }
+	
+	// findById~
     @GetMapping("/checkOutInspection/{pk}")
     public ResponseEntity<?> findById(@PathVariable("pk") Integer id){
     	CheckOutInspection checks = checkOutInspectionService.findById(id);
         if (checks != null){
-        	ResponseEntity<CheckOutInspection> ok = ResponseEntity.ok(checks);
+        	CheckOutInspectionDTO checkDTO = new JsonContainer2().setCheckOutInspection(checks);
+        	ResponseEntity<CheckOutInspectionDTO> ok = ResponseEntity.ok(checkDTO);
             return ok;
         } else {
             ResponseEntity<Void> notFound = ResponseEntity.notFound().build();
@@ -65,6 +62,7 @@ public class CheckOutInspectionController {
         }
     }
 	
+    
 	// update~
 	@PutMapping("/checkOutInspection/{pk}")
 	public ResponseEntity<?> modify(@PathVariable("pk") Integer id, @RequestBody CheckOutInspection entity) {
@@ -96,25 +94,22 @@ public class CheckOutInspectionController {
 //    	}return ResponseEntity.noContent().build();
 //    }
     
- // create
+ // create~
     @PostMapping("/checkOutInspection")
     public ResponseEntity<?> create(@RequestBody CheckOutInspection bean) {
-        if (bean != null && bean.getId() != null && bean.getId() != 0) {
-            // Check if the entity already exists
-            boolean exists = checkOutInspectionService.existById(bean.getId());
-            if (!exists) {
+        if (bean != null) {
+       
                 // Insert the entity
                 CheckOutInspection check = checkOutInspectionService.insert(bean);
                 if (check != null) {
                     // Build the URI for the created resource
-                	String uri = "http://localhost:8080/hotel/checkOutInspection/"+check.getId();
+                	String uri = "http://localhost:8080/hotel/checkOutInspection"+check.getId();
     				return ResponseEntity.created(URI.create(uri))
                             .contentType(MediaType.APPLICATION_JSON)
                             .body(check);
-                }
             }
         }
-        return ResponseEntity.noContent().build();
+        return ResponseEntity.notFound().build();
     }
 
 }

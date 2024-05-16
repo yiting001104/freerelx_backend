@@ -230,7 +230,7 @@ CREATE TABLE roomState (
 
 CREATE TABLE roomManagement (
     room_management_id INT PRIMARY KEY IDENTITY,
-     room_number NVARCHAR(50) UNIQUE,
+     room_number int UNIQUE,
     room_state_id INT default 4,
     repair_status NVARCHAR(255),
     room_information_id INT,
@@ -272,13 +272,13 @@ CREATE TABLE minibar (
 
 
 	CREATE TABLE additionalCharges (
-    fk_minibar_id INT,
-    fk_housingmanagement_id INT,
+    minibar_id INT,
+    housing_management_id INT,
     quantity INT,
     amount DECIMAL(20, 6),
-	constraint Fk_minibar foreign key (fk_minibar_id)references minibar (minibar_id),
-	constraint Fk_housingmanagement foreign key (fk_housingmanagement_id)references housingManagement (housing_management_id),
-	constraint PK_additionalCharges primary key (fk_minibar_id, fk_housingmanagement_id)
+	constraint Fk_minibar foreign key (minibar_id)references minibar (minibar_id),
+	constraint Fk_housingmanagement foreign key (housing_management_id)references housingManagement (housing_management_id),
+	constraint PK_additionalCharges primary key (minibar_id, housing_management_id)
 );
 
 

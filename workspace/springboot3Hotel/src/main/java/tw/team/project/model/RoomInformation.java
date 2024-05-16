@@ -2,9 +2,10 @@ package tw.team.project.model;
 
 
 import java.math.BigDecimal;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
+
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -31,20 +32,18 @@ public class RoomInformation {
 	@Column(name="room_information_id")
 	private Integer id;
 	
+//	@JsonManagedReference
+	@JsonIgnore
 	@ManyToOne
 	@JoinColumn(name="room_type_id", referencedColumnName = "room_type_id")
 	private RoomType roomType;
 	
+//	@JsonManagedReference
+	@JsonIgnore
 	@ManyToOne
 	@JoinColumn(name="room_level_id", referencedColumnName = "room_level_id")
 	private RoomLevel roomLevel;
 	
-//	@OneToMany()
-//	private 
-	
-	@OneToMany(mappedBy = "roomInformationId", cascade = CascadeType.ALL)
-	private Set<OrderRoomDetail> orderRooms = new HashSet<>();
-	 
 	@Column(name="bed_type", nullable = false)
 	private String bedType;
 	
@@ -63,9 +62,11 @@ public class RoomInformation {
 	@Column(name="room_total")
 	private Integer total;
 
+	@JsonBackReference
 	@OneToMany(mappedBy="roomInformation", cascade=CascadeType.ALL)
 	private List<RoomAssignment> roomAssignment;
 	
+	@JsonBackReference
 	@OneToMany(mappedBy="roomInformation", cascade=CascadeType.ALL)
 	private List<RoomManagement> roomManagement;
 
