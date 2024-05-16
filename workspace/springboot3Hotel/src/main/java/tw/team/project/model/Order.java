@@ -63,6 +63,36 @@ public class Order {
 	
 	private String payment;
 	
+	private String payerName;
+	
+	private String payerPhoneNumber;
+	
+	private String payerContactAddress;
+	
+
+	public String getPayerName() {
+		return payerName;
+	}
+
+	public void setPayerName(String payerName) {
+		this.payerName = payerName;
+	}
+
+	public String getPayerPhoneNumber() {
+		return payerPhoneNumber;
+	}
+
+	public void setPayerPhoneNumber(String payerPhoneNumber) {
+		this.payerPhoneNumber = payerPhoneNumber;
+	}
+
+	public String getPayerContactAddress() {
+		return payerContactAddress;
+	}
+
+	public void setPayerContactAddress(String payerContactAddress) {
+		this.payerContactAddress = payerContactAddress;
+	}
 
 	public String getPayment() {
 		return payment;

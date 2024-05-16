@@ -295,6 +295,9 @@ CREATE TABLE orders (
     orderstatus VARCHAR(255),
 	payment VARCHAR(255),
     phoneNumber VARCHAR(255),
+	payerName VARCHAR(255),
+	payerPhoneNumber VARCHAR(255),
+	payerContactAddress VARCHAR(255),
 	total INT,
     member_id INT,
     FOREIGN KEY (member_id) REFERENCES member(member_id)
