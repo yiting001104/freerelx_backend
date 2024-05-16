@@ -47,15 +47,16 @@ public class OrderRoomDetailService {
 		OrderRoomDetailId ordetailId = ordetail.getId();
 		Optional<OrderRoomDetail> optional = detailRepository.findById(ordetailId);
 		Optional<OrderRoom> optional2 = orderRoomRepository.findById(ordetailId.getOrderId());
+		OrderRoom originOrder = optional2.get();
 		if (optional.isPresent()) {
 			OrderRoomDetail originOrdetail = optional.get();
 			originOrdetail.setPrice(originOrdetail.getPrice().add(ordetail.getPrice()));
 			originOrdetail.setRoomAmount(originOrdetail.getRoomAmount()+ordetail.getRoomAmount());
-			OrderRoom originOrder = optional2.get();
-			originOrder.setBasePrice(originOrder.getBasePrice().add(ordetail.getPrice()));
 			originOrder.setRoomAmount(originOrder.getRoomAmount()+ordetail.getRoomAmount());
 			return originOrdetail;
 		}else {
+			originOrder.setRoomAmount(originOrder.getRoomAmount()+ordetail.getRoomAmount());
+			originOrder.setBasePrice(originOrder.getBasePrice().add(ordetail.getPrice()));
 			return detailRepository.save(ordetail);
 		}
 	}
