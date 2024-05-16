@@ -287,8 +287,18 @@ CREATE TABLE minibar (
 -- 購物車相關
 -- 建立 orders 表格
 CREATE TABLE orders (
-    id INT IDENTITY(1,1) PRIMARY KEY,
+	id INT IDENTITY(1,1) PRIMARY KEY,
     addedTime DATETIME2(6),
+	arriveddTime DATETIME2(6),
+    contactAddress VARCHAR(255),
+    memberName VARCHAR(255),
+    orderstatus VARCHAR(255),
+	payment VARCHAR(255),
+    phoneNumber VARCHAR(255),
+	payerName VARCHAR(255),
+	payerPhoneNumber VARCHAR(255),
+	payerContactAddress VARCHAR(255),
+	total INT,
     member_id INT,
     FOREIGN KEY (member_id) REFERENCES member(member_id)
 );
