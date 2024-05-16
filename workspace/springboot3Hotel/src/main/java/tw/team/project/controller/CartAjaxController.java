@@ -127,11 +127,17 @@ public class CartAjaxController {
 			String name = jsonobject.isNull("name") ? null : jsonobject.getString("name");
 			String phone = jsonobject.isNull("phone") ? null : jsonobject.getString("phone");
 			String address = jsonobject.isNull("address") ? null : jsonobject.getString("address");
+			String payerName = jsonobject.isNull("payername") ? null : jsonobject.getString("payername");
+			String payerPhoneNumber = jsonobject.isNull("payerphone") ? null : jsonobject.getString("payerphone");
+			String payerContactAddress = jsonobject.isNull("payeradress") ? null : jsonobject.getString("payeradress");
 				Order order=new Order();
 				order.setOrderstatus("訂單成立");
 				order.setMemberName(name);
 				order.setPhoneNumber(phone);
 				order.setContactAddress(address);
+				order.setPayerName(payerName);
+				order.setPayerPhoneNumber(payerPhoneNumber);
+				order.setPayerContactAddress(payerContactAddress);
 			for (Cart membercart : carts) {
 				JSONObject item = new JSONObject()
 						.put("memberid", membercart.getCartId().getMemberId())
