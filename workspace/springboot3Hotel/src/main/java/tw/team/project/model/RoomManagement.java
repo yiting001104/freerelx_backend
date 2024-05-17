@@ -2,6 +2,9 @@ package tw.team.project.model;
 
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -29,18 +32,21 @@ public class RoomManagement {
 	private Integer id;
 	
 	@Column(name="room_number")
-	private String number;
+	private Integer number;
 	
+	@JsonBackReference
 	@OneToMany(mappedBy="roomManagement", cascade=CascadeType.ALL)
 	private List<HousingManagement> housingManagement;
 	
 	@Column(name="repair_status")
 	private String repairStatus;
 	
+	@JsonBackReference
 	@ManyToOne
 	@JoinColumn(name="room_information_id", referencedColumnName = "room_information_id")
 	private RoomInformation roomInformation;
 	
+	@JsonManagedReference
 	@ManyToOne
 	@JoinColumn(name="room_state_id", referencedColumnName = "room_state_id")
 	private RoomState roomState;

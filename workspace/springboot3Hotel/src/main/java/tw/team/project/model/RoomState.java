@@ -2,6 +2,8 @@ package tw.team.project.model;
 
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -28,7 +30,7 @@ public class RoomState {
 
 	private String state;
 	
-	
+	@JsonBackReference
 	@OneToMany(mappedBy="roomState", cascade=CascadeType.ALL)
 	private List<RoomManagement> roomManagement;
 }

@@ -23,11 +23,10 @@ public class MinibarService {
 
 	@Autowired
 	private MinibarRepository minibarRepo;
-	
-	
+
 	public List<Minibar> findAll() {
 		return minibarRepo.findAll();
-}
+	}
 
 	public boolean existsByItem(String item) {
 		if (item != null && item.length() != 0) {
@@ -38,13 +37,10 @@ public class MinibarService {
 		}
 		return false;
 	}
-	
+
 	public Minibar insert(Minibar bean) {
-		if(bean!=null && bean.getId()!=null) {
-			Optional<Minibar> optional = minibarRepo.findById(bean.getId());
-			if(optional.isEmpty()) {
-				return minibarRepo.save(bean);
-			}
+		if (bean != null) {
+			return minibarRepo.save(bean);
 		}
 		return null;
 	}
@@ -106,7 +102,7 @@ public class MinibarService {
 			Integer id = obj.isNull("id") ? null : obj.getInt("id");
 			String item = obj.isNull("item") ? null : obj.getString("item");
 			String price = obj.isNull("price") ? null : obj.getString("price");
-			BigDecimal price1 = new BigDecimal (price);
+			BigDecimal price1 = new BigDecimal(price);
 			String make = obj.isNull("make") ? null : obj.getString("make");
 			Integer expire = obj.isNull("expire") ? null : obj.getInt("expire");
 			byte[] photo = multipartFile.isEmpty() ? null : multipartFile.getBytes();
@@ -136,46 +132,67 @@ public class MinibarService {
 		return null;
 	}
 
-	public Minibar modify(String json, MultipartFile multipartFile) {
-		try {
-			JSONObject obj = new JSONObject(json);
+	public Minibar update(Minibar bean) {
+		if (bean != null && bean.getId() != null) {
+			Optional<Minibar> optional = minibarRepo.findById(bean.getId());
+			if (optional.isPresent()) {
 
-			Integer id = obj.isNull("id") ? null : obj.getInt("id");
-			String item = obj.isNull("item") ? null : obj.getString("item");
-			String price = obj.isNull("price") ? null : obj.getString("price");
-			BigDecimal price1 = new BigDecimal (price);
-			String make = obj.isNull("make") ? null : obj.getString("make");
-			Integer expire = obj.isNull("expire") ? null : obj.getInt("expire");
+				Minibar products = optional.get();
 
-			if (id != null) {
-				Optional<Minibar> optional = minibarRepo.findById(id);
-				if (optional.isPresent()) {
-					Minibar update = optional.get();
-					update.setId(id);
-					update.setItem(item);
-					update.setPrice(price1);
-					if (make != null && make.length() != 0) {
-						java.util.Date temp = DatetimeConverter.parse(make, "yyyy-MM-dd");
-						update.setMake(temp);
-					} else {
-						update.setMake(null);
-					}
-					update.setExpire(expire);
+				products.setItem(bean.getItem());
+				products.setPrice(bean.getPrice());
+				products.setMake(bean.getMake());
+				products.setExpire(bean.getExpire());
+				products.setPhoto(bean.getPhoto());
 
-					// 如果传入了新的文件，则更新文件内容
-					if (multipartFile != null && !multipartFile.isEmpty()) {
-						byte[] photo = multipartFile.getBytes();
-						update.setPhoto(photo);
-					}
-					return minibarRepo.save(update);
-				}
+
+				return minibarRepo.save(products);
 			}
-
-		} catch (JSONException | IOException e) {
-			e.printStackTrace();
 		}
 		return null;
 	}
+	
+	
+//	public Minibar update(String json, MultipartFile multipartFile) {
+//		try {
+//			JSONObject obj = new JSONObject(json);
+//
+//			Integer id = obj.isNull("id") ? null : obj.getInt("id");
+//			String item = obj.isNull("item") ? null : obj.getString("item");
+//			String price = obj.isNull("price") ? null : obj.getString("price");
+//			BigDecimal price1 = new BigDecimal(price);
+//			String make = obj.isNull("make") ? null : obj.getString("make");
+//			Integer expire = obj.isNull("expire") ? null : obj.getInt("expire");
+//
+//			if (id != null) {
+//				Optional<Minibar> optional = minibarRepo.findById(id);
+//				if (optional.isPresent()) {
+//					Minibar update = optional.get();
+//					update.setId(id);
+//					update.setItem(item);
+//					update.setPrice(price1);
+//					if (make != null && make.length() != 0) {
+//						java.util.Date temp = DatetimeConverter.parse(make, "yyyy-MM-dd");
+//						update.setMake(temp);
+//					} else {
+//						update.setMake(null);
+//					}
+//					update.setExpire(expire);
+//
+//					// 如果传入了新的文件，则更新文件内容
+//					if (multipartFile != null && !multipartFile.isEmpty()) {
+//						byte[] photo = multipartFile.getBytes();
+//						update.setPhoto(photo);
+//					}
+//					return minibarRepo.save(update);
+//				}
+//			}
+//
+//		} catch (JSONException | IOException e) {
+//			e.printStackTrace();
+//		}
+//		return null;
+//	}
 
 	public boolean delete(Integer id) {
 		if (id != null) {

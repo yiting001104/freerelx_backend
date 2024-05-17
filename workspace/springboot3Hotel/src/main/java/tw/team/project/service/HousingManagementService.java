@@ -11,6 +11,10 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.configurationprocessor.json.JSONException;
 import org.springframework.boot.configurationprocessor.json.JSONObject;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import jakarta.transaction.Transactional;
@@ -26,7 +30,7 @@ import tw.team.project.repository.HousingManagementRepository;
 public class HousingManagementService {
 
 	@Autowired
-	private HousingManagementRepository HosingManagementRepo;
+	private HousingManagementRepository housingManagementRepo;
 
 	@Autowired
 	private RoomAssignmentService roomAssignmentService;
@@ -39,10 +43,17 @@ public class HousingManagementService {
 	
 	@Autowired
 	private RoomStateService roomStateService;
+	
+	
+    public Page<HousingManagement> findAll(Integer id){
+        Pageable pgb = PageRequest.of(id-1, 2, Sort.Direction.DESC,"id");
+        Page<HousingManagement> page = housingManagementRepo.findAll(pgb);
+        return page;
+    }
 
 	public boolean existsById(Integer id) {
 		if (id != null) {
-			long result = HosingManagementRepo.countById(id);
+			long result = housingManagementRepo.countById(id);
 			if (result != 0) {
 				return true;
 			}
@@ -53,7 +64,7 @@ public class HousingManagementService {
 	public long count(String json) {
 		try {
 			JSONObject obj = new JSONObject(json);
-			return HosingManagementRepo.count(obj);
+			return housingManagementRepo.count(obj);
 		} catch (JSONException e) {
 			e.printStackTrace();
 		}
@@ -62,7 +73,7 @@ public class HousingManagementService {
 
 	public boolean existById(Integer id) {
 		if (id != null) {
-			return HosingManagementRepo.existsById(id);
+			return housingManagementRepo.existsById(id);
 		}
 		return false;
 	}
@@ -70,7 +81,7 @@ public class HousingManagementService {
 	public List<HousingManagement> find(String json) {
 		try {
 			JSONObject obj = new JSONObject(json);
-			return HosingManagementRepo.find(obj);
+			return housingManagementRepo.find(obj);
 		} catch (JSONException e) {
 			e.printStackTrace();
 		}
@@ -79,7 +90,7 @@ public class HousingManagementService {
 
 	public HousingManagement findById(Integer id) {
 		if (id != null) {
-			Optional<HousingManagement> optional = HosingManagementRepo.findById(id);
+			Optional<HousingManagement> optional = housingManagementRepo.findById(id);
 			if (optional.isPresent()) {
 				return optional.get();
 			}
@@ -90,13 +101,13 @@ public class HousingManagementService {
 	public List<HousingManagement> select(HousingManagement bean) {
 		List<HousingManagement> result = null;
 		if (bean != null && bean.getId() != null && !bean.getId().equals(0)) {
-			Optional<HousingManagement> optional = HosingManagementRepo.findById(bean.getId());
+			Optional<HousingManagement> optional = housingManagementRepo.findById(bean.getId());
 			if (optional.isPresent()) {
 				result = new ArrayList<HousingManagement>();
 				result.add(optional.get());
 			}
 		} else {
-			result = HosingManagementRepo.findAll();
+			result = housingManagementRepo.findAll();
 		}
 		return result;
 	}
@@ -125,7 +136,7 @@ public class HousingManagementService {
 			BigDecimal totalCompensationfee = new BigDecimal(totalCompensation);
 
 			if (checkInTime != null) {
-				Optional<HousingManagement> optional = HosingManagementRepo.findById(id);
+				Optional<HousingManagement> optional = housingManagementRepo.findById(id);
 				if (optional.isEmpty()) {
 					HousingManagement insert = new HousingManagement();
 					insert.setRemarks(remarks);
@@ -136,10 +147,10 @@ public class HousingManagementService {
 					insert.setOrderRoom(orderRoom);
 					insert.setRoomManagement(roomManagement);
 
-					// 檢查是否當日已有訂房
+					// 檢查是否為當日訂房
 					OrderRoom orderdate = orderRoomService.findById(id);
 					if (!orderdate.getOrderDate().equals(checkInTime)) {
-						// 當日沒有其他訂房，進行庫存減少
+						// 當日有其他訂房，進行庫存減少修改
 						RoomAssignment orderdate2 = roomAssignmentService.findById(id);
 						if (orderdate2 != null && orderdate2.getLeft() != 0) {
 							orderdate2.setLeft(orderdate2.getLeft() - 1);
@@ -166,7 +177,7 @@ public class HousingManagementService {
 		                }
 		            }
 
-					HousingManagement newHousing = HosingManagementRepo.save(insert);
+					HousingManagement newHousing = housingManagementRepo.save(insert);
 					return newHousing;
 				}
 			}
@@ -196,7 +207,7 @@ public class HousingManagementService {
 			String totalCompensation = obj.isNull("totalCompensation") ? null : obj.getString("totalCompensation");
 			BigDecimal totalCompensationfee = new BigDecimal(totalCompensation);
 
-			Optional<HousingManagement> optional = HosingManagementRepo.findById(id);
+			Optional<HousingManagement> optional = housingManagementRepo.findById(id);
 			if (optional.isEmpty()) {
 				HousingManagement update = optional.get();
 				update.setRemarks(remarks);

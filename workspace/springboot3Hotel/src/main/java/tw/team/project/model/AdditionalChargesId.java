@@ -3,12 +3,9 @@ package tw.team.project.model;
 import java.io.Serializable;
 import java.util.Objects;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Embeddable;
-
 //@Getter
 //@Setter
-@Embeddable
+//@Embeddable
 public class AdditionalChargesId implements Serializable{
 	
 	/**
@@ -16,10 +13,8 @@ public class AdditionalChargesId implements Serializable{
 	 */
 	private static final long serialVersionUID = 1L;
 
-	@Column(name="321", nullable = false)
 	private Integer minibarId;
 	
-	@Column(name="123", nullable = false)
 	private Integer housingManagementId;
 
 	public AdditionalChargesId() {

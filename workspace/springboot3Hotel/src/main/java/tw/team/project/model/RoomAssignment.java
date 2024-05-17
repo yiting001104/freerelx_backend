@@ -5,6 +5,8 @@ import java.util.Date;
 
 import org.springframework.format.annotation.DateTimeFormat;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -43,6 +45,7 @@ public class RoomAssignment {
 //	@JoinColumn(name="order_room_detail_id", referencedColumnName = "order_id, room_Information_Id")
 //	private OderRoomId orderRoomId;
 	
+	@JsonBackReference
 	@ManyToOne
 	@JoinColumn(name="room_information_id", referencedColumnName = "room_information_id")
 	private RoomInformation roomInformation;

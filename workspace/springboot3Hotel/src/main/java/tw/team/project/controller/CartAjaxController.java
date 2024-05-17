@@ -30,23 +30,23 @@ import tw.team.project.service.ProductService;
 @RequestMapping("hotel")
 @CrossOrigin
 public class CartAjaxController {
-////////////////////////////////////////////////////////////////////////////////////////////要配合
+	//////////////////////////////////////////////////////////////////////////////////////////// 要配合
 	@Autowired
 	private MemberRepository memberRepository;
-///////////////////////////////////////////////////////////////////////////////////////////////////////////////	
+	///////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	@Autowired
 	private OrderDeatilRepository orderDeatilRepository;
-	
+
 	@Autowired
 	private OrderRepository orderRepository;
 
 	@Autowired
 	private CartService cartService;
-	
+
 	@Autowired
 	private ProductService productService;
 
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////	
+	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	@PostMapping("/carts/post") // 顧客新增購物車一筆資料的功能
 	public String createcart(@RequestBody String json) throws JSONException {
 		JSONObject responseJson = new JSONObject();
@@ -61,7 +61,7 @@ public class CartAjaxController {
 		return responseJson.toString();
 	}
 
-///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////	
+	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	@PutMapping("/carts/delete") // 顧客刪除購物車一筆資料的功能
 	public String deletecart(@RequestBody String json) throws JSONException {
 		JSONObject responseJson = new JSONObject();
@@ -78,7 +78,7 @@ public class CartAjaxController {
 		return responseJson.toString();
 	}
 
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	@PutMapping("/carts/checkoutchange") // 顧客是否要結帳的功能
 	public String checkoutchange(@RequestBody String json) throws JSONException {
 		JSONObject responseJson = new JSONObject();
@@ -94,7 +94,7 @@ public class CartAjaxController {
 		return responseJson.toString();
 	}
 
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	@PostMapping("/carts/find") // 顧客查看自己的訂單
 	public String find(@RequestBody String json) throws JSONException {
 		JSONObject responseJson = new JSONObject();
@@ -105,9 +105,9 @@ public class CartAjaxController {
 				JSONObject item = new JSONObject().put("memberid", membercart.getCartId().getMemberId())
 						.put("productid", membercart.getCartId().getId())
 						.put("quantity", membercart.getQuantity())
-						.put("productname",productService.findById(membercart.getCartId().getId()).getProductName())
-						.put("productprice",productService.findById(membercart.getCartId().getId()).getProductPrice())
-						.put("productStock",productService.findById(membercart.getCartId().getId()).getProductStock())
+						.put("productname", productService.findById(membercart.getCartId().getId()).getProductName())
+						.put("productprice", productService.findById(membercart.getCartId().getId()).getProductPrice())
+						.put("productStock", productService.findById(membercart.getCartId().getId()).getProductStock())
 						.put("check", membercart.isCheckout());
 				array.put(item);
 			}
@@ -115,10 +115,11 @@ public class CartAjaxController {
 		responseJson.put("list", array);
 		return responseJson.toString();
 	}
-///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	@PostMapping("/carts/order") // 顧客要結帳購物車裡的東西
 	public String cartsentorder(@RequestBody String json) throws JSONException {
-		Integer total=0;
+		Integer total = 0;
 		JSONObject responseJson = new JSONObject();
 		JSONArray array = new JSONArray();
 		List<Cart> carts = cartService.findByMemberIdAndcheckout(json);
@@ -130,29 +131,29 @@ public class CartAjaxController {
 			String payerName = jsonobject.isNull("payername") ? null : jsonobject.getString("payername");
 			String payerPhoneNumber = jsonobject.isNull("payerphone") ? null : jsonobject.getString("payerphone");
 			String payerContactAddress = jsonobject.isNull("payeradress") ? null : jsonobject.getString("payeradress");
-				Order order=new Order();
-				order.setOrderstatus("訂單成立");
-				order.setMemberName(name);
-				order.setPhoneNumber(phone);
-				order.setContactAddress(address);
-				order.setPayerName(payerName);
-				order.setPayerPhoneNumber(payerPhoneNumber);
-				order.setPayerContactAddress(payerContactAddress);
+			Order order = new Order();
+			order.setOrderstatus("訂單成立");
+			order.setMemberName(name);
+			order.setPhoneNumber(phone);
+			order.setContactAddress(address);
+			order.setPayerName(payerName);
+			order.setPayerPhoneNumber(payerPhoneNumber);
+			order.setPayerContactAddress(payerContactAddress);
 			for (Cart membercart : carts) {
 				JSONObject item = new JSONObject()
 						.put("memberid", membercart.getCartId().getMemberId())
 						.put("productid", membercart.getCartId().getId())
-						.put("Quantity",membercart.getQuantity());
+						.put("Quantity", membercart.getQuantity());
 				order.setMember(membercart.getMember());
 				orderRepository.save(order);
 				cartService.deletecart(membercart.getCartId().getMemberId(), membercart.getCartId().getId());
-				OrderDetail orderDetail=new OrderDetail();
+				OrderDetail orderDetail = new OrderDetail();
 				orderDetail.setOrder(order);
 				orderDetail.setQuantity(membercart.getQuantity());
 				orderDetail.setProduct(membercart.getId());
-//新增為了算金額	
-				orderDetail.setProductmultiplequantity(membercart.getId().getProductPrice()*membercart.getQuantity());
-				total=total+membercart.getId().getProductPrice()*membercart.getQuantity();
+				// 新增為了算金額
+				orderDetail.setProductmultiplequantity(membercart.getId().getProductPrice() * membercart.getQuantity());
+				total = total + membercart.getId().getProductPrice() * membercart.getQuantity();
 				orderDeatilRepository.save(orderDetail);
 				array.put(item);
 			}
@@ -163,22 +164,24 @@ public class CartAjaxController {
 
 		return responseJson.toString();
 	}
-/////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+	/////////////////////////////////////////////////////////////////////////////////////////////////////////
 	@PutMapping("/carts/modify")
 	public String modify(@RequestBody String json) throws JSONException {
 		JSONObject responseJson = new JSONObject();
-			Cart cart = cartService.modify(json);
-			if (cart == null) {
-				responseJson.put("success", false);
-				responseJson.put("message", "修改失敗");
-			} else {
-				responseJson.put("success", true);
-				responseJson.put("message", "修改成功");
-			}
+		Cart cart = cartService.modify(json);
+		if (cart == null) {
+			responseJson.put("success", false);
+			responseJson.put("message", "修改失敗");
+		} else {
+			responseJson.put("success", true);
+			responseJson.put("message", "修改成功");
+		}
 		return responseJson.toString();
 	}
-//全選購物車的內容要有memberid
-	@PostMapping("/carts/selectall") 
+
+	// 全選購物車的內容要有memberid
+	@PostMapping("/carts/selectall")
 	public String selectall(@RequestBody String json) throws JSONException {
 		JSONObject responseJson = new JSONObject();
 		boolean select = cartService.selectall(json);
@@ -189,18 +192,19 @@ public class CartAjaxController {
 			responseJson.put("success", true);
 			responseJson.put("message", "訂單狀態更改成功");
 		}
-	return responseJson.toString();
+		return responseJson.toString();
 	}
-////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	//結帳時需要個資
+
+	////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	// 結帳時需要個資
 	@GetMapping("/carts/mes/{pk}")
 	public String findById(@PathVariable(name = "pk") Integer id) throws JSONException {
 		JSONObject responseJson = new JSONObject();
 		JSONArray array = new JSONArray();
-		Optional<Member> member= memberRepository.findById(id);
+		Optional<Member> member = memberRepository.findById(id);
 		if (member.get() != null) {
 			JSONObject item = new JSONObject()
-					.put("MemberName",member.get().getMemberName())
+					.put("MemberName", member.get().getMemberName())
 					.put("contactAddress", member.get().getContactAddress())
 					.put("phoneNumber", member.get().getPhoneNumber());
 			array.put(item);
@@ -209,7 +213,8 @@ public class CartAjaxController {
 		System.out.print(responseJson.toString());
 		return responseJson.toString();
 	}
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+	/////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	@PostMapping("/carts/check") // 顧客真的要結帳了
 	public String check(@RequestBody String json) throws JSONException {
 		JSONObject responseJson = new JSONObject();
@@ -220,9 +225,52 @@ public class CartAjaxController {
 				JSONObject item = new JSONObject().put("memberid", membercart.getCartId().getMemberId())
 						.put("productid", membercart.getCartId().getId())
 						.put("quantity", membercart.getQuantity())
-						.put("productname",productService.findById(membercart.getCartId().getId()).getProductName())
-						.put("productprice",productService.findById(membercart.getCartId().getId()).getProductPrice())
-						.put("productStock",productService.findById(membercart.getCartId().getId()).getProductStock())
+						.put("productname", productService.findById(membercart.getCartId().getId()).getProductName())
+						.put("productprice", productService.findById(membercart.getCartId().getId()).getProductPrice())
+						.put("productStock", productService.findById(membercart.getCartId().getId()).getProductStock())
+						.put("check", membercart.isCheckout());
+				array.put(item);
+			}
+		}
+		responseJson.put("list", array);
+		return responseJson.toString();
+	}
+
+}
+
+	////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	// 結帳時需要個資
+	@GetMapping("/carts/mes/{pk}")
+	public String findById(@PathVariable(name = "pk") Integer id) throws JSONException {
+		JSONObject responseJson = new JSONObject();
+		JSONArray array = new JSONArray();
+		Optional<Member> member = memberRepository.findById(id);
+		if (member.get() != null) {
+			JSONObject item = new JSONObject()
+					.put("MemberName", member.get().getMemberName())
+					.put("contactAddress", member.get().getContactAddress())
+					.put("phoneNumber", member.get().getPhoneNumber());
+			array.put(item);
+		}
+		responseJson.put("listt", array);
+		System.out.print(responseJson.toString());
+		return responseJson.toString();
+	}
+
+	/////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	@PostMapping("/carts/check") // 顧客真的要結帳了
+	public String check(@RequestBody String json) throws JSONException {
+		JSONObject responseJson = new JSONObject();
+		JSONArray array = new JSONArray();
+		List<Cart> carts = cartService.findByMemberIdAndcheckout(json);
+		if (carts != null && !carts.isEmpty()) {
+			for (Cart membercart : carts) {
+				JSONObject item = new JSONObject().put("memberid", membercart.getCartId().getMemberId())
+						.put("productid", membercart.getCartId().getId())
+						.put("quantity", membercart.getQuantity())
+						.put("productname", productService.findById(membercart.getCartId().getId()).getProductName())
+						.put("productprice", productService.findById(membercart.getCartId().getId()).getProductPrice())
+						.put("productStock", productService.findById(membercart.getCartId().getId()).getProductStock())
 						.put("check", membercart.isCheckout());
 				array.put(item);
 			}
@@ -231,4 +279,3 @@ public class CartAjaxController {
 		return responseJson.toString();
 	}
 }
-

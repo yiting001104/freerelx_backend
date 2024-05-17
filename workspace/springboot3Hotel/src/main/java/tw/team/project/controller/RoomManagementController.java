@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.configurationprocessor.json.JSONArray;
 import org.springframework.boot.configurationprocessor.json.JSONException;
 import org.springframework.boot.configurationprocessor.json.JSONObject;
 import org.springframework.data.domain.Page;
@@ -21,6 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 import tw.team.project.dto.RoomManagementDTO;
 import tw.team.project.model.RoomManagement;
 import tw.team.project.service.RoomManagementService;
+import tw.team.project.util.JsonContainer2;
 
 @RestController
 @RequestMapping("/hotel")
@@ -34,16 +34,11 @@ public class RoomManagementController {
 	
 	
 	@GetMapping("/RoomManagement")
-	public ResponseEntity<?> listOrderPage(@RequestParam(value = "p", defaultValue = "1") Integer id) {
-	    Page<RoomManagement> page = roomManagementService.findAll(id);
+	public ResponseEntity<?> listRoomPage(@RequestParam(value = "p", defaultValue = "1") Integer Number) {
+	    Page<RoomManagement> page = roomManagementService.findAll(Number);
 	    List<RoomManagementDTO> roomList = new ArrayList<>();
 	    for (RoomManagement rooms : page.getContent()) {
-	        RoomManagementDTO roomDto = new RoomManagementDTO();
-	        roomDto.setId(rooms.getId());
-	        roomDto.setNumber(rooms.getNumber());
-	        roomDto.setRepairStatus(rooms.getRepairStatus());
-	        // 设置其他属性
-	        roomList.add(roomDto);
+	        roomList.add(new JsonContainer2().setRoomManagement(rooms));
 	    }
 	    return ResponseEntity.ok(roomList);
 	}
@@ -73,39 +68,37 @@ public class RoomManagementController {
 	    }
 	
 	
-    @GetMapping("/roomManagement/{pk}")
-    public String findById(@PathVariable(name = "pk") Integer id)throws JSONException  {
-        JSONObject responseJson = new JSONObject();
-        JSONArray array = new JSONArray();
-        RoomManagement rooms = roomManagementService.findById(id);
-        if(rooms!=null) {
-            JSONObject item = new JSONObject()
-                    .put("id", rooms.getId())
-                    .put("number", rooms.getNumber())
-            		.put("repairStatus", rooms.getRepairStatus());
-                array.put(item);
-        }
-        responseJson.put("list", array);
-        return responseJson.toString();
-    }
-    
-    //
-//    @GetMapping("/roomManagement/number/{pk}")
-//    public ResponseEntity<?> findByNumber(@PathVariable(name = "pk") Integer number) {
-//        RoomManagementDTO room = roomManagementService.findByNumber(number);
-//        if(room != null) {
-//            ResponseEntity<RoomManagementDTO> ok = ResponseEntity.ok(room);
-//            return ok;
-//        } else {
-//            ResponseEntity<Void> notfound = ResponseEntity.notFound().build();
-//            return notfound;
+//    @GetMapping("/roomManagement/{pk}")
+//    public String findById(@PathVariable(name = "pk") Integer id)throws JSONException  {
+//        JSONObject responseJson = new JSONObject();
+//        JSONArray array = new JSONArray();
+//        RoomManagement rooms = roomManagementService.findById(id);
+//        if(rooms!=null) {
+//            JSONObject item = new JSONObject()
+//                    .put("id", rooms.getId())
+//                    .put("number", rooms.getNumber())
+//            		.put("repairStatus", rooms.getRepairStatus());
+//                array.put(item);
 //        }
+//        responseJson.put("list", array);
+//        return responseJson.toString();
 //    }
+    
+    
+    @GetMapping("/roomManagement/{pk}")
+    public ResponseEntity<?> findById(@PathVariable(name = "pk") Integer id) {
+        RoomManagement room = roomManagementService.findById(id);
+        if (room != null) {
+            return ResponseEntity.ok(room);
+        } else {
+            return ResponseEntity.notFound().build();
+        }
+    }
 
 	 
     @GetMapping("/roomManagement/number/{number}")
-    public ResponseEntity<?> findByNumber(@PathVariable(name = "number") String number) {
-        RoomManagementDTO room = roomManagementService.findByNumber(number);
+    public ResponseEntity<?> findByNumber(@PathVariable(name = "number") Integer number) {
+        RoomManagement room = roomManagementService.findByNumber(number);
         if (room != null) {
             return ResponseEntity.ok(room);
         } else {
