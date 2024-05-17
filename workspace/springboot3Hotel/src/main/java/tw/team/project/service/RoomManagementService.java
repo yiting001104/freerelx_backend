@@ -11,7 +11,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
-import tw.team.project.dto.RoomManagementDTO;
 import tw.team.project.model.RoomManagement;
 import tw.team.project.repository.RoomManagementRepository;
 
@@ -39,7 +38,7 @@ public class RoomManagementService {
 			JSONObject obj = new JSONObject(json);
 
 			Integer id = obj.isNull("id") ? null : obj.getInt("id");
-			String number = obj.isNull("number") ? null : obj.getString("number");
+			Integer number = obj.isNull("number") ? null : obj.getInt("number");
 	        String repairStatus = obj.isNull("repairStatus") ? null : obj.getString("repairStatus");
 
 			if (id != null) {
@@ -79,9 +78,9 @@ public class RoomManagementService {
 //		}return null;
 //	}
 	
-	public RoomManagementDTO findByNumber(String number) {
+	public RoomManagement findByNumber(Integer number) {
 		if(number!=null) {
-			Optional<RoomManagementDTO> optional = roomManagementRepo.findByNumber(number);
+			Optional<RoomManagement> optional = roomManagementRepo.findByNumber(number);
 			if(optional.isPresent()) {
 				return optional.get();
 			}

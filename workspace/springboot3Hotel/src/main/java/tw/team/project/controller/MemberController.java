@@ -12,6 +12,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -32,6 +33,7 @@ import tw.team.project.util.JsonWebTokenUtility;
 
 @RestController
 @RequestMapping("/hotel")
+@CrossOrigin
 public class MemberController {
 
 	@Autowired
@@ -39,7 +41,7 @@ public class MemberController {
 	@Autowired
 	private JsonWebTokenUtility jsonWebTokenUtility;
 	// 後台查看會員所有資料
-	@PostMapping("/members/find")
+	@PostMapping(value = "/members/find")
 	public String findAll() throws JSONException {
 		List<Member> members = memberservice.findAll();
 //		JSONObject responseObj = new JSONObject();
@@ -96,7 +98,7 @@ public class MemberController {
     					.put("email", member.getEmail());
     			String token = jsonWebTokenUtility.createEncryptedToken(user.toString(), null);
     			responseJson.put("token", token);
-    			responseJson.put("user", member.getEmail());
+    			responseJson.put("user", member.getMemberName());
                 
         	} else {
                 responseJson.put("success", false);

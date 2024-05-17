@@ -1,11 +1,14 @@
 package tw.team.project.controller;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.configurationprocessor.json.JSONArray;
 import org.springframework.boot.configurationprocessor.json.JSONException;
 import org.springframework.boot.configurationprocessor.json.JSONObject;
+import org.springframework.data.domain.Page;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -13,12 +16,15 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import jakarta.servlet.http.HttpSession;
+import tw.team.project.dto.HousingManagementDTO;
 import tw.team.project.model.HousingManagement;
 import tw.team.project.service.HousingManagementService;
 import tw.team.project.util.DatetimeConverter;
+import tw.team.project.util.JsonContainer2;
 
 @RestController
 @RequestMapping("/hotel")
@@ -27,11 +33,50 @@ public class HousingManagementController {
 
 	@Autowired
 	private HousingManagementService housingManagementService;
+
+	// 新增時更動 roomAssignment 該天的left - roomManagement 的房間state
+	// checkOI 及 addition 新繩增加 totalfee
+
+	//findAll
+	@GetMapping("/housingManagement")
+	public ResponseEntity<?> listHoustingRoomPage(@RequestParam(value = "p", defaultValue = "1") Integer Number) {
+		Page<HousingManagement> page = housingManagementService.findAll(Number);
+		List<HousingManagementDTO> roomList = new ArrayList<>();
+		for (HousingManagement rooms : page.getContent()) {
+			roomList.add(new JsonContainer2().setHousingManagement(rooms));
+		}
+		return ResponseEntity.ok(roomList);
+	}
 	
-	
-	//新增時更動 roomAssignment 該天的left - roomManagement 的房間state
-	//checkOI 及 addition 新繩增加 totalfee
-	
+	//findById
+    @GetMapping("/housingManagement/{pk}")
+    public ResponseEntity<?> findById(@PathVariable("pk") Integer id){
+    	HousingManagement room = housingManagementService.findById(id);
+        if (room != null){
+        	HousingManagementDTO roomDTO = new JsonContainer2().setHousingManagement(room);
+        	ResponseEntity<HousingManagementDTO> ok = ResponseEntity.ok(roomDTO);
+            return ok;
+        } else {
+            ResponseEntity<Void> notFound = ResponseEntity.notFound().build();
+            return notFound;
+        }
+    }
+//	@GetMapping("/housingManagement/{pk}")
+//	public String findById(@PathVariable(name = "pk") Integer id) throws JSONException {
+//		JSONObject responseJson = new JSONObject();
+//		JSONArray array = new JSONArray();
+//		HousingManagement room = housingManagementService.findById(id);
+//		if (room != null) {
+//			JSONObject housing = new JSONObject().put("remarks", room.getRemarks())
+//					.put("checkInTime", room.getCheckInTime()).put("checkOutTime", room.getCheckOutTime())
+//					.put("totalAdditional", room.getTotalAdditional())
+//					.put("totalCompensation", room.getTotalCompensation());
+//			array.put(housing);
+//		}
+//		responseJson.put("list", array);
+//		return responseJson.toString();
+//	}
+
 	@PostMapping("/housingManagement")
 	public String create(@RequestBody String json, HttpSession httpSession) throws JSONException {
 		Integer id = null;
@@ -51,7 +96,6 @@ public class HousingManagementController {
 		}
 		return responseJson.toString();
 	}
-	
 
 	@GetMapping("/housingManagement/number/{number}")
 	public String existsByItem(@PathVariable("number") Integer number) {
@@ -79,20 +123,17 @@ public class HousingManagementController {
 
 		JSONArray array = new JSONArray();
 		List<HousingManagement> rooms = housingManagementService.find(json);
-	    if (rooms != null && !rooms.isEmpty()) {
-	        for (HousingManagement room : rooms) {
-	            String checkInTime = DatetimeConverter.toString(room.getCheckInTime(), "yyyy-MM-dd HH:mm:ss");
-	            String checkOutTime = DatetimeConverter.toString(room.getCheckOutTime(), "yyyy-MM-dd HH:mm:ss");
-	            
-	            JSONObject housing = new JSONObject()
-	                .put("remarks", room.getRemarks())
-	                .put("checkInTime", checkInTime)
-	                .put("checkOutTime", checkOutTime)
-	                .put("totalAdditional", room.getTotalAdditional())
-	                .put("totalCompensation", room.getTotalCompensation());
-	            
-	            array.put(housing);
-	        }
+		if (rooms != null && !rooms.isEmpty()) {
+			for (HousingManagement room : rooms) {
+				String checkInTime = DatetimeConverter.toString(room.getCheckInTime(), "yyyy-MM-dd HH:mm:ss");
+				String checkOutTime = DatetimeConverter.toString(room.getCheckOutTime(), "yyyy-MM-dd HH:mm:ss");
+
+				JSONObject housing = new JSONObject().put("remarks", room.getRemarks()).put("checkInTime", checkInTime)
+						.put("checkOutTime", checkOutTime).put("totalAdditional", room.getTotalAdditional())
+						.put("totalCompensation", room.getTotalCompensation());
+
+				array.put(housing);
+			}
 		}
 		responseJson.put("list", array);
 
@@ -101,7 +142,6 @@ public class HousingManagementController {
 
 		return responseJson.toString();
 	}
-	
 
 	@PutMapping("/housingManagement/{pk}")
 	public String updateData(@PathVariable("pk") Integer id, @RequestBody String json) {
@@ -127,20 +167,4 @@ public class HousingManagementController {
 		return responseJson.toString();
 	}
 
-
-	@GetMapping("/housingManagement/{pk}")
-	public String findById(@PathVariable(name = "pk") Integer id) throws JSONException {
-		JSONObject responseJson = new JSONObject();
-		JSONArray array = new JSONArray();
-		HousingManagement room = housingManagementService.findById(id);
-		if (room != null) {
-			JSONObject housing = new JSONObject().put("remarks", room.getRemarks())
-					.put("checkInTime", room.getCheckInTime()).put("checkOutTime", room.getCheckOutTime())
-					.put("totalAdditional", room.getTotalAdditional())
-					.put("totalCompensation", room.getTotalCompensation());
-			array.put(housing);
-		}
-		responseJson.put("list", array);
-		return responseJson.toString();
-	}
 }

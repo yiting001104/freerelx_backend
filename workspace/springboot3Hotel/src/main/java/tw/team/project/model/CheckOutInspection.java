@@ -33,7 +33,9 @@ public class CheckOutInspection {
 	
 	@Column(name="compensation_photo", columnDefinition = "image")
 	private byte[] photo;
-		
+	
+//	@JsonManagedReference
+//	@JsonIgnore
 	@ManyToOne
 	@JoinColumn(name="housing_management_id", referencedColumnName = "housing_management_id")
 	private HousingManagement housingManagement;

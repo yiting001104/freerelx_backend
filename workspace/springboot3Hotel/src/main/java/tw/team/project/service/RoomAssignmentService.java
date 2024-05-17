@@ -9,6 +9,10 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.configurationprocessor.json.JSONException;
 import org.springframework.boot.configurationprocessor.json.JSONObject;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import tw.team.project.model.RoomAssignment;
@@ -20,8 +24,10 @@ public class RoomAssignmentService {
 	@Autowired
 	private RoomAssignmentRepository roomAssignmentRepo;
 	
-	public List<RoomAssignment> findAll() {
-			return roomAssignmentRepo.findAll();
+	public Page<RoomAssignment> findAll(Integer id) {
+        Pageable pgb = PageRequest.of(id-1, 7, Sort.Direction.ASC,"id");
+        Page<RoomAssignment> page = roomAssignmentRepo.findAll(pgb);
+        return page;
 	}
 	
 	public List<RoomAssignment> find(String json) {

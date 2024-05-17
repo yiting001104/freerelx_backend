@@ -230,7 +230,7 @@ CREATE TABLE roomState (
 
 CREATE TABLE roomManagement (
     room_management_id INT PRIMARY KEY IDENTITY,
-     room_number NVARCHAR(50) UNIQUE,
+     room_number int UNIQUE,
     room_state_id INT default 4,
     repair_status NVARCHAR(255),
     room_information_id INT,
@@ -272,13 +272,13 @@ CREATE TABLE minibar (
 
 
 	CREATE TABLE additionalCharges (
-    fk_minibar_id INT,
-    fk_housingmanagement_id INT,
+    minibar_id INT,
+    housing_management_id INT,
     quantity INT,
     amount DECIMAL(20, 6),
-	constraint Fk_minibar foreign key (fk_minibar_id)references minibar (minibar_id),
-	constraint Fk_housingmanagement foreign key (fk_housingmanagement_id)references housingManagement (housing_management_id),
-	constraint PK_additionalCharges primary key (fk_minibar_id, fk_housingmanagement_id)
+	constraint Fk_minibar foreign key (minibar_id)references minibar (minibar_id),
+	constraint Fk_housingmanagement foreign key (housing_management_id)references housingManagement (housing_management_id),
+	constraint PK_additionalCharges primary key (minibar_id, housing_management_id)
 );
 
 
@@ -287,8 +287,18 @@ CREATE TABLE minibar (
 -- 購物車相關
 -- 建立 orders 表格
 CREATE TABLE orders (
-    id INT IDENTITY(1,1) PRIMARY KEY,
+	id INT IDENTITY(1,1) PRIMARY KEY,
     addedTime DATETIME2(6),
+	arriveddTime DATETIME2(6),
+    contactAddress VARCHAR(255),
+    memberName VARCHAR(255),
+    orderstatus VARCHAR(255),
+	payment VARCHAR(255),
+    phoneNumber VARCHAR(255),
+	payerName VARCHAR(255),
+	payerPhoneNumber VARCHAR(255),
+	payerContactAddress VARCHAR(255),
+	total INT,
     member_id INT,
     FOREIGN KEY (member_id) REFERENCES member(member_id)
 );

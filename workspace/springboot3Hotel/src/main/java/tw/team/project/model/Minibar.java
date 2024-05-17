@@ -3,12 +3,18 @@ package tw.team.project.model;
 import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
 
 import org.springframework.format.annotation.DateTimeFormat;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import jakarta.persistence.Temporal;
 import jakarta.persistence.TemporalType;
@@ -25,6 +31,7 @@ import lombok.Setter;
 public class Minibar {
 	
 	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name="minibar_id")
 	private Integer id;
 	
@@ -53,9 +60,8 @@ public class Minibar {
 	}
 	
 	
-
-//	
-//	@OneToMany(mappedBy = "AdditionalCharges", cascade=CascadeType.ALL)
-//	private List<AdditionalCharges> additionlCharges = new ArrayList<>();
+//	@JsonIgnore
+	@OneToMany(mappedBy = "minibarId", cascade=CascadeType.ALL)
+	private Set<AdditionalCharges> additionalCharges = new HashSet<>();
 
 }
