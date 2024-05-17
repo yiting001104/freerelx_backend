@@ -23,7 +23,7 @@ public class OrderShopAjaxController {
 	
 	@Autowired
 	private OrderShopService orderShopService;
-	
+//member
 	@GetMapping("/orders/mes/{pk}")
 	public String findById(@PathVariable(name = "pk") Member member) throws JSONException {
 		JSONObject responseJson = new JSONObject();
@@ -35,10 +35,24 @@ public class OrderShopAjaxController {
 						.put("AddedTime",order.getAddedTime())
 						.put("Orderstatus", order.getOrderstatus())
 						.put("total", order.getTotal())
-						.put("orderid", order.getId());
+						.put("orderid", order.getId())
+						.put("arriveddTime", order.getArriveddTime());
 				array.put(item);
 			}
 		}
+		responseJson.put("list", array);
+		return responseJson.toString();
+	}
+/////////////////////////////////////////////////////////////////////////////////////////////////////////
+//id	
+	@GetMapping("/orders/order/{pk}")
+	public String findId(@PathVariable(name = "pk") Integer id) throws JSONException {
+		JSONObject responseJson = new JSONObject();
+		JSONArray array = new JSONArray();
+		Order order= orderShopService.findByid(id);
+				JSONObject item = new JSONObject()
+				.put("mes","hi");	
+				array.put(item);
 		responseJson.put("list", array);
 		return responseJson.toString();
 	}
