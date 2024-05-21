@@ -113,7 +113,7 @@ public class Member {
 	public void setOrdersRoom(List<OrderRoom> ordersRoom) {
 		this.ordersRoom = ordersRoom;
 	}
-
+	@JsonIgnore
 	@OneToMany(mappedBy = "member", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	private List<OrderRoom> ordersRoom;
 	

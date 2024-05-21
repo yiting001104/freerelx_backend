@@ -44,12 +44,25 @@ public class MemberService {
 				if (origin.equals(password)) {
 					Date date = new Date();
 					member.setLoginTime(date);
+					member.setLoginStatus("登入中");
 					return member;
 				}
 			}
 		}
 		return null;
 		
+	}
+	@Transactional
+	public Member logout(Integer id) {
+		if (id!=null) {
+			Optional<Member> option = memberRepository.findById(id);
+			if (option.isPresent()) {
+				Member member = option.get();
+				member.setLoginStatus("尚未登入");
+				return member;	
+			}
+		}
+		return null;
 	}
 	// 更新會員資料
 	@Transactional

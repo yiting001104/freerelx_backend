@@ -64,19 +64,19 @@ VALUES
 
 
 INSERT INTO member( name, gender, birth, national_id, email, phone_number, credit_card, contact_address, password, registration_date,member_status,nationality,total_bonus_points,login_time) VALUES
-( 'Ernest Barnes', 'man', '1990/7/1', 'G63184808', 'Ernest.Barnes31@outlook.com','669-792-1661', '************4322', '台灣省高雄市旗山區中寮二路14號', 'scknkscn290u94', '2014/10/3','normal', '臺灣',400.6, '2014/10/30'),
-( 'Rebecca Parker', 'female', '1995/9/5', 'K231674514', 'Rebecca_Parker@comcast.net','652-885-2745', '************3734', '360 苗栗縣苗栗市金龍街10號', 'gheuijf982038', '2015/6/11','normal', '臺灣',423.7, '2015/6/12'),
-( 'Laura Murray', 'female', '1996/3/15', 'H253410978', 'Laura_M@gmail.com','364-656-8427', '************5677', '330 桃園市桃園區大華五街18號', 'wefwf46', '2015/6/12','normal', '臺灣',345.7, '2015/6/15'),
-( 'Linda Hines', 'female', '1997/7/11', 'G277633276', 'LHines@verizon.com','713-226-5883', '************5498', '269 宜蘭縣冬山鄉東七路33號', 'wrew3524!', '2015/6/12','normal', '臺灣',498.8,'2015/6/20');
+( 'Ernest Barnes', '男', '1990/7/1', 'G63184808', 'Ernest.Barnes31@outlook.com','669-792-1661', '************4322', '高雄市旗山區中寮二路14號', 'scknkscn290u94', '2014/10/3','normal', 'Taiwan',400.6, '2014/10/30'),
+( 'Rebecca Parker', '女', '1995/9/5', 'K231674514', 'Rebecca_Parker@comcast.net','652-885-2745', '************3734', '苗栗縣苗栗市金龍街10號', 'gheuijf982038', '2015/6/11','normal', 'Taiwan',423.7, '2015/6/12'),
+( 'Laura Murray', '女', '1996/3/15', 'H253410978', 'Laura_M@gmail.com','364-656-8427', '************5677', '桃園市桃園區大華五街18號', 'wefwf46', '2015/6/12','normal', 'Taiwan',345.7, '2015/6/15'),
+( 'Linda Hines', '女', '1997/7/11', 'G277633276', 'LHines@verizon.com','713-226-5883', '************5498', '宜蘭縣冬山鄉東七路33號', 'wrew3524!', '2015/6/12','normal', 'Taiwan',498.8,'2015/6/20');
 
 
 
 INSERT INTO orderRoom(orderdate, order_person_name, gender, birth, national_id, email, phone_number, credit_card, transaction_password, adult_pax,child_pax,room_type_amount,arrival_date,reservation_status, reservation_status_date, member_id, cancellation_reason, checkout_date, base_price) VALUES
-( '2015/4/8','Heather Hart', 'man', '1994/2/1', 'L283271972', 'Heather.H@xfinity.com','431-329-6663', '************2780', 'efo2oif31890',4,1,2, '2015/5/1', 'Check-Out', '2015/7/9', null, null, '2015/7/9',33033.0),
-( '2015/6/11','Ernest Barnes', 'man', '1990/7/1', 'G63184808', 'Ernest.Barnes31@outlook.com','669-792-1661', '************4322', 'scknkscn290u94',2,1,1, '2015/7/1', 'Check-Out', '2015/7/9', 1, null, '2015/7/9', 14784.0),
-( '2015/8/31','Rebecca Parker', 'female', '1995/9/5', 'K231674514', 'Rebecca_Parker@comcast.net','652-885-2745', '************3734', 'gheuijf982038',1,1,1,'2015/9/6', 'Check-Out','2015/9/9',2,null,'2015/9/9',18249.0),
-( '2015/10/8','Laura Murray', 'female', '1996/3/15', 'H253410978', 'Laura_M@gmail.com','364-656-8427', '************5677', 'wefwf46',3,0,1,'2015/11/18', 'Canceled', '2015/11/1',3,'改變計畫', '2015/11/20',0),
-('2015/10/14', 'Linda Hines', 'female', '1997/7/11', 'G277633276', 'LHines@verizon.com','713-226-5883', '************5498', 'wrew3524!',2,0,1,'2015/12/21', 'Canceled', '2015/12/21',4,'改變計畫', '2015/12/22',0);
+( '2015/4/8','Heather Hart', '男', '1994/2/1', 'L283271972', 'Heather.H@xfinity.com','431-329-6663', '************2780', 'efo2oif31890',4,1,2, '2015/5/1', 'Check-Out', '2015/7/9', null, null, '2015/7/9',33033.0),
+( '2015/6/11','Ernest Barnes', '男', '1990/7/1', 'G63184808', 'Ernest.Barnes31@outlook.com','669-792-1661', '************4322', 'scknkscn290u94',2,1,1, '2015/7/1', 'Check-Out', '2015/7/9', 1, null, '2015/7/9', 14784.0),
+( '2015/8/31','Rebecca Parker', '女', '1995/9/5', 'K231674514', 'Rebecca_Parker@comcast.net','652-885-2745', '************3734', 'gheuijf982038',1,1,1,'2015/9/6', 'Check-Out','2015/9/9',2,null,'2015/9/9',18249.0),
+( '2015/10/8','Laura Murray', '女', '1996/3/15', 'H253410978', 'Laura_M@gmail.com','364-656-8427', '************5677', 'wefwf46',3,0,1,'2015/11/18', 'Canceled', '2015/11/1',3,'改變計畫', '2015/11/20',0),
+('2015/10/14', 'Linda Hines', '女', '1997/7/11', 'G277633276', 'LHines@verizon.com','713-226-5883', '************5498', 'wrew3524!',2,0,1,'2015/12/21', 'Canceled', '2015/12/21',4,'改變計畫', '2015/12/22',0);
 
 INSERT INTO orderRoomDetail (room_amount, price, room_Information_Id, order_id) VALUES
 (1,15800, 3,1),

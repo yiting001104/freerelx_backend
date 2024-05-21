@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
@@ -33,7 +34,7 @@ import tw.team.project.util.JsonWebTokenUtility;
 
 @RestController
 @RequestMapping("/hotel")
-@CrossOrigin
+@CrossOrigin(origins = "*", allowedHeaders = "*")
 public class MemberController {
 
 	@Autowired
@@ -99,6 +100,7 @@ public class MemberController {
     			String token = jsonWebTokenUtility.createEncryptedToken(user.toString(), null);
     			responseJson.put("token", token);
     			responseJson.put("user", member.getMemberName());
+    			responseJson.put("userId", member.getMemberId());
                 
         	} else {
                 responseJson.put("success", false);
@@ -110,9 +112,17 @@ public class MemberController {
 	}
 	
 	// 會員登出
-	@GetMapping("/member/logout")
-	public String logoutAction(HttpSession httpSession) {
-		
+	@PutMapping("/member/logout/{pk}")
+	public String logoutAction(@PathVariable("pk") Integer id,HttpSession httpSession) throws JSONException{
+		Member member = memberservice.logout(id);
+		JSONObject responseJson = new JSONObject();
+		if (member!=null) {
+            responseJson.put("success", true);
+            responseJson.put("message", "登出成功");
+		}else {
+            responseJson.put("success", false);
+            responseJson.put("message", "登出失敗");
+		}
 		// 方法一 這可以做到第三方廣告的使用
 //		httpSession.removeAttribute("loginUser");
 //		httpSession.removeAttribute("loginUserId");
@@ -120,7 +130,7 @@ public class MemberController {
 		// 方法二
 		httpSession.invalidate();
 		
-		return "users/logoutPage";
+		return responseJson.toString();
 	}
 	// 會員申請
 	@PostMapping("/member/apply")
@@ -177,7 +187,8 @@ public class MemberController {
 	// 會員資料更新
 	@PutMapping("/member/alert/{pk}")
 	public String updateData(@PathVariable("pk") Integer id, @RequestBody String json) {
-		JSONObject responseJson = new JSONObject();		
+		JSONObject responseJson = new JSONObject();
+		System.out.println(json);
 		try {
 			if (id != null) {
 				if (memberservice.updateData(id, json) != null) {
@@ -258,4 +269,26 @@ public class MemberController {
 		// 另一種寫法，他已經幫妳寫好了
 		//return new ResponseEntity<byte[]>(photoFile,headers,HttpStatus.OK);
 	}
+	@GetMapping("/member/{pk}")
+	public ResponseEntity<?> findById(@PathVariable("pk") Integer id){
+		Member member = memberservice.findbyId(id);
+		if (member!=null) {
+			return ResponseEntity.ok(member);
+		}
+		return ResponseEntity.notFound().build();
+		
+	}
+	
+//    @GetMapping("/orderRoom/transactions/{pk}")
+//    public ResponseEntity<?> findById(@PathVariable("pk") Integer id){
+//        Transaction trans = transactionService.findById(id);
+//        if (trans != null){
+//            TransactionDTO transDTO = new JsonContainer().setTransaction(trans);
+//            ResponseEntity<TransactionDTO> ok = ResponseEntity.ok(transDTO);
+//            return ok;
+//        } else {
+//            ResponseEntity<Void> notFound = ResponseEntity.notFound().build();
+//            return notFound;
+//        }
+//    }
 }
