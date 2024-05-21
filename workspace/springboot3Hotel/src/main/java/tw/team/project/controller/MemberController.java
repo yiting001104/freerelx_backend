@@ -99,7 +99,7 @@ public class MemberController {
     			String token = jsonWebTokenUtility.createEncryptedToken(user.toString(), null);
     			responseJson.put("token", token);
     			responseJson.put("user", member.getMemberName());
-                
+    			responseJson.put("userId", member.getMemberId());//元
         	} else {
                 responseJson.put("success", false);
                 responseJson.put("message", "帳號或密碼有錯");

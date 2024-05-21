@@ -200,9 +200,20 @@ public class CartAjaxController {
 		Optional<Member> member= memberRepository.findById(id);
 		if (member.get() != null) {
 			JSONObject item = new JSONObject()
+					.put("memberid", member.get().getMemberId())
 					.put("MemberName",member.get().getMemberName())
+					.put("birth", member.get().getBirth())
+					.put("gender", member.get().getGender())
+					.put("nationId", member.get().getNationId())
+					.put("email", member.get().getEmail())
 					.put("contactAddress", member.get().getContactAddress())
-					.put("phoneNumber", member.get().getPhoneNumber());
+					.put("phoneNumber", member.get().getPhoneNumber())
+					.put("creditcard", member.get().getCreditCard())
+					.put("nationality", member.get().getNationality())
+					.put("logintime", member.get().getLoginTime())
+					.put("loginstatus", member.get().getLoginStatus())
+					.put("picture",member.get().getPicture())
+					.put("bonus", member.get().getBonusPoint());
 			array.put(item);
 		}
 		responseJson.put("listt", array);
