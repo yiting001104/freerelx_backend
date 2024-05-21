@@ -1,5 +1,6 @@
 package tw.team.project.service;
 
+import java.util.Date;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,4 +20,10 @@ public class OrderShopService {
 		return orderRepository.findBymemberId(member);
 	}
 	
+	public Order findByid(Integer id) {
+		Order order=orderRepository.findById(id).get();
+		order.setArriveddTime(new Date());
+		return orderRepository.save(order);
+		
+	}
 }
