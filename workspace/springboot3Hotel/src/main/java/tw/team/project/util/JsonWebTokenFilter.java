@@ -17,9 +17,7 @@ import jakarta.servlet.annotation.WebFilter;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
-@WebFilter(
-		urlPatterns = {"/hotel/products/find"}
-)
+
 public class JsonWebTokenFilter implements Filter {
 	private JsonWebTokenUtility jsonWebTokenUtility;
 	@Override

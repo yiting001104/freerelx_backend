@@ -107,3 +107,14 @@ INSERT INTO [Hotel].[dbo].[FacilityOrder] ( [MEMBER_ID], [PHONE_NUMBER], [FACILI
 INSERT INTO [Hotel].[dbo].[FacilityOrder] ( [MEMBER_ID], [PHONE_NUMBER], [FACILITY_ID], [FACILITY_STATUS], [FACILITY_BOOKING_DATE], [START_TIME], [END_TIME]) VALUES (3,'364-656-8427','2','C', '2015-09-06', '2015-09-06 17:00:00',  '2015-09-06 18:00:00');
 INSERT INTO [Hotel].[dbo].[FacilityOrder] ( [MEMBER_ID], [PHONE_NUMBER], [FACILITY_ID], [FACILITY_STATUS], [FACILITY_BOOKING_DATE], [START_TIME], [END_TIME]) VALUES (4,'713-226-5883','1','C', '2015-11-18', '2015-11-18 19:00:00',  '2015-11-18 20:00:00');
 INSERT INTO [Hotel].[dbo].[FacilityOrder] ( [MEMBER_ID], [PHONE_NUMBER], [FACILITY_ID], [FACILITY_STATUS], [FACILITY_BOOKING_DATE], [START_TIME], [END_TIME]) VALUES (5,'190-271-6743','7','B', '2015-12-21', '2015-12-21 19:00:00',  '2015-12-21 20:00:00');
+
+
+INSERT INTO supplier (product_manufacturer_address,product_manufacturer,product_manufacturer_contact_email,product_manufacturer_contact_phone,product_manufacturer_contact_name)VALUES
+('台北市大安區','專賣蛋糕廠商','cake@gmail.com','0973647111','蛋糕達人'),
+('台北市信義區','專賣枕頭廠商','pillow@gmail.com','0973647222','枕頭達人')
+
+INSERT INTO product (product_expected_arrival_day,product_description,product_name,product_price,product_stock,product_supplier_id)VALUES
+(1,'據傳當時帝王使用材質','帝王枕頭',1000,20,2),
+(1,'保證好睡','暢銷枕頭',700,20,2),
+(1,'夏季必備','夏季枕頭',500,20,2),
+(1,'夏季必備','冬季枕頭',450,20,2)

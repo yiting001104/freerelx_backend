@@ -44,6 +44,36 @@ public class Order {
 	private Date arriveddTime;
 
 	private Integer total;
+	
+	private Integer usebonus;
+	
+	private Integer addbonus;
+	
+	private Integer totalminususebonus;
+
+	public Integer getTotalminususebonus() {
+		return totalminususebonus;
+	}
+
+	public void setTotalminususebonus(Integer totalminususebonus) {
+		this.totalminususebonus = totalminususebonus;
+	}
+
+	public Integer getUsebonus() {
+		return usebonus;
+	}
+
+	public void setUsebonus(Integer usebonus) {
+		this.usebonus = usebonus;
+	}
+
+	public Integer getAddbonus() {
+		return addbonus;
+	}
+
+	public void setAddbonus(Integer addbonus) {
+		this.addbonus = addbonus;
+	}
 
 	public Integer getTotal() {
 		return total;

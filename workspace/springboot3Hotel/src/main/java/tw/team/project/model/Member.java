@@ -113,7 +113,7 @@ public class Member {
 	public void setOrdersRoom(List<OrderRoom> ordersRoom) {
 		this.ordersRoom = ordersRoom;
 	}
-
+	@JsonIgnore
 	@OneToMany(mappedBy = "member", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	private List<OrderRoom> ordersRoom;
 	
@@ -248,10 +248,22 @@ public class Member {
 	public void setLoginStatus(String loginStatus) {
 		this.loginStatus = loginStatus;
 	}
-	
+	@JsonIgnore
 	@OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
 	private List<Order> order = new ArrayList<>();
 
+	public List<Alert> getAlert() {
+		return alert;
+	}
+
+	public void setAlert(List<Alert> alert) {
+		this.alert = alert;
+	}
+
+	@JsonIgnore
+	@OneToMany(mappedBy = "memberid", cascade = CascadeType.ALL)
+	private List<Alert> alert = new ArrayList<>();
+	
 	public List<Order> getOrder() {
 		return order;
 	}
