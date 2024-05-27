@@ -15,20 +15,19 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import jakarta.servlet.http.HttpSession;
+import tw.team.project.dto.MemberDTO;
 import tw.team.project.model.Member;
-import tw.team.project.model.NoteDTO;
 import tw.team.project.service.MemberService;
 import tw.team.project.util.JsonWebTokenUtility;
 
@@ -211,16 +210,14 @@ public class MemberController {
 	}
 	
 	// 測試更新資料含有圖片
-	@PutMapping(value = "/member/alert2/{pk}", consumes = "multipart/form-data")
-	public String updateData2(@PathVariable("pk") Integer id, @ModelAttribute NoteDTO notedto) {
+	@PutMapping(value = "/member/alert2/{pk}", consumes = "multipart/form-data")//, 
+	public String updateData2(@PathVariable("pk") Integer id, @RequestParam String json, @RequestParam(required = false) MultipartFile multipartFile) throws JSONException { //@ModelAttribute NoteDTO notedto 
 		JSONObject responseJson = new JSONObject();
-		String json = notedto.getJson();
-		System.out.println(json);
-		MultipartFile  multipartFile = notedto.getMultipartFile();
-		System.out.println(multipartFile.getName());
+//		MultipartFile  multipartFile = notedto.getMultipartFile();
+		JSONObject jsonObj = new JSONObject(json);
 		try {
 			if (id != null) {
-				if (memberservice.updateData2(id, json, multipartFile) != null) {
+				if (memberservice.updateData2(id, jsonObj, multipartFile) != null) {
 					responseJson.put("message", "更新成功");
 					responseJson.put("success", true);
 				} else {

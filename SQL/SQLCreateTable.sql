@@ -39,6 +39,7 @@ create table member (
 	picture varbinary(max),
 	constraint PK_MemberId primary key (member_id),
 	constraint UQ_phone_number unique (phone_number) ,
+	constraint UQ_email unique (email) 
 
 );  
 
