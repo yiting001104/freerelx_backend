@@ -24,26 +24,56 @@ import jakarta.persistence.TemporalType;
 @Table(name = "orders")
 public class Order {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
-//0002外來鍵
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "member_id")
-    private Member member;
- //0000
-    @OneToMany(mappedBy = "order",cascade = CascadeType.ALL)
-    private List<OrderDetail> orderDetails=new ArrayList<>();;
-    //
-    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss EEEE") // ${{latestMsg.added}}讀取左邊設定
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private Integer id;
+	// 0002外來鍵
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "member_id")
+	private Member member;
+	// 0000
+	@OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
+	private List<OrderDetail> orderDetails = new ArrayList<>();;
+	//
+	@DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss EEEE") // ${{latestMsg.added}}讀取左邊設定
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date addedTime;
-    
-    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss EEEE") // ${{latestMsg.added}}讀取左邊設定
+
+	@DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss EEEE") // ${{latestMsg.added}}讀取左邊設定
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date arriveddTime;
-    
-    private Integer total;
+
+	private Integer total;
+	
+	private Integer usebonus;
+	
+	private Integer addbonus;
+	
+	private Integer totalminususebonus;
+
+	public Integer getTotalminususebonus() {
+		return totalminususebonus;
+	}
+
+	public void setTotalminususebonus(Integer totalminususebonus) {
+		this.totalminususebonus = totalminususebonus;
+	}
+
+	public Integer getUsebonus() {
+		return usebonus;
+	}
+
+	public void setUsebonus(Integer usebonus) {
+		this.usebonus = usebonus;
+	}
+
+	public Integer getAddbonus() {
+		return addbonus;
+	}
+
+	public void setAddbonus(Integer addbonus) {
+		this.addbonus = addbonus;
+	}
 
 	public Integer getTotal() {
 		return total;
@@ -59,16 +89,16 @@ public class Order {
 			addedTime = new Date();
 		}
 	}
+
 	private String memberName;
-	
+
 	private String payment;
-	
+
 	private String payerName;
-	
+
 	private String payerPhoneNumber;
-	
+
 	private String payerContactAddress;
-	
 
 	public String getPayerName() {
 		return payerName;
@@ -101,8 +131,9 @@ public class Order {
 	public void setPayment(String payment) {
 		this.payment = payment;
 	}
+
 	private String contactAddress;
-	
+
 	public String getMemberName() {
 		return memberName;
 	}
@@ -126,10 +157,11 @@ public class Order {
 	public void setPhoneNumber(String phoneNumber) {
 		this.phoneNumber = phoneNumber;
 	}
+
 	private String phoneNumber;
-	
+
 	private String orderstatus;
-	
+
 	public String getOrderstatus() {
 		return orderstatus;
 	}
@@ -137,36 +169,39 @@ public class Order {
 	public void setOrderstatus(String orderstatus) {
 		this.orderstatus = orderstatus;
 	}
-    //
-    public Order() {
-    }
 
-    public Integer getId() {
-        return id;
-    }
+	//
+	public Order() {
+	}
 
-    public void setId(Integer id) {
-        this.id = id;
-    }
+	public Integer getId() {
+		return id;
+	}
 
-    public Member getMember() {
-        return member;
-    }
+	public void setId(Integer id) {
+		this.id = id;
+	}
 
-    public void setMember(Member member) {
-        this.member = member;
-    }
+	public Member getMember() {
+		return member;
+	}
 
-    public List<OrderDetail> getOrderDetails() {
-        return orderDetails;
-    }
+	public void setMember(Member member) {
+		this.member = member;
+	}
 
-    public void setOrderDetails(List<OrderDetail> orderDetails) {
-        this.orderDetails = orderDetails;
-    }
+	public List<OrderDetail> getOrderDetails() {
+		return orderDetails;
+	}
+
+	public void setOrderDetails(List<OrderDetail> orderDetails) {
+		this.orderDetails = orderDetails;
+	}
+
 	public Date getAddedTime() {
 		return addedTime;
 	}
+
 	public void setAddedTime(Date addedTime) {
 		this.addedTime = addedTime;
 	}
@@ -178,6 +213,6 @@ public class Order {
 	public void setArriveddTime(Date arriveddTime) {
 		this.arriveddTime = arriveddTime;
 	}
-	
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 }

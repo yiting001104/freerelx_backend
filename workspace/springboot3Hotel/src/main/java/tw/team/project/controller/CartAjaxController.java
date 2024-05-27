@@ -1,5 +1,6 @@
 package tw.team.project.controller;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 
@@ -30,10 +31,10 @@ import tw.team.project.service.ProductService;
 @RequestMapping("hotel")
 @CrossOrigin
 public class CartAjaxController {
-////////////////////////////////////////////////////////////////////////////////////////////要配合
+
 	@Autowired
 	private MemberRepository memberRepository;
-///////////////////////////////////////////////////////////////////////////////////////////////////////////////	
+
 	@Autowired
 	private OrderDeatilRepository orderDeatilRepository;
 	
@@ -46,7 +47,6 @@ public class CartAjaxController {
 	@Autowired
 	private ProductService productService;
 
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////	
 	@PostMapping("/carts/post") // 顧客新增購物車一筆資料的功能
 	public String createcart(@RequestBody String json) throws JSONException {
 		JSONObject responseJson = new JSONObject();
@@ -61,7 +61,6 @@ public class CartAjaxController {
 		return responseJson.toString();
 	}
 
-///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////	
 	@PutMapping("/carts/delete") // 顧客刪除購物車一筆資料的功能
 	public String deletecart(@RequestBody String json) throws JSONException {
 		JSONObject responseJson = new JSONObject();
@@ -78,7 +77,6 @@ public class CartAjaxController {
 		return responseJson.toString();
 	}
 
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	@PutMapping("/carts/checkoutchange") // 顧客是否要結帳的功能
 	public String checkoutchange(@RequestBody String json) throws JSONException {
 		JSONObject responseJson = new JSONObject();
@@ -94,7 +92,6 @@ public class CartAjaxController {
 		return responseJson.toString();
 	}
 
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	@PostMapping("/carts/find") // 顧客查看自己的訂單
 	public String find(@RequestBody String json) throws JSONException {
 		JSONObject responseJson = new JSONObject();
@@ -115,7 +112,7 @@ public class CartAjaxController {
 		responseJson.put("list", array);
 		return responseJson.toString();
 	}
-///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 	@PostMapping("/carts/order") // 顧客要結帳購物車裡的東西
 	public String cartsentorder(@RequestBody String json) throws JSONException {
 		Integer total=0;
@@ -124,6 +121,8 @@ public class CartAjaxController {
 		List<Cart> carts = cartService.findByMemberIdAndcheckout(json);
 		if (carts != null && !carts.isEmpty()) {
 			JSONObject jsonobject = new JSONObject(json);
+			Integer memberId = jsonobject.isNull("memberId") ? null : jsonobject.getInt("memberId");
+			Integer usebonus = jsonobject.isNull("usebonus") ? null : jsonobject.getInt("usebonus");
 			String name = jsonobject.isNull("name") ? null : jsonobject.getString("name");
 			String phone = jsonobject.isNull("phone") ? null : jsonobject.getString("phone");
 			String address = jsonobject.isNull("address") ? null : jsonobject.getString("address");
@@ -138,6 +137,7 @@ public class CartAjaxController {
 				order.setPayerName(payerName);
 				order.setPayerPhoneNumber(payerPhoneNumber);
 				order.setPayerContactAddress(payerContactAddress);
+				order.setUsebonus(usebonus);
 			for (Cart membercart : carts) {
 				JSONObject item = new JSONObject()
 						.put("memberid", membercart.getCartId().getMemberId())
@@ -150,20 +150,24 @@ public class CartAjaxController {
 				orderDetail.setOrder(order);
 				orderDetail.setQuantity(membercart.getQuantity());
 				orderDetail.setProduct(membercart.getId());
-//新增為了算金額	
 				orderDetail.setProductmultiplequantity(membercart.getId().getProductPrice()*membercart.getQuantity());
 				total=total+membercart.getId().getProductPrice()*membercart.getQuantity();
 				orderDeatilRepository.save(orderDetail);
 				array.put(item);
 			}
 			order.setTotal(total);
+			order.setAddbonus((int) (total*0.1));
+			order.setTotalminususebonus(total-usebonus);
 			orderRepository.save(order);
+			Member member=memberRepository.findById(memberId).get();
+			member.setBonusPoint(member.getBonusPoint().add(new BigDecimal(total*0.1)).add(new BigDecimal(usebonus*-1)));
+			memberRepository.save(member);
 		}
 		responseJson.put("list", array);
 
 		return responseJson.toString();
 	}
-/////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 	@PutMapping("/carts/modify")
 	public String modify(@RequestBody String json) throws JSONException {
 		JSONObject responseJson = new JSONObject();
@@ -177,7 +181,7 @@ public class CartAjaxController {
 			}
 		return responseJson.toString();
 	}
-//全選購物車的內容要有memberid
+
 	@PostMapping("/carts/selectall") 
 	public String selectall(@RequestBody String json) throws JSONException {
 		JSONObject responseJson = new JSONObject();
@@ -191,7 +195,6 @@ public class CartAjaxController {
 		}
 	return responseJson.toString();
 	}
-////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	//結帳時需要個資
 	@GetMapping("/carts/mes/{pk}")
 	public String findById(@PathVariable(name = "pk") Integer id) throws JSONException {
@@ -220,7 +223,7 @@ public class CartAjaxController {
 		System.out.print(responseJson.toString());
 		return responseJson.toString();
 	}
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 	@PostMapping("/carts/check") // 顧客真的要結帳了
 	public String check(@RequestBody String json) throws JSONException {
 		JSONObject responseJson = new JSONObject();

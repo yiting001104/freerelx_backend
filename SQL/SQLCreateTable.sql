@@ -1,4 +1,5 @@
 use Hotel;
+ drop table if exists alert;
  drop table if exists cart;
  drop table if exists order_details;
  drop table if exists productphoto;
@@ -286,6 +287,13 @@ CREATE TABLE minibar (
 ----
 ------------------------------------------------------------
 -- 購物車相關
+-- 建立 alert 表格
+CREATE TABLE alert(
+	id INT IDENTITY(1,1) PRIMARY KEY,
+	alertmessage VARCHAR(255),
+	member_id INT,
+    FOREIGN KEY (member_id) REFERENCES member(member_id)
+)
 -- 建立 orders 表格
 CREATE TABLE orders (
 	id INT IDENTITY(1,1) PRIMARY KEY,
@@ -300,6 +308,9 @@ CREATE TABLE orders (
 	payerPhoneNumber VARCHAR(255),
 	payerContactAddress VARCHAR(255),
 	total INT,
+	usebonus INT,
+	addbonus INT,
+	totalminususebonus INT,
     member_id INT,
     FOREIGN KEY (member_id) REFERENCES member(member_id)
 );

@@ -249,6 +249,7 @@ public class Member {
 		this.loginStatus = loginStatus;
 	}
 	
+	@JsonIgnore
 	@OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
 	private List<Order> order = new ArrayList<>();
 
@@ -256,6 +257,18 @@ public class Member {
 		return order;
 	}
 
+	public List<Alert> getAlert() {
+		return alert;
+	}
+
+	public void setAlert(List<Alert> alert) {
+		this.alert = alert;
+	}
+
+	@JsonIgnore
+	@OneToMany(mappedBy = "memberid", cascade = CascadeType.ALL)
+	private List<Alert> alert = new ArrayList<>();
+	
 	public void setOrder(List<Order> order) {
 		this.order = order;
 	}
