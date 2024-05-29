@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.configurationprocessor.json.JSONArray;
 import org.springframework.boot.configurationprocessor.json.JSONException;
 import org.springframework.boot.configurationprocessor.json.JSONObject;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.MediaType;
@@ -28,7 +29,9 @@ import org.springframework.web.multipart.MultipartFile;
 import jakarta.servlet.http.HttpSession;
 import tw.team.project.dto.MemberDTO;
 import tw.team.project.model.Member;
+import tw.team.project.model.OrderRoom;
 import tw.team.project.service.MemberService;
+import tw.team.project.service.OrderRoomService;
 import tw.team.project.util.JsonWebTokenUtility;
 
 @RestController
@@ -38,6 +41,8 @@ public class MemberController {
 
 	@Autowired
 	private MemberService memberservice;
+	@Autowired
+	private OrderRoomService ordRoomService;
 	@Autowired
 	private JsonWebTokenUtility jsonWebTokenUtility;
 	// 後台查看會員所有資料
@@ -275,6 +280,7 @@ public class MemberController {
 		return ResponseEntity.notFound().build();
 		
 	}
+
 	
 //    @GetMapping("/orderRoom/transactions/{pk}")
 //    public ResponseEntity<?> findById(@PathVariable("pk") Integer id){

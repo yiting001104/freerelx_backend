@@ -4,6 +4,7 @@ import org.springframework.boot.configurationprocessor.json.JSONException;
 import org.springframework.boot.configurationprocessor.json.JSONObject;
 
 import tw.team.project.dto.CreditCardDiscountDTO;
+import tw.team.project.dto.MemberOrdersDTO;
 import tw.team.project.dto.RefundTypeDTO;
 import tw.team.project.dto.TransactionDTO;
 import tw.team.project.model.CreditCardDiscount;
@@ -141,6 +142,22 @@ public class JsonContainer {
 			refundTypeDTO.setRefundRatio(refundTypes.getRefundRatio());
 			refundTypeDTO.setType(refundTypes.getType());
 			return refundTypeDTO;
+		}
+		return null;
+	}
+	
+	public MemberOrdersDTO setMemberOrders(OrderRoom order) {
+		MemberOrdersDTO memberOrd = new MemberOrdersDTO();
+		if (order!=null) {
+			memberOrd.setOrderDate(order.getOrderDate());
+			memberOrd.setAdultPax(order.getAdultPax());
+			memberOrd.setChildPax(order.getChildPax());
+			memberOrd.setArrivateDate(order.getArrivateDate());
+			memberOrd.setRoomAmount(order.getRoomAmount());
+			memberOrd.setReservationStatus(order.getReservationStatus());
+			memberOrd.setReservationSaDate(order.getReservationSaDate());
+			memberOrd.setBasePrice(order.getBasePrice());
+			return memberOrd;
 		}
 		return null;
 	}

@@ -108,12 +108,13 @@ public class OrderRoomService {
 	}
 	
 	// 新增訂單
-	public OrderRoom create(String json, Integer id) {
+	public OrderRoom create(String json) {
 		try {
 			JSONObject obj = new JSONObject(json);
 			Date birth1;
 			String order_person_name, gender, national_id, email, phone_number, credit_card, transaction_password;
 			Member member=null;
+			Integer id = obj.isNull("member_id") ? null : obj.getInt("member_id");
 			// 非會員
 			if (id == null) {			
 				order_person_name = obj.isNull("order_person_name") ? null : obj.getString("order_person_name");
@@ -266,5 +267,15 @@ public class OrderRoomService {
 			return orderRoomRepo.existsById(id);
 		}
 		return false;
+	}
+	// 找出會員的訂單
+	public Page<OrderRoom> findMemberOrderByPage(Integer pageNumber, Integer memberId, Integer dataNumber){
+		Pageable pgb = PageRequest.of(pageNumber-1, dataNumber, Sort.Direction.DESC, "orderDate");
+		Page<OrderRoom> page = orderRoomRepo.findMemberOrder(pgb, memberId);
+		
+		return page;
+	}
+	public Long memberFindTotal(Integer memberId) {
+		return orderRoomRepo.findMemberOrderTotal(memberId);
 	}
 }

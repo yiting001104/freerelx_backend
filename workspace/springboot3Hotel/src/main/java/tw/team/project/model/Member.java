@@ -9,7 +9,9 @@ import org.hibernate.annotations.DynamicInsert;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -28,6 +30,7 @@ import jakarta.persistence.TemporalType;
 @Entity
 @Table(name="member")
 @DynamicInsert // 動態生成SQL語法
+@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "memberId")
 public class Member {
 
 	@Id
@@ -113,7 +116,7 @@ public class Member {
 	public void setOrdersRoom(List<OrderRoom> ordersRoom) {
 		this.ordersRoom = ordersRoom;
 	}
-	@JsonIgnore
+//	@JsonIgnore
 	@OneToMany(mappedBy = "member", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	private List<OrderRoom> ordersRoom;
 	
