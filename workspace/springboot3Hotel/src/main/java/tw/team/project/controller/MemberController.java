@@ -42,8 +42,6 @@ public class MemberController {
 	@Autowired
 	private MemberService memberservice;
 	@Autowired
-	private OrderRoomService ordRoomService;
-	@Autowired
 	private JsonWebTokenUtility jsonWebTokenUtility;
 	// 後台查看會員所有資料
 	@PostMapping(value = "/members/find")
@@ -279,6 +277,19 @@ public class MemberController {
 		}
 		return ResponseEntity.notFound().build();
 		
+	}
+	@PutMapping("/members/password/{pk}")
+	public ResponseEntity<?> modifyPassword(@PathVariable("pk") Integer id, @RequestBody String json){
+		try {
+			Member member = memberservice.updatePassword(json, id);
+			if (member!=null) {
+				return ResponseEntity.ok(member);
+			}
+		} catch (JSONException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return ResponseEntity.notFound().build();
 	}
 
 	

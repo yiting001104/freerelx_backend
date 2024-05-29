@@ -181,7 +181,24 @@ public class MemberService {
 		memberRepository.deleteById(id);
 	}
 	
-	
+	@Transactional
+	public Member updatePassword(String json, Integer inputId) throws JSONException {
+		JSONObject obj = new JSONObject(json);
+		Integer id = obj.isNull("memberId")? null : obj.getInt("memberId");
+    	String originalPassword = obj.isNull("originPassword") ? null : obj.getString("originPassword");
+    	String newPassword = obj.isNull("newPassword") ? null : obj.getString("newPassword");
+    	if (id!=null && id==inputId && originalPassword!=null && newPassword!=null) {
+    		Optional<Member> optional = memberRepository.findById(id);
+    		if (optional.isPresent()) {
+    			Member origin = optional.get();
+    			if (originalPassword.equals(origin.getPassword())) {
+    				origin.setPassword(newPassword);
+    				return origin;
+    			}
+    		}
+    	}
+    	return null;
+	}
 
 
 
