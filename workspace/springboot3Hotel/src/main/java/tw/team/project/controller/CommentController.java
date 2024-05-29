@@ -7,6 +7,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -77,6 +78,19 @@ public class CommentController {
     		return ResponseEntity.ok(page.getContent());
     	}
     	return ResponseEntity.notFound().build();
+    }
+//    5/29新增評論刪除測試成功
+    @DeleteMapping("/comments/instances/{pk}")
+    public ResponseEntity<Void> remove(@PathVariable(name = "pk") Integer id) {
+    	if(id!=null && id!=0) {
+    		boolean exists = commService.existById(id);
+    		if(exists) {
+    			if(commService.delete(id)) {
+    				return ResponseEntity.noContent().build();
+    			}
+    		}
+    	}
+ 		return ResponseEntity.notFound().build();
     }
 	
 }
