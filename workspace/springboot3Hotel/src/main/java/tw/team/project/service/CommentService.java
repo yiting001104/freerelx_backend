@@ -67,4 +67,21 @@ public class CommentService {
 		}
 		return null;
 	}
+//   5/29新增評論刪除測試成功
+	public boolean existById(Integer id) {
+		if(id!=null) {
+			return commRepository.existsById(id);
+		}
+		return false;
+	}
+	public boolean delete(Integer id) {
+		if(id!=null) {
+			Optional<Comment> optional = commRepository.findById(id);
+			if(optional.isPresent()) {
+				commRepository.deleteById(id);
+				return true;
+			}
+		}
+		return false;
+	}
 }
