@@ -199,6 +199,22 @@ public class MemberService {
     	}
     	return null;
 	}
+	//後台更新狀態
+	@Transactional
+	public Member updateStatus(String json, Integer memberId) throws JSONException{
+		JSONObject obj = new JSONObject(json);
+		String status = obj.isNull("status")? null : obj.getString("status");
+		Integer id = obj.isNull("memberId")? null : obj.getInt("memberId");
+    	if (status!=null && status.length()!=0 && memberId!=null && id == memberId) {
+    		Optional<Member> optional = memberRepository.findById(memberId);
+    		if (optional.isPresent()) {
+    			Member origin = optional.get();
+    			origin.setMemberStatus(status);
+    			return origin;
+    		}
+    	}
+    	return null;
+	}
 
 
 

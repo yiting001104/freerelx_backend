@@ -5,7 +5,7 @@ import java.util.Date;
 
 import org.springframework.format.annotation.DateTimeFormat;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -41,11 +41,12 @@ public class RoomAssignment {
 	@Column(name="assignment_date", nullable = false)
 	private Date date;
 	
+//	@JsonIgnore
 //	@ManyToOne
 //	@JoinColumn(name="order_room_detail_id", referencedColumnName = "order_id, room_Information_Id")
-//	private OderRoomId orderRoomId;
+//	private OrderRoomDetail orderRoomDetail;
 	
-	@JsonBackReference
+	@JsonManagedReference
 	@ManyToOne
 	@JoinColumn(name="room_information_id", referencedColumnName = "room_information_id")
 	private RoomInformation roomInformation;

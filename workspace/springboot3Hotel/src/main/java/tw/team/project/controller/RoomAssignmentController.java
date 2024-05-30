@@ -41,7 +41,7 @@ public class RoomAssignmentController {
 
 	
 	//查詢多筆資料~
-	@GetMapping("/roomAssignment")
+	@GetMapping("/backend/roomAssignment")
 	public ResponseEntity<?> listRoomAssignment(@RequestParam(value = "p", defaultValue = "1") Integer Number) {
 		Page<RoomAssignment> page = roomAssignmentService.findAll(Number);
 		List<RoomAssignmentDTO> roomList = new ArrayList<>();
@@ -50,6 +50,9 @@ public class RoomAssignmentController {
 		}
 		return ResponseEntity.ok(roomList);
 	}
+	
+	//findOrderById
+	
 	
 	//findById~
 	  @GetMapping("/roomAssignment/{pk}")
@@ -80,7 +83,7 @@ public class RoomAssignmentController {
 	}
 	
 	//update
-	@PutMapping("/roomAssignment/{pk}")
+	@PutMapping("/backend/roomAssignment/{pk}")
 	public ResponseEntity<?> modify(@PathVariable (name = "pk") Integer id, @RequestBody RoomAssignment bean) {
 		if(bean!=null && bean.getId()!=null && bean.getId()!=0) {
 			boolean exists = roomAssignmentService.existById(bean.getId());

@@ -37,10 +37,15 @@ INSERT INTO roomLevel ( chinese, english, japanese) VALUES
 
 
 INSERT INTO RoomInformation (room_type_id, room_level_id, bed_type, max_occupancy, room_price, room_photo, room_depiction) VALUES
-(1, 1, 'Twin Bed', 2, 12800, NULL, 'Cozy room with a view of the city skyline.'),
-(2, 1, 'Queen Bed', 2, 12800, NULL, 'Spacious room with modern amenities.'),
-(3, 2, 'Twin Bed', 2, 15800, NULL, 'Luxurious suite with panoramic ocean views.'),
-(1, 2, 'Queen Bed', 2, 15800, NULL, 'Elegant room with a comfortable queen-sized bed.');
+(1, 1, 'Twin Bed', 2, 7000, NULL, 'Cozy room with a view of the city skyline.'),
+(1, 2, 'Queen Bed', 2, 7800, NULL, 'Spacious room with modern amenities.'),
+(1, 3, 'Twin Bed', 2, 8600, NULL, 'Luxurious suite with panoramic ocean views.'),
+(1, 4, 'Tow Queen Bed', 2, 8200, NULL, 'Cozy room with a view of the city skyline.'),
+(2, 1, 'Queen Bed', 2, 8200, NULL, 'Spacious room with modern amenities.'),
+(2, 3, 'Twin Bed', 2, 9600, NULL, 'Luxurious suite with panoramic ocean views.'),
+(3, 1, 'Twin Bed', 2, 12800, NULL, 'Cozy room with a view of the city skyline.'),
+(3, 2, 'Queen Bed', 2, 22800, NULL, 'Spacious room with modern amenities.'),
+(3, 3, 'Queen Bed', 2, 30000, NULL, 'Elegant room with a comfortable queen-sized bed.');
 
 INSERT INTO roomManagement (room_number, room_state_id, repair_status, room_information_id)
 VALUES

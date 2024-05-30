@@ -65,7 +65,9 @@ public class MemberController {
 					.put("nationality", person.getNationality())
 					.put("login_time", person.getLoginTime())
 					.put("login_status", person.getLoginStatus())
-					.put("picture", person.getPicture());
+					.put("picture", person.getPicture())
+					.put("registration_date", person.getRegistrationDate())
+					.put("member_status", person.getMemberStatus());
 			array.put(item);
 		}
 //		responseObj.put("list", array);
@@ -91,18 +93,25 @@ public class MemberController {
         if (email != null && password != null && email.length()!=0 && password.length()!=0) {
         	Member member = memberservice.checkLogin(email, password);
         	if (member != null) {
-                responseJson.put("success", true);
-                responseJson.put("message", "登入成功");
-                httpSession.setAttribute("loginUserId", member.getMemberId());
-                httpSession.setAttribute("loginUserName", member.getMemberName());
-                
-    			JSONObject user = new JSONObject()
-    					.put("custid", member.getMemberId())
-    					.put("email", member.getEmail());
-    			String token = jsonWebTokenUtility.createEncryptedToken(user.toString(), null);
-    			responseJson.put("token", token);
-    			responseJson.put("user", member.getMemberName());
-    			responseJson.put("userId", member.getMemberId());
+        		
+        		if (!member.getMemberStatus().equals("banned")) {
+        			
+    		      responseJson.put("success", true);
+                  responseJson.put("message", "登入成功");
+                  httpSession.setAttribute("loginUserId", member.getMemberId());
+                  httpSession.setAttribute("loginUserName", member.getMemberName());
+                      
+          			JSONObject user = new JSONObject()
+          					.put("custid", member.getMemberId())
+          					.put("email", member.getEmail());
+          			String token = jsonWebTokenUtility.createEncryptedToken(user.toString(), null);
+          			responseJson.put("token", token);
+          			responseJson.put("user", member.getMemberName());
+          			responseJson.put("userId", member.getMemberId());
+        		}else {
+        			responseJson.put("success", false);
+        			responseJson.put("message", "你的帳號被管理禁用，請聯繫管理員");
+        		}
                 
         	} else {
                 responseJson.put("success", false);
@@ -282,6 +291,19 @@ public class MemberController {
 	public ResponseEntity<?> modifyPassword(@PathVariable("pk") Integer id, @RequestBody String json){
 		try {
 			Member member = memberservice.updatePassword(json, id);
+			if (member!=null) {
+				return ResponseEntity.ok(member);
+			}
+		} catch (JSONException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return ResponseEntity.notFound().build();
+	}
+	@PutMapping("/backend/members/status/{pk}")
+	public ResponseEntity<?> modifyStatus(@PathVariable("pk") Integer id, @RequestBody String json){
+		try {
+			Member member = memberservice.updateStatus(json, id);
 			if (member!=null) {
 				return ResponseEntity.ok(member);
 			}
