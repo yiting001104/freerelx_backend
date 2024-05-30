@@ -20,5 +20,8 @@ public interface OrderRoomRepository extends JpaRepository<OrderRoom, Integer>{
 
 	@Query("select count(*) from OrderRoom ord where ord.member.memberId = :memberId") // "from OrderRoom ord where ord.member.memberId = :memberId"
 	public Long findMemberOrderTotal(@Param("memberId") Integer id);
+	
+	@Query(value = "select top(1) order_id from orderRoom ordR where order_person_name = :name order by orderdate desc",nativeQuery = true)
+	public Integer findLatestByOrderName(@Param("name") String name);
 }
 //room.orderdate, room.adult_pax, room.child_pax, room.room_type_amount,  room.arrival_date, room.checkout_date, room.reservation_status, room.reservation_status_date,room.base_price

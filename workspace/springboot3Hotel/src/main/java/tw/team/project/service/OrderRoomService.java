@@ -278,4 +278,12 @@ public class OrderRoomService {
 	public Long memberFindTotal(Integer memberId) {
 		return orderRoomRepo.findMemberOrderTotal(memberId);
 	}
+	
+	public Integer findLatestOrderByName(String name) {
+		Integer id = orderRoomRepo.findLatestByOrderName(name);
+		if (id!=null) {
+			return id;
+		}
+		return null;
+	}
 }

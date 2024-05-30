@@ -1,21 +1,9 @@
 ﻿use Hotel;
 
-INSERT INTO Minibar (minibar_item, minibar_price, minibar_make, minibar_photo, minibar_expire) VALUES
-('whisky', 800, '2024-05-09', 0x4D5A90000300000004000000FFFF0000B8000000000000004000000000000000,
- 52),
-('soda drink', 120, '2024-04-01', 0x4D5A90000300000004000000FFFF0000B8000000000000004000000000000000,
- 2),
-('coffee', 120, '2024-05-09', 0x4D5A90000300000004000000FFFF0000B8000000000000004000000000000000,
- 52),
-('instant noodles', 80, '2024-06-19', 0x4D5A90000300000004000000FFFF0000B8000000000000004000000000000000,
- 152),
-('mineral water', 80, '2024-07-29', 0x4D5A90000300000004000000FFFF0000B8000000000000004000000000000000,
- 92);
-
- INSERT INTO roomState (state)
+INSERT INTO roomState (state)
 VALUES
-('入住'),
-('尚未入住'),
+('待入住'),
+('已入住'),
 ('已退房(未清潔)'),
 ('準備完成(已清潔)');
 
@@ -47,25 +35,68 @@ INSERT INTO RoomInformation (room_type_id, room_level_id, bed_type, max_occupanc
 (3, 2, 'Queen Bed', 2, 22800, NULL, 'Spacious room with modern amenities.'),
 (3, 3, 'Queen Bed', 2, 30000, NULL, 'Elegant room with a comfortable queen-sized bed.');
 
-INSERT INTO roomManagement (room_number, room_state_id, repair_status, room_information_id)
+INSERT INTO roomManagement (room_number, room_state_id, repair_status, room_information_id) VALUES
+(201, 4, 'Good condition', 1),
+(202, 4, 'Good condition', 2),
+(203, 4, 'Good condition', 3),
+(204, 4, 'Good condition', 4),
+(205, 4, 'Good condition', 5),
+(206, 4, 'Good condition', 6),
+(207, 4, 'Good condition', 7),
+(208, 4, 'Good condition', 8),
+(209, 4, 'Good condition', 9),
+(301, 4, 'Good condition', 1),
+(302, 4, 'Good condition', 2),
+(303, 4, 'Good condition', 3),
+(304, 4, 'Good condition', 4),
+(305, 4, 'Good condition', 5),
+(306, 4, 'Good condition', 6),
+(307, 4, 'Good condition', 7),
+(308, 4, 'Good condition', 8),
+(309, 4, 'Good condition', 9),
+(401, 4, 'Good condition', 1),
+(402, 4, 'Good condition', 2),
+(403, 4, 'Good condition', 3),
+(404, 4, 'Good condition', 4),
+(405, 4, 'Good condition', 5),
+(406, 4, 'Good condition', 6),
+(407, 4, 'Good condition', 7),
+(408, 4, 'Good condition', 8),
+(409, 4, 'Good condition', 9),
+(501, 4, 'Good condition', 1),
+(502, 4, 'Good condition', 2),
+(503, 4, 'Good condition', 3),
+(504, 4, 'Good condition', 4),
+(505, 4, 'Good condition', 5),
+(506, 4, 'Good condition', 6),
+(507, 4, 'Good condition', 7),
+(508, 4, 'Good condition', 8),
+(509, 4, 'Good condition', 9),
+(601, 4, 'Good condition', 1),
+(602, 4, 'Good condition', 2),
+(603, 4, 'Good condition', 3),
+(604, 4, 'Good condition', 4),
+(605, 4, 'Good condition', 5),
+(606, 4, 'Good condition', 6),
+(607, 4, 'Good condition', 7),
+(608, 4, 'Good condition', 8),
+(609, 4, 'Good condition', 9);
+
+
+INSERT INTO Minibar (minibar_item, minibar_price, minibar_make, minibar_photo, minibar_expire)
 VALUES
-(101, 1, 'Good condition', 1),
-(102, 1, 'Needs cleaning', 2),
-(103, 2, 'Under repair', 3);
-
-
-INSERT INTO housingManagement (room_management_id, order_id, remarks, checkInTime, checkOutTime, total_compensation_fee, total_additional_fee)
-VALUES
-(1, null, 'Good view', '2024-04-14 10:00:00', '2024-04-20 12:00:00', 100.50, 20.75),
-(2, null, 'Spacious room', '2024-04-15 11:00:00', '2024-04-21 10:00:00', 150.25, 30.00),
-(3, null, 'Nice amenities', '2024-04-16 12:00:00', '2024-04-22 09:00:00', 120.75, 25.50);
-
-
-INSERT INTO checkOutInspection (compensation, compensation_fee, compensation_photo, housing_management_id)
-VALUES 
-('Broken lamp', 50.00, 0x123456789ABCDEF, 1),
-('Scratched table', 30.00, 0x23456789ABCDEF1, 2),
-('Stained carpet', 40.00, 0x3456789ABCDEF12, 3);
+('whisky', 800, '2024-05-09', (SELECT BulkColumn FROM OPENROWSET(BULK 'C:\images\whisky.jpg', SINGLE_BLOB) AS minibar_photo), 12),
+('soda drink', 120, '2024-04-01', (SELECT BulkColumn FROM OPENROWSET(BULK 'C:\images\soda_drink.jpg', SINGLE_BLOB) AS minibar_photo), 225),
+('coffee', 120, '2024-05-09', (SELECT BulkColumn FROM OPENROWSET(BULK 'C:\images\coffee.jpg', SINGLE_BLOB) AS minibar_photo), 52),
+('instant noodles', 80, '2024-06-19', (SELECT BulkColumn FROM OPENROWSET(BULK 'C:\images\instant_noodles.jpg', SINGLE_BLOB) AS minibar_photo), 152),
+('mineral water', 80, '2024-07-29', (SELECT BulkColumn FROM OPENROWSET(BULK 'C:\images\mineral_water.jpg', SINGLE_BLOB) AS minibar_photo), 3122),
+('cola', 120, '2024-07-29', (SELECT BulkColumn FROM OPENROWSET(BULK 'C:\images\cola.jpg', SINGLE_BLOB) AS minibar_photo), 222),
+('ice cream', 200, '2024-07-29', (SELECT BulkColumn FROM OPENROWSET(BULK 'C:\images\ice_cream.jpg', SINGLE_BLOB) AS minibar_photo), 120),
+('coffee', 80, '2024-07-29', (SELECT BulkColumn FROM OPENROWSET(BULK 'C:\images\coffee.jpg', SINGLE_BLOB) AS minibar_photo), 92),
+('miketea', 30, '2024-07-29', (SELECT BulkColumn FROM OPENROWSET(BULK 'C:\images\mike_tea.jpg', SINGLE_BLOB) AS minibar_photo), 37),
+('hotdog', 60, '2024-07-29', (SELECT BulkColumn FROM OPENROWSET(BULK 'C:\images\hotdog.jpg', SINGLE_BLOB) AS minibar_photo), 86),
+('snack', 30, '2024-07-29', (SELECT BulkColumn FROM OPENROWSET(BULK 'C:\images\snack.jpg', SINGLE_BLOB) AS minibar_photo), 410),
+('hand pulled noodle', 250, '2024-07-29', (SELECT BulkColumn FROM OPENROWSET(BULK 'C:\images\hand-pulled_noodle.jpg', SINGLE_BLOB) AS minibar_photo), 42);
 
 
 INSERT INTO member( name, gender, birth, national_id, email, phone_number, credit_card, contact_address, password, registration_date,member_status,nationality,total_bonus_points,login_time) VALUES
@@ -122,3 +153,28 @@ INSERT INTO product (product_expected_arrival_day,product_description,product_na
 (1,'保證好睡','暢銷枕頭',700,20,2),
 (1,'夏季必備','夏季枕頭',500,20,2),
 (1,'夏季必備','冬季枕頭',450,20,2)
+
+
+INSERT INTO housingManagement (room_management_id, order_id, remarks, checkInTime, checkOutTime, total_compensation_fee, total_additional_fee)
+VALUES 
+(1, 1, 'No remarks', '2024-06-05 14:00:00', '2024-06-10 12:00:00', 0.00, 0.00),
+(2, 2, 'No remarks', '2024-06-06 14:00:00', '2024-06-11 12:00:00', 0.00, 0.00),
+(3, 3, 'No remarks', '2024-06-07 14:00:00', '2024-06-12 12:00:00', 0.00, 0.00),
+(4, 4, 'No remarks', '2024-06-08 14:00:00', '2024-06-13 12:00:00', 0.00, 0.00),
+(5, 5, 'No remarks', '2024-06-09 14:00:00', '2024-06-14 12:00:00', 0.00, 0.00);
+
+
+INSERT INTO checkOutInspection (compensation, compensation_fee, compensation_photo, housing_management_id)
+VALUES 
+('Broken lamp', 50.00, 0x123456789ABCDEF, 1),
+('Scratched table', 30.00, 0x23456789ABCDEF1, 2),
+('Stained carpet', 40.00, 0x3456789ABCDEF12, 3);
+
+
+INSERT INTO additionalCharges (minibar_id, housing_management_id, quantity, amount)
+VALUES 
+(1, 1, 2, 30.00),
+(2, 2, 1, 15.00),
+(3, 3, 3, 45.00),
+(4, 4, 1, 20.00),
+(5, 5, 2, 40.00);

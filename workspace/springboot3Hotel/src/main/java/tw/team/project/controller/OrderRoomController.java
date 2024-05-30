@@ -218,4 +218,24 @@ public class OrderRoomController {
 		}
 		return obj.toString();
 	}
+	@GetMapping("/orderRoom/latest/{name}")
+	public String findLatestByName(@PathVariable("name") String name) {
+		JSONObject obj = new JSONObject();
+		try {
+			if (name!=null && name.length()!=0) {
+				Integer orderId = ordRoomService.findLatestOrderByName(name);
+				if (orderId!=null) {
+					obj.put("orderId", orderId);
+					obj.put("success", true);
+				}
+			}else {
+				obj.put("success", false);
+			}
+		} catch (JSONException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		return obj.toString();
+	}
 }
