@@ -2,7 +2,9 @@ package tw.team.project.service;
 
 import java.util.Optional;
 
+import org.json.JSONException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.configurationprocessor.json.JSONObject;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -11,6 +13,7 @@ import org.springframework.stereotype.Service;
 
 import jakarta.transaction.Transactional;
 import tw.team.project.dto.TransactionDTO;
+import tw.team.project.linepay.ConsumerCheck;
 import tw.team.project.model.CreditCardDiscount;
 import tw.team.project.model.CreditCardDiscountRepository;
 import tw.team.project.model.RefundType;
@@ -103,6 +106,23 @@ public class TransactionService {
             }
         }
         return false;
+    }
+     // 送請求給line
+    public String callLinePay(String json) throws org.springframework.boot.configurationprocessor.json.JSONException{
+    	JSONObject obj = new JSONObject(json);
+    	String encry = new ConsumerCheck().linePay(obj);
+    	System.out.println(encry);
+    	return encry;
+    	
+    }
+    
+    // 回應line付款完成
+    public String confirmLinePay(String json) throws org.springframework.boot.configurationprocessor.json.JSONException{
+    	JSONObject obj = new JSONObject(json);
+    	String encry = new ConsumerCheck().confirmLine(obj);
+    	System.out.println(encry);
+    	return encry;
+    	
     }
 
 }

@@ -68,7 +68,7 @@ public class OrderRoom {
 	@Column(name = "phone_number",nullable = false, unique = true)
 	private String phone;
 	
-	@Column(name = "credit_card", nullable = false)
+	@Column(name = "credit_card", nullable = true)
 	private String creditCard;
 	
 	@Column(name = "adult_pax", nullable = false)

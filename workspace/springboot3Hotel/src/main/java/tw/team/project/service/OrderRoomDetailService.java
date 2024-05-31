@@ -42,6 +42,17 @@ public class OrderRoomDetailService {
 		return null;
 	}
 	
+	// 查看訂單是否存在，不存在就建立
+	public boolean isExists(OrderRoomDetail ordetail) {
+		OrderRoomDetailId ordetailId = ordetail.getId();
+		Optional<OrderRoomDetail> optional = detailRepository.findById(ordetailId);
+		if(optional.isEmpty()) {
+			detailRepository.save(ordetail);
+			return true;
+		}
+		return false;
+	}
+	
 	@Transactional
 	public OrderRoomDetail addRoom(OrderRoomDetail ordetail) {
 		OrderRoomDetailId ordetailId = ordetail.getId();

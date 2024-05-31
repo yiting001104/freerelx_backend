@@ -151,6 +151,7 @@ public class OrderRoomService {
 			Integer child_pax = obj.isNull("child_pax") ? null : obj.getInt("child_pax");
 			Integer room_type_amount = obj.isNull("room_type_amount") ? null : obj.getInt("room_type_amount");
 			
+			System.out.println("room_type_amount"+ room_type_amount);
 			String arrival_date = obj.isNull("arrival_date") ? null : obj.getString("arrival_date");
 			Date arrivalDate;
 			if (arrival_date != null && arrival_date.length()!=0) {
