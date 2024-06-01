@@ -92,5 +92,16 @@ public class CommentController {
     	}
  		return ResponseEntity.notFound().build();
     }
-	
+//	6/1新增的，用comments的pk-key找
+    @GetMapping("/comments/one/{pk}")
+    public ResponseEntity<?> findById(@PathVariable(name = "pk") Integer id) {
+    	Comment comment = commService.findById(id);
+    	if(comment!=null) {
+    		ResponseEntity<Comment> ok = ResponseEntity.ok(comment);
+    		return ok;
+    	} else {
+    		ResponseEntity<Void> notfound = ResponseEntity.notFound().build();
+    		return notfound;
+    	}
+    }
 }
