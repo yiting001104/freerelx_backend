@@ -30,7 +30,7 @@ public class AlertService {
 			for (Cart one : all) {
 				Alert alert = new Alert();
 				alert.setMemberid(one.getMember());//得到成員id
-				alert.setAlertmessage("{"+one.getId().getProductName()+"}產品已被下架了!");//得到產品名稱
+				alert.setAlertmessage("您購物車中{"+one.getId().getProductName()+"}價格改變了!");//得到產品名稱
 				alertRepository.save(alert); //儲存
 			}
 			return true;

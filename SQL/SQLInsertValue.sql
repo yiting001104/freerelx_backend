@@ -148,11 +148,6 @@ INSERT INTO supplier (product_manufacturer_address,product_manufacturer,product_
 ('台北市大安區','專賣蛋糕廠商','cake@gmail.com','0973647111','蛋糕達人'),
 ('台北市信義區','專賣枕頭廠商','pillow@gmail.com','0973647222','枕頭達人')
 
-INSERT INTO product (product_expected_arrival_day,product_description,product_name,product_price,product_stock,product_supplier_id)VALUES
-(1,'據傳當時帝王使用材質','帝王枕頭',1000,20,2),
-(1,'保證好睡','暢銷枕頭',700,20,2),
-(1,'夏季必備','夏季枕頭',500,20,2),
-(1,'夏季必備','冬季枕頭',450,20,2)
 
 
 INSERT INTO housingManagement (room_management_id, order_id, remarks, checkInTime, checkOutTime, total_compensation_fee, total_additional_fee)
@@ -178,3 +173,20 @@ VALUES
 (3, 3, 3, 45.00),
 (4, 4, 1, 20.00),
 (5, 5, 2, 40.00);
+
+INSERT INTO product (product_expected_arrival_day,product_description,product_name,product_price,product_stock,product_supplier_id)VALUES
+(1,'據傳當時帝王使用材質','帝王枕頭',1000,200,2),
+(1,'保證好睡','暢銷枕頭',700,200,2),
+(1,'夏季必備','夏季枕頭',500,200,2),
+(1,'夏季必備','冬季枕頭',450,200,2),
+(1,'雲霧般的舒適感，純白透氣羽絲絨一入，締造五星級睡眠享受的極致奢華。','五星級純白透氣羽絲絨１入',1400,200,2),
+(1,'奢華品質融合，五星級有白有棕透氣羽絲絨各一入，打造無與倫比的睡眠體驗。','有白有棕透氣羽絲絨各１入',1000,200,2),
+(1,'絢爛記憶：帶您進入夢幻般的睡眠之旅。','記憶枕頭１入',1600,200,2),
+(1,'適合作為派對、聚會或下午茶的點心','草莓杯子蛋糕',300,200,1),
+(1,'外酥內軟，沾滿香濃巧克力醬，是美味的甜點','巧克力甜甜圈',300,200,1),
+(1,'適合作為派對、聚會或下午茶的點心','巧克力杯子蛋糕',300,200,1),
+(1,'濃郁巧克力餅乾與香滑奶油夾心，組成的美味蛋糕，口感豐富，令人愛不釋手。','Oreo Cake',300,200,1)
+
+INSERT INTO employee (name, position, premission, password, emoloyee_status, email) VALUES
+('Jennifer Curry', 'Housekeeping', '查看管理訂單', '$2a$10$sPLEJa42x1v7XLgMmJpYt.m0vTKhHljgrcMnp8u0fmF.qgiN8HS6G	', '在職', 'JenniferCurry@hotmail.com'),
+('Test1', 'GeneralManger', '沒有限制', '$2a$10$HrNRCY66ihcVJ/RDZWgMReawPSXKLIHNOYv2tra9cReHzpOYtLhAC', '在職', 'Test1@protonmail.com')
