@@ -386,5 +386,5 @@ create table Facility (
         FACILITY_ID varchar(255),
         FACILITY_STATUS varchar(255),
         PHONE_NUMBER varchar(255),
-        primary key (FACILITY_ORDER_ID)
-    );
+        primary key (FACILITY_ORDER_ID)	
+	);
