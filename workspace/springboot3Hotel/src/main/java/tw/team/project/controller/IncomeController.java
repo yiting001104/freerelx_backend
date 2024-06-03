@@ -5,6 +5,7 @@ import java.util.Date;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.MediaType;
@@ -27,7 +28,8 @@ import tw.team.project.service.IncomeService;
 @RequestMapping("/hotel")
 @CrossOrigin
 public class IncomeController {
-	
+	@Value("${local.serverPort}")
+	private String serverUri;
 	@Autowired
 	private IncomeService incomeService;
 	
@@ -43,7 +45,7 @@ public class IncomeController {
         if (income!=null){
             Income newIncome = incomeService.insert(income);
             if (newIncome!=null){
-                String uri = "http://localhost:8080/hotel/banks"+newIncome.getIncomeId();
+                String uri = serverUri+"/hotel/banks"+newIncome.getIncomeId();
                 Income dbIncome = incomeService.findById(income.getIncomeId());
                 return ResponseEntity.created(URI.create(uri)).contentType(MediaType.APPLICATION_JSON).body(dbIncome);
             }

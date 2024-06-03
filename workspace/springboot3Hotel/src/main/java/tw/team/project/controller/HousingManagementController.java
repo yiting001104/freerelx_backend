@@ -8,6 +8,7 @@ import org.springframework.boot.configurationprocessor.json.JSONArray;
 import org.springframework.boot.configurationprocessor.json.JSONException;
 import org.springframework.boot.configurationprocessor.json.JSONObject;
 import org.springframework.data.domain.Page;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -38,7 +39,7 @@ public class HousingManagementController {
 	// checkOI 及 addition 新繩增加 totalfee
 
 	//findAll
-	@GetMapping("/housingManagement")
+	@GetMapping("/backend/housingManagement")
 	public ResponseEntity<?> listHoustingRoomPage(@RequestParam(value = "p", defaultValue = "1") Integer Number) {
 		Page<HousingManagement> page = housingManagementService.findAll(Number);
 		List<HousingManagementDTO> roomList = new ArrayList<>();
@@ -49,7 +50,7 @@ public class HousingManagementController {
 	}
 	
 	//findById
-    @GetMapping("/housingManagement/{pk}")
+    @GetMapping("/backend/housingManagement/{pk}")
     public ResponseEntity<?> findById(@PathVariable("pk") Integer id){
     	HousingManagement room = housingManagementService.findById(id);
         if (room != null){
@@ -61,41 +62,71 @@ public class HousingManagementController {
             return notFound;
         }
     }
-//	@GetMapping("/housingManagement/{pk}")
-//	public String findById(@PathVariable(name = "pk") Integer id) throws JSONException {
-//		JSONObject responseJson = new JSONObject();
-//		JSONArray array = new JSONArray();
-//		HousingManagement room = housingManagementService.findById(id);
-//		if (room != null) {
-//			JSONObject housing = new JSONObject().put("remarks", room.getRemarks())
-//					.put("checkInTime", room.getCheckInTime()).put("checkOutTime", room.getCheckOutTime())
-//					.put("totalAdditional", room.getTotalAdditional())
-//					.put("totalCompensation", room.getTotalCompensation());
-//			array.put(housing);
-//		}
-//		responseJson.put("list", array);
-//		return responseJson.toString();
+    
+    
+//	//create
+//	@PostMapping("backend/housingManagement1")
+//	public ResponseEntity<?> create(@RequestBody AdditionalCharges bean) {
+//		if (bean != null) {
+//			HousingManagement housingManagement = housingManagementService.create(bean);
+//				if (housingManagement != null) {
+//					String uri = "http://localhost:8080/hotel/additionalCharges" + housingManagement.getId();
+//    				return ResponseEntity.created(URI.create(uri))
+//                            .contentType(MediaType.APPLICATION_JSON)
+//                            .body(housingManagement);
+//				}
+//			}
+//		return ResponseEntity.noContent().build();
 //	}
 
-	@PostMapping("/housingManagement")
-	public String create(@RequestBody String json, HttpSession httpSession) throws JSONException {
-		Integer id = null;
-		JSONObject responseJson = new JSONObject();
-		HousingManagement housingManagement = housingManagementService.create(json, id);
-		try {
-			if (housingManagement == null) {
-				responseJson.put("success", false);
-				responseJson.put("message", "新增失敗");
-			} else {
-				responseJson.put("success", true);
-				responseJson.put("message", "新增成功");
-			}
-		} catch (JSONException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		return responseJson.toString();
-	}
+    @PostMapping("/backend/housingManagement")
+    public ResponseEntity<String> create(@RequestBody String json, HttpSession httpSession) {
+        try {
+            JSONObject obj = new JSONObject(json);
+            Integer orderid = obj.isNull("orderid") ? null : obj.getInt("orderid");
+            Integer roomid = obj.isNull("roomid") ? null : obj.getInt("roomid");
+            if (orderid == null && roomid == null) {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("ID cannot be null");
+            }else {
+
+            JSONObject responseJson = new JSONObject();
+            HousingManagement housingManagement = housingManagementService.create(json, orderid, roomid);
+            if (housingManagement == null) {
+                responseJson.put("success", false);
+                responseJson.put("message", "新增失敗");
+            } else {
+                responseJson.put("success", true);
+                responseJson.put("message", "新增成功");
+            }
+            return ResponseEntity.ok(responseJson.toString());}
+        } catch (JSONException e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+        }
+    }
+    
+    
+//	@PostMapping("/housingManagement")
+//	public String create(@RequestBody String json, HttpSession httpSession) throws JSONException {
+//		Integer id = null;
+//		JSONObject responseJson = new JSONObject();
+//		HousingManagement housingManagement = housingManagementService.create(json, id);
+//		try {
+//			if (housingManagement == null) {
+//				responseJson.put("success", false);
+//				responseJson.put("message", "新增失敗");
+//			} else {
+//				responseJson.put("success", true);
+//				responseJson.put("message", "新增成功");
+//			}
+//		} catch (JSONException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
+//		return responseJson.toString();
+//	}
+    
+    
 
 	@GetMapping("/housingManagement/number/{number}")
 	public String existsByItem(@PathVariable("number") Integer number) {

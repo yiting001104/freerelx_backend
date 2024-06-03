@@ -27,6 +27,17 @@ public class CheckOutInspectionService {
 //		return CheckOutInspectionRepo.findAll();
 //	}
 	
+	public boolean delete(Integer id) {
+		if (id != null) {
+			Optional<CheckOutInspection> optional = checkOutInspectionRepo.findById(id);
+			if (optional.isPresent()) {
+				checkOutInspectionRepo.deleteById(id);
+				return true;
+			}
+		}
+		return false;
+	}
+	
     public Page<CheckOutInspection> findAll(Integer pageNumber){
         Pageable pgb = PageRequest.of(pageNumber-1, 10, Sort.Direction.ASC, "id");
         Page<CheckOutInspection> page = checkOutInspectionRepo.findAll(pgb);
@@ -113,7 +124,7 @@ public class CheckOutInspectionService {
 //	        
 //	        CheckOutInspection savedCheckOutInspection = checkOutInspectionRepo.save(newCheckOutInspection);
 	        
-	        //  HousingManagement 相关的逻辑
+	        //  HousingManagement 
 	        if (bean.getFee() != null) {
 	            Optional<HousingManagement> housingOptional = housingManagementRepo.findById(bean.getId());
 	            if(housingOptional.isPresent()) {

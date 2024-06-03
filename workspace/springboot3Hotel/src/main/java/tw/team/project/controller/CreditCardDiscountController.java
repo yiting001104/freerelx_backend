@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -29,6 +30,8 @@ import tw.team.project.util.JsonContainer;
 @CrossOrigin
 public class CreditCardDiscountController {
 
+	@Value("${local.serverPort}")
+	private String serverUri;
     @Autowired
     private CreditCardDiscountService creditCardDiscountService;
     
@@ -62,7 +65,7 @@ public class CreditCardDiscountController {
             if (!exists){
                 CreditCardDiscount newBank = creditCardDiscountService.insert(bank);
                 if (newBank!=null){
-                    String uri = "http://localhost:8080/hotel/banks"+newBank.getBankId();
+                    String uri = serverUri+"/hotel/banks"+newBank.getBankId();
                     return ResponseEntity.created(URI.create(uri)).contentType(MediaType.APPLICATION_JSON).body(newBank);
                 }
             }

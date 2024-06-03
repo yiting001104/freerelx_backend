@@ -62,7 +62,7 @@ public class RefundTypeController {
             if (!refundTypeService.existByName(refundType.getType())){
                 RefundType newRefundType =  refundTypeService.insert(refundType);
                 if (newRefundType!=null){
-                    String uri = "http://localhost:8080/hotel/refundType"+newRefundType.getRefundTypeId();
+                    String uri = serverUri+"/hotel/refundType"+newRefundType.getRefundTypeId();
                     return ResponseEntity.created(URI.create(uri)).contentType(MediaType.APPLICATION_JSON).body(newRefundType);
                 }
             }

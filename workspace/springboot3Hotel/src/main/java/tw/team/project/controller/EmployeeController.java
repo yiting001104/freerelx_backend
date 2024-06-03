@@ -3,6 +3,7 @@ package tw.team.project.controller;
 import java.net.URI;
 
 import org.json.JSONObject;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.configurationprocessor.json.JSONException;
 import org.springframework.data.domain.Page;
@@ -28,6 +29,8 @@ import tw.team.project.util.EmailValidator;
 @RequestMapping("/hotel")
 @CrossOrigin
 public class EmployeeController {
+	@Value("${local.serverPort}")
+	private String serverUri;
 
 	@Autowired
 	private EmployeeService employeeService;
@@ -40,7 +43,7 @@ public class EmployeeController {
 				if (!employeeService.existByEmail(employee.getEmail())) {
 					Employee newEmployee = employeeService.addEmployee(employee);
 					if (newEmployee!=null) {
-						 String uri = "http://localhost:8080/hotel/employee/register"+newEmployee.getEmployeeId();
+						 String uri = serverUri+"/hotel/employee/register"+newEmployee.getEmployeeId();
 		                    return ResponseEntity.created(URI.create(uri)).contentType(MediaType.APPLICATION_JSON).body(newEmployee);
 					}
 				}

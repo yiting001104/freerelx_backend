@@ -25,15 +25,15 @@ INSERT INTO roomLevel ( chinese, english, japanese) VALUES
 
 
 INSERT INTO RoomInformation (room_type_id, room_level_id, bed_type, max_occupancy, room_price, room_photo, room_depiction) VALUES
-(1, 1, 'Twin Bed', 2, 7000, NULL, 'Cozy room with a view of the city skyline.'),
-(1, 2, 'Queen Bed', 2, 7800, NULL, 'Spacious room with modern amenities.'),
-(1, 3, 'Twin Bed', 2, 8600, NULL, 'Luxurious suite with panoramic ocean views.'),
-(1, 4, 'Tow Queen Bed', 2, 8200, NULL, 'Cozy room with a view of the city skyline.'),
-(2, 1, 'Queen Bed', 2, 8200, NULL, 'Spacious room with modern amenities.'),
-(2, 3, 'Twin Bed', 2, 9600, NULL, 'Luxurious suite with panoramic ocean views.'),
-(3, 1, 'Twin Bed', 2, 12800, NULL, 'Cozy room with a view of the city skyline.'),
-(3, 2, 'Queen Bed', 2, 22800, NULL, 'Spacious room with modern amenities.'),
-(3, 3, 'Queen Bed', 2, 30000, NULL, 'Elegant room with a comfortable queen-sized bed.');
+(1, 1, 'Twin Bed', 2, 7000, 'http://bosscode.monoame.com/20170323_vue_comp/img/room%20(1).jpg', 'Cozy room with a view of the city skyline.'),
+(1, 2, 'Queen Bed', 2, 7800, 'https://www.grand-hilai.com/room/upload/room_list_pic/twL_room_22F02_nuswf33jvc.jpg', 'Spacious room with modern amenities.'),
+(1, 3, 'Twin Bed', 2, 8600, 'http://bosscode.monoame.com/20170323_vue_comp/img/room%20(2).jpg', 'Luxurious suite with panoramic ocean views.'),
+(1, 4, 'Tow Queen Bed', 2, 8200, 'https://www.grand-hilai.com/room-detail/upload/room_b/twL_room_22F02_gkv2it2qcn.jpg', 'Cozy room with a view of the city skyline.'),
+(2, 1, 'Queen Bed', 2, 8200,'http://bosscode.monoame.com/20170323_vue_comp/img/room (5).jpg', 'Spacious room with modern amenities.'),
+(2, 3, 'Twin Bed', 2, 9600, 'https://www.grand-hilai.com/room-detail/upload/room_b/twL_room_23B24_piuj5kh9pi.jpg', 'Luxurious suite with panoramic ocean views.'),
+(3, 1, 'Twin Bed', 2, 12800, 'http://bosscode.monoame.com/20170323_vue_comp/img/room (6).jpg', 'Cozy room with a view of the city skyline.'),
+(3, 2, 'Queen Bed', 2, 22800, 'https://www.grand-hilai.com/room-detail/upload/room_b/twL_room_23A31_fcxih8b8ja.jpg', 'Spacious room with modern amenities.'),
+(3, 3, 'Queen Bed', 2, 30000, 'https://s.yimg.com/ny/api/res/1.2/pk2B1_Nn2Opf2CgIuBO6Ag--/YXBwaWQ9aGlnaGxhbmRlcjt3PTk2MDtoPTU0MDtjZj13ZWJw/https://media.zenfs.com/en/nownews.com/2c734ac1f9d0bdfc0d27e98bfda65e51', 'Elegant room with a comfortable queen-sized bed.');
 
 INSERT INTO roomManagement (room_number, room_state_id, repair_status, room_information_id) VALUES
 (201, 4, 'Good condition', 1),

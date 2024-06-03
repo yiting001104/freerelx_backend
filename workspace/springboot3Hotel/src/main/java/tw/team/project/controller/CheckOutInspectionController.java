@@ -5,10 +5,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.configurationprocessor.json.JSONException;
+import org.springframework.boot.configurationprocessor.json.JSONObject;
 import org.springframework.data.domain.Page;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -29,7 +33,8 @@ import tw.team.project.util.JsonContainer2;
 @CrossOrigin
 public class CheckOutInspectionController {
 
-	
+	@Value("${local.serverPort}")
+	private String serverUri;
 	//更新OR新增 時更改 housingMangement totalfee
 	
 	@Autowired
@@ -37,7 +42,7 @@ public class CheckOutInspectionController {
 	
 	// findAll~
 	
-    @GetMapping("/checkOutInspection")
+    @GetMapping("/backend/checkOutInspection")
     public ResponseEntity<?> LisgCheckOutInspection(@RequestParam(value = "p",defaultValue = "1") Integer pageNumber){
         Page<CheckOutInspection> page = checkOutInspectionService.findAll(pageNumber);
         List<CheckOutInspectionDTO> checkOutInspectionList = new ArrayList<>();
@@ -49,7 +54,7 @@ public class CheckOutInspectionController {
     }
 	
 	// findById~
-    @GetMapping("/checkOutInspection/{pk}")
+    @GetMapping("/backend/checkOutInspection/{pk}")
     public ResponseEntity<?> findById(@PathVariable("pk") Integer id){
     	CheckOutInspection checks = checkOutInspectionService.findById(id);
         if (checks != null){
@@ -64,7 +69,7 @@ public class CheckOutInspectionController {
 	
     
 	// update~
-	@PutMapping("/checkOutInspection/{pk}")
+	@PutMapping("/backend/checkOutInspection/{pk}")
 	public ResponseEntity<?> modify(@PathVariable("pk") Integer id, @RequestBody CheckOutInspection entity) {
 		if(entity != null && entity.getId() != null && entity.getId() != 0) {
 			boolean exists = checkOutInspectionService.existById(entity.getId());
@@ -95,7 +100,7 @@ public class CheckOutInspectionController {
 //    }
     
  // create~
-    @PostMapping("/checkOutInspection")
+    @PostMapping("/backend/checkOutInspection")
     public ResponseEntity<?> create(@RequestBody CheckOutInspection bean) {
         if (bean != null) {
        
@@ -103,7 +108,7 @@ public class CheckOutInspectionController {
                 CheckOutInspection check = checkOutInspectionService.insert(bean);
                 if (check != null) {
                     // Build the URI for the created resource
-                	String uri = "http://localhost:8080/hotel/checkOutInspection"+check.getId();
+                	String uri = serverUri+"/hotel/checkOutInspection"+check.getId();
     				return ResponseEntity.created(URI.create(uri))
                             .contentType(MediaType.APPLICATION_JSON)
                             .body(check);
@@ -112,4 +117,24 @@ public class CheckOutInspectionController {
         return ResponseEntity.notFound().build();
     }
 
+    @DeleteMapping("/backend/checkOutInspection/{pk}")
+	public String remove(@PathVariable(name = "pk") Integer id) throws JSONException {
+		JSONObject responseJson = new JSONObject();
+		if (id == null) {
+			responseJson.put("success", false);
+			responseJson.put("message", "id是必要欄位");
+		} else if (!checkOutInspectionService.existById(id)) {
+			responseJson.put("success", false);
+			responseJson.put("message", "id不存在");
+		} else {
+			if (checkOutInspectionService.delete(id)) {
+				responseJson.put("success", true);
+				responseJson.put("message", "刪除成功");
+			} else {
+				responseJson.put("success", false);
+				responseJson.put("message", "刪除失敗");
+			}
+		}
+		return responseJson.toString();
+	}
 }
