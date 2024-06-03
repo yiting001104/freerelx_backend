@@ -39,7 +39,6 @@ public class OrderShopAjaxController {
 						.put("usebonus",order.getUsebonus())
 						.put("addbonus", order.getAddbonus())
 						.put("arriveddTime", order.getArriveddTime());
-				
 				array.put(item);
 			}
 		}
