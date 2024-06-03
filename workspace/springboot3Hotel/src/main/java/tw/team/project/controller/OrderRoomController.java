@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import jakarta.servlet.http.HttpSession;
+import tw.team.project.dto.LinePayDTO;
 import tw.team.project.dto.MemberOrdersDTO;
 import tw.team.project.model.OrderRoom;
 import tw.team.project.service.OrderRoomService;
@@ -172,6 +173,7 @@ public class OrderRoomController {
         	if (order != null) {
                 responseJson.put("success", true);
                 responseJson.put("message", "登入成功");
+                responseJson.put("orderId", order.getOrderId());
                 httpSession.setAttribute("customer", order.getEmail());
                 httpSession.setAttribute("orderId", order.getOrderId());
         	} else {
@@ -226,6 +228,53 @@ public class OrderRoomController {
 				Integer orderId = ordRoomService.findLatestOrderByName(name);
 				if (orderId!=null) {
 					obj.put("orderId", orderId);
+					obj.put("success", true);
+				}
+			}else {
+				obj.put("success", false);
+			}
+		} catch (JSONException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		return obj.toString();
+	}
+	
+	@GetMapping("/orderRoom/latest/by-{email}")
+	public String findLatestByEmail(@PathVariable("email") String email) {
+		JSONObject obj = new JSONObject();
+		try {
+			if (email!=null && email.length()!=0) {
+				Integer orderId = ordRoomService.findLatestOrderByEmail(email);
+				if (orderId!=null) {
+					obj.put("orderId", orderId);
+					obj.put("success", true);
+				}
+			}else {
+				obj.put("success", false);
+			}
+		} catch (JSONException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		return obj.toString();
+	}
+	
+	@GetMapping("/orderRoom/datas/{pk}")
+	public String findLineOrderRoom(@PathVariable("pk") Integer orderId) {
+		JSONObject obj = new JSONObject();
+		try {
+			if (orderId!=null) {
+				String linePay = ordRoomService.findOrderInformation(orderId);
+				if (linePay!=null) {
+//					obj.put("orderTotalAmount", linePay.getBase_price());
+//					obj.put("singlePrice", linePay.getRoom_price());
+//					obj.put("roomQuality", linePay.getRoom_amount());
+					obj.put("roomInfoData", linePay);
+//					obj.put("roomName", linePay.getBed_type());
+//					obj.put("orderId", linePay.getOrder_id());
 					obj.put("success", true);
 				}
 			}else {

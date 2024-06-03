@@ -78,6 +78,19 @@ public class TransactionController {
     
     // 刪除由訂單那邊進行同時進行因為CascadeType.ALL關係
     
+    @GetMapping("/orderRoom/transactions/orderId-{pk}")
+    public ResponseEntity<?> findByOrderId(@PathVariable("pk") Integer id){
+        Transaction trans = transactionService.finByOrderId(id);
+        if (trans != null){
+            TransactionDTO transDTO = new JsonContainer().setTransaction(trans);
+            ResponseEntity<TransactionDTO> ok = ResponseEntity.ok(transDTO);
+            return ok;
+        } else {
+            ResponseEntity<Void> notFound = ResponseEntity.notFound().build();
+            return notFound;
+        }
+    }
+    
     
     //linePay
     @PostMapping("/orderRoom/transactions/line-pay")

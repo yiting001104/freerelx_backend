@@ -130,7 +130,7 @@ INSERT INTO refundType(type, refund_ratio) values
 ('21天前', 1),
 ('14天前', 0.8),
 ('7天前', 0.5),
-('當天', 0);
+('小於7天', 0);
 
 INSERT INTO transactionTable(amount, order_id, last_five_account_number, transfer_date, taxIDNumber, transaction_status, payment_method, unsubscribe_date, refund_amount) VALUES
 (7500,1,'2780', '2015/4/10', '29932116', 'done', '匯款', null,null),

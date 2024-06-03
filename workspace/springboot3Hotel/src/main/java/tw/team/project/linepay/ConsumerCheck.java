@@ -47,12 +47,12 @@ public class ConsumerCheck {
 			form.setOrderId("RnJlZVJlbHggSE9URUw_"+orderId);   // 訂單編號(可以抓transaction_id)
 
 			ProductPackageForm productPackageForm = new ProductPackageForm();
-			productPackageForm.setId(orderId+""); 			  // 訂單Id
-			productPackageForm.setName("FreeRelx_HOTEL");			  // 商店名稱
+			productPackageForm.setId("test_"+orderId); 			  // 訂單Id
+			productPackageForm.setName("連加網路商業股份有限公司");			  // 商店名稱 FreeRelx_HOTEL
 			productPackageForm.setAmount(new BigDecimal(totalPrice));  // 商品總價格：商品數量乘上單價
 
 			ProductForm productForm = new ProductForm();		
-			productForm.setId(productId);					 // 商品id (roomInformation_id)
+			productForm.setId("product_"+productId);					 // 商品id (roomInformation_id)
 			productForm.setName(productName);				 // 商品名稱
 			productForm.setImageUrl("");						 // 商品圖片 productPicture
 			productForm.setQuantity(new BigDecimal(productQuality));		 // 商品數量

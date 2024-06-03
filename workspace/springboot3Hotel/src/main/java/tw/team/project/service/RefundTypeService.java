@@ -25,6 +25,14 @@ public class RefundTypeService {
         return page;
 
     }
+    public RefundType findById(Integer id) {
+    	Optional<RefundType> optional = refundTypeRepository.findById(id);
+    	if (optional.isPresent()) {
+    		return optional.get();
+    	}
+    	return null;
+    }
+    
     public boolean existByName(String refundType){
         if (refundType!=null && refundType.length()!=0){
             Long count = refundTypeRepository.exitsName(refundType);

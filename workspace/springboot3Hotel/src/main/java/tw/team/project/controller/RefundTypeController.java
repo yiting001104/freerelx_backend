@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -26,6 +27,7 @@ import tw.team.project.util.JsonContainer;
 
 @RestController
 @RequestMapping("/hotel")
+@CrossOrigin
 public class RefundTypeController {
 	@Value("${local.serverPort}")
 	private String serverUri;
@@ -41,6 +43,17 @@ public class RefundTypeController {
         }
         return ResponseEntity.ok(refundTypeList);
         
+    }
+    
+    @GetMapping("/refundTypes/{pk}")
+    public ResponseEntity<?> findById(@PathVariable("pk") Integer id){
+    	if (id!=null) {
+    		RefundType refund = refundTypeService.findById(id);
+    		if (refund!=null) {
+    			return ResponseEntity.ok(refund);
+    		}
+    	}
+    	return ResponseEntity.notFound().build();
     }
 
     @PostMapping("/refundTypes")

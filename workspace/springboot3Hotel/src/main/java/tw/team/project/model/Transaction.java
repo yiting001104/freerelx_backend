@@ -3,6 +3,7 @@ package tw.team.project.model;
 import java.math.BigDecimal;
 import java.util.Date;
 
+import org.hibernate.annotations.DynamicInsert;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
@@ -23,6 +24,7 @@ import jakarta.persistence.TemporalType;
 
 @Entity
 @Table(name = " transactionTable")
+@DynamicInsert // 動態生成SQL語法
 @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "transactionId")
 public class Transaction {
 
