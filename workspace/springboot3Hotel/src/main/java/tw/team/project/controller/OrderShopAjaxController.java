@@ -73,4 +73,32 @@ public class OrderShopAjaxController {
 		}
 		return ResponseEntity.notFound().build();
 	}
+	
+////////////////////////////////////////////////////////////////////////////////////////////////////////
+//member好像成功了
+	@GetMapping("/orders/all/{pk}")
+	public String findtest(@PathVariable(name = "pk") Member member) throws JSONException {
+		JSONObject responseJson = new JSONObject();
+		JSONArray array = new JSONArray();
+		List<Order> orders= orderShopService.findfindBymemberId(member);
+		if (orders != null && !orders.isEmpty()) {
+			for (Order order : orders) {
+				JSONObject item = new JSONObject()
+				.put("orderid", order.getId());
+				List<OrderDetail> od= orderDetailShopService.findfindByorderId(order);
+				if (od != null && !od.isEmpty()) {
+					for (OrderDetail ods : od) {
+						item
+						//.put("Quantity",ods.getQuantity())
+						//.put("price", ods.getProductmultiplequantity())
+						.put("ProductName", ods.getProduct().getProductName());
+						array.put(item);
+					}
+				}
+			//array.put(item);
+			}
+		}
+		responseJson.put("list", array);
+		return responseJson.toString();
+	}
 }
