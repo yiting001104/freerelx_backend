@@ -67,7 +67,7 @@ public class EmployeeController {
 		Employee employee = employeeService.checkLogin(email, pwd);
 		if (employee!=null) {
 			responseJSON.put("message", "登入成功");
-			responseJSON.put("Success", true);
+			responseJSON.put("success", true);
             httpSession.setAttribute("loginEmpId", employee.getEmployeeId());
             httpSession.setAttribute("loginEmpName", employee.getEmployeeName());
 		}else if (!employeeService.existByEmail(email)) {
