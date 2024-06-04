@@ -15,11 +15,11 @@ public class Alert {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer id;
-	
+
 	@ManyToOne
 	@JoinColumn(name = "member_id", referencedColumnName = "member_id")
 	private Member memberid;
-	
+
 	public String getAlertmessage() {
 		return alertmessage;
 	}
@@ -27,7 +27,6 @@ public class Alert {
 		this.alertmessage = alertmessage;
 	}
 	private String alertmessage;
-	
 	public Integer getId() {
 		return id;
 	}
@@ -41,7 +40,6 @@ public class Alert {
 		this.memberid = memberid;
 	}
 	public Alert() {
-		
 	}
 
 }

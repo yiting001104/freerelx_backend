@@ -4,6 +4,7 @@ import java.net.URI;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.configurationprocessor.json.JSONArray;
 import org.springframework.boot.configurationprocessor.json.JSONException;
 import org.springframework.boot.configurationprocessor.json.JSONObject;
@@ -27,7 +28,10 @@ import tw.team.project.util.DatetimeConverter;
 @RequestMapping("/hotel")
 @CrossOrigin
 public class MinibarController {
-
+	
+	@Value("${local.serverPort}")
+	private String serverUri;
+	
 	@Autowired
 	private MinibarService minibarService;
 
@@ -73,7 +77,7 @@ public class MinibarController {
 		if (bean != null) {
 			Minibar product = minibarService.insert(bean);
 			if (product != null) {
-				String uri = "http://localhost:8080/hotel/minibar" + product.getId();
+				String uri = serverUri+"/hotel/minibar" + product.getId();
 				return ResponseEntity.created(URI.create(uri))
                         .contentType(MediaType.APPLICATION_JSON)
                         .body(product);			}

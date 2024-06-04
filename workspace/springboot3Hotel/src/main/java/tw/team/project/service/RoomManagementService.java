@@ -28,7 +28,7 @@ public class RoomManagementService {
 	}
 	
     public Page<RoomManagement> findAll(Integer id){
-        Pageable pgb = PageRequest.of(id-1, 2, Sort.Direction.DESC,"id");
+        Pageable pgb = PageRequest.of(id-1, 9, Sort.Direction.ASC,"id");
         Page<RoomManagement> page = roomManagementRepo.findAll(pgb);
         return page;
     }
@@ -57,6 +57,10 @@ public class RoomManagementService {
 			e.printStackTrace();
 		}
 		return null;
+	}
+	
+	public RoomManagement modify1(RoomManagement roomManagement) {
+	    return roomManagementRepo.save(roomManagement);
 	}
 
 	public RoomManagement findById(Integer id) {

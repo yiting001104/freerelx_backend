@@ -17,7 +17,9 @@ import jakarta.servlet.annotation.WebFilter;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
-
+@WebFilter(
+		urlPatterns = {"/hotel/products/find"}
+)
 public class JsonWebTokenFilter implements Filter {
 	private JsonWebTokenUtility jsonWebTokenUtility;
 	@Override
@@ -39,7 +41,10 @@ public class JsonWebTokenFilter implements Filter {
 		if(!"OPTIONS".equals(method)) {
 			//是否有"已登入"的資訊
 			String auth = request.getHeader("Authorization");
+			System.out.println("auth"+auth);
 			JSONObject user = processAuthorizationHeader(auth);
+			System.out.println(user);
+			System.out.println("===============");
 			if(user==null || user.length()==0) {
 				//沒有：是否要阻止使用者呼叫？
 				response.setStatus(HttpServletResponse.SC_FORBIDDEN);

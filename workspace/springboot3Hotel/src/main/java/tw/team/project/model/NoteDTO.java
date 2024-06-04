@@ -1,18 +1,19 @@
 package tw.team.project.model;
 
+import org.springframework.boot.configurationprocessor.json.JSONObject;
 import org.springframework.web.multipart.MultipartFile;
 
 public class NoteDTO {
 
-	private String json;
+	private JSONObject json;
 	
 	private MultipartFile multipartFile;
 
-	public String getJson() {
+	public JSONObject getJson() {
 		return json;
 	}
 
-	public void setJson(String json) {
+	public void setJson(JSONObject json) {
 		this.json = json;
 	}
 

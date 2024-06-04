@@ -54,7 +54,7 @@ public class RoomInformation {
 	private BigDecimal price;
 	
 	@Column(name="room_photo", nullable = false)
-	private byte[] photo;
+	private String photo;
 	
 	@Column(name="room_depiction", nullable = false)
 	private String depiction;

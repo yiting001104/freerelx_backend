@@ -1,12 +1,12 @@
 use Hotel;
  drop table if exists alert;
- drop table  if exists order_details;
- drop table if exists cart ;
- drop table  if exists productphoto;
- drop table  if exists product;
- drop table  if exists orders;
- drop table  if exists supplier;
-
+ drop table if exists cart;
+ drop table if exists order_details;
+ drop table if exists productphoto;
+ drop table if exists orders;
+ drop table if exists product;
+ drop table if exists category
+ drop table if exists supplier;
  drop table if exists AdditionalCharges;
  drop table if exists CheckOutInspection;
  drop table if exists HousingManagement;
@@ -41,6 +41,7 @@ create table member (
 	picture varbinary(max),
 	constraint PK_MemberId primary key (member_id),
 	constraint UQ_phone_number unique (phone_number) ,
+	constraint UQ_email unique (email) 
 
 );  
 
@@ -197,33 +198,37 @@ CREATE TABLE roomInformation (
     bed_type NVARCHAR(50),
     max_occupancy INT,
     room_price DECIMAL(20, 6),
-    room_photo VARBINARY(max),
+  --room_photo VARBINARY(max),
+	room_photo NVARCHAR(255),
     room_depiction NVARCHAR(255),
 	room_total int default 5,
     constraint FK_RoomInformationId FOREIGN KEY (room_type_id) REFERENCES roomType(room_type_id), 
     constraint FK_RoomLevel FOREIGN KEY (room_level_id) REFERENCES roomLevel(room_level_id) 
 );
 
-	create table orderRoomDetail(
-	--orderDetial_id  INT PRIMARY KEY IDENTITY,
-	room_Information_Id INT not null,
-	room_amount INT not null,
-	price decimal(20,6),
-	order_id int not null,
-	constraint FK_RoomInformation_Id foreign key (room_Information_Id)references Hotel.dbo.RoomInformation (room_Information_Id),
-	constraint FK_OrderId_Detial foreign key (order_id)references Hotel.dbo.orderRoom (order_id),
-	constraint PK_OrderDetialId primary key (order_id, room_Information_Id)
+
+CREATE TABLE orderRoomDetail (
+    room_information_id INT NOT NULL,
+    room_amount INT NOT NULL,
+    price DECIMAL(20, 6),
+    order_id INT NOT NULL,
+    CONSTRAINT FK_RoomInformation_Id FOREIGN KEY (room_information_id) REFERENCES Hotel.dbo.RoomInformation (room_information_id),
+    CONSTRAINT FK_OrderId_Detial FOREIGN KEY (order_id) REFERENCES Hotel.dbo.orderRoom (order_id),
+    CONSTRAINT PK_OrderDetialId PRIMARY KEY (order_id, room_information_id)
 );
+
 
 CREATE TABLE roomAssignment (
     assignment_id INT PRIMARY KEY IDENTITY,
-    room_information_id INT,
+   -- room_information_id INT,
     rooms_left INT,
     assignment_date DATETIME2(6),
-	order_room_detail_id INT
-    --constraint FK_OrderIdHMana FOREIGN KEY (order_room_detail_id) REFERENCES  orderRoomDetail(order_id, room_Information_Id),
-	constraint FK_RoomInformationIdAss FOREIGN KEY (room_information_id) REFERENCES roomInformation (room_information_id)
+    --order_id INT NOT NULL,
+    room_information_id INT NOT NULL,
+    --CONSTRAINT FK_OrderDetialIdHMana FOREIGN KEY (order_id, room_Information_Id) REFERENCES orderRoomDetail (order_id, room_Information_Id)
+    CONSTRAINT FK_RoomInformationIdAss FOREIGN KEY (room_information_id) REFERENCES roomInformation (room_information_id)
 );
+
 
 CREATE TABLE roomState (
     room_state_id INT PRIMARY KEY IDENTITY,
@@ -232,7 +237,7 @@ CREATE TABLE roomState (
 
 CREATE TABLE roomManagement (
     room_management_id INT PRIMARY KEY IDENTITY,
-     room_number int UNIQUE,
+     room_number INT UNIQUE,
     room_state_id INT default 4,
     repair_status NVARCHAR(255),
     room_information_id INT,
@@ -282,6 +287,7 @@ CREATE TABLE minibar (
 	constraint Fk_housingmanagement foreign key (housing_management_id)references housingManagement (housing_management_id),
 	constraint PK_additionalCharges primary key (minibar_id, housing_management_id)
 );
+
 
 
 ----

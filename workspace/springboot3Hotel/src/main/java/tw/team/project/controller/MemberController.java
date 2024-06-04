@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.configurationprocessor.json.JSONArray;
 import org.springframework.boot.configurationprocessor.json.JSONException;
 import org.springframework.boot.configurationprocessor.json.JSONObject;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.MediaType;
@@ -15,25 +16,27 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import jakarta.servlet.http.HttpSession;
+import tw.team.project.dto.MemberDTO;
 import tw.team.project.model.Member;
-import tw.team.project.model.NoteDTO;
+import tw.team.project.model.OrderRoom;
 import tw.team.project.service.MemberService;
+import tw.team.project.service.OrderRoomService;
 import tw.team.project.util.JsonWebTokenUtility;
 
 @RestController
 @RequestMapping("/hotel")
-@CrossOrigin
+@CrossOrigin(origins = "*", allowedHeaders = "*")
 public class MemberController {
 
 	@Autowired
@@ -62,7 +65,9 @@ public class MemberController {
 					.put("nationality", person.getNationality())
 					.put("login_time", person.getLoginTime())
 					.put("login_status", person.getLoginStatus())
-					.put("picture", person.getPicture());
+					.put("picture", person.getPicture())
+					.put("registration_date", person.getRegistrationDate())
+					.put("member_status", person.getMemberStatus());
 			array.put(item);
 		}
 //		responseObj.put("list", array);
@@ -88,18 +93,26 @@ public class MemberController {
         if (email != null && password != null && email.length()!=0 && password.length()!=0) {
         	Member member = memberservice.checkLogin(email, password);
         	if (member != null) {
-                responseJson.put("success", true);
-                responseJson.put("message", "登入成功");
-                httpSession.setAttribute("loginUserId", member.getMemberId());
-                httpSession.setAttribute("loginUserName", member.getMemberName());
+        		
+        		if (!member.getMemberStatus().equals("banned")) {
+        			
+    		      responseJson.put("success", true);
+                  responseJson.put("message", "登入成功");
+                  httpSession.setAttribute("loginUserId", member.getMemberId());
+                  httpSession.setAttribute("loginUserName", member.getMemberName());
+                      
+          			JSONObject user = new JSONObject()
+          					.put("custid", member.getMemberId())
+          					.put("email", member.getEmail());
+          			String token = jsonWebTokenUtility.createEncryptedToken(user.toString(), null);
+          			responseJson.put("token", token);
+          			responseJson.put("user", member.getMemberName());
+          			responseJson.put("userId", member.getMemberId());
+        		}else {
+        			responseJson.put("success", false);
+        			responseJson.put("message", "你的帳號被管理禁用，請聯繫管理員");
+        		}
                 
-    			JSONObject user = new JSONObject()
-    					.put("custid", member.getMemberId())
-    					.put("email", member.getEmail());
-    			String token = jsonWebTokenUtility.createEncryptedToken(user.toString(), null);
-    			responseJson.put("token", token);
-    			responseJson.put("user", member.getMemberName());
-    			responseJson.put("userId", member.getMemberId());//元
         	} else {
                 responseJson.put("success", false);
                 responseJson.put("message", "帳號或密碼有錯");
@@ -110,9 +123,17 @@ public class MemberController {
 	}
 	
 	// 會員登出
-	@GetMapping("/member/logout")
-	public String logoutAction(HttpSession httpSession) {
-		
+	@PutMapping("/member/logout/{pk}")
+	public String logoutAction(@PathVariable("pk") Integer id,HttpSession httpSession) throws JSONException{
+		Member member = memberservice.logout(id);
+		JSONObject responseJson = new JSONObject();
+		if (member!=null) {
+            responseJson.put("success", true);
+            responseJson.put("message", "登出成功");
+		}else {
+            responseJson.put("success", false);
+            responseJson.put("message", "登出失敗");
+		}
 		// 方法一 這可以做到第三方廣告的使用
 //		httpSession.removeAttribute("loginUser");
 //		httpSession.removeAttribute("loginUserId");
@@ -120,7 +141,7 @@ public class MemberController {
 		// 方法二
 		httpSession.invalidate();
 		
-		return "users/logoutPage";
+		return responseJson.toString();
 	}
 	// 會員申請
 	@PostMapping("/member/apply")
@@ -177,7 +198,8 @@ public class MemberController {
 	// 會員資料更新
 	@PutMapping("/member/alert/{pk}")
 	public String updateData(@PathVariable("pk") Integer id, @RequestBody String json) {
-		JSONObject responseJson = new JSONObject();		
+		JSONObject responseJson = new JSONObject();
+		System.out.println(json);
 		try {
 			if (id != null) {
 				if (memberservice.updateData(id, json) != null) {
@@ -200,16 +222,14 @@ public class MemberController {
 	}
 	
 	// 測試更新資料含有圖片
-	@PutMapping(value = "/member/alert2/{pk}", consumes = "multipart/form-data")
-	public String updateData2(@PathVariable("pk") Integer id, @ModelAttribute NoteDTO notedto) {
+	@PutMapping(value = "/member/alert2/{pk}", consumes = "multipart/form-data")//, 
+	public String updateData2(@PathVariable("pk") Integer id, @RequestParam String json, @RequestParam(required = false) MultipartFile multipartFile) throws JSONException { //@ModelAttribute NoteDTO notedto 
 		JSONObject responseJson = new JSONObject();
-		String json = notedto.getJson();
-		System.out.println(json);
-		MultipartFile  multipartFile = notedto.getMultipartFile();
-		System.out.println(multipartFile.getName());
+//		MultipartFile  multipartFile = notedto.getMultipartFile();
+		JSONObject jsonObj = new JSONObject(json);
 		try {
 			if (id != null) {
-				if (memberservice.updateData2(id, json, multipartFile) != null) {
+				if (memberservice.updateData2(id, jsonObj, multipartFile) != null) {
 					responseJson.put("message", "更新成功");
 					responseJson.put("success", true);
 				} else {
@@ -258,4 +278,53 @@ public class MemberController {
 		// 另一種寫法，他已經幫妳寫好了
 		//return new ResponseEntity<byte[]>(photoFile,headers,HttpStatus.OK);
 	}
+	@GetMapping("/member/{pk}")
+	public ResponseEntity<?> findById(@PathVariable("pk") Integer id){
+		Member member = memberservice.findbyId(id);
+		if (member!=null) {
+			return ResponseEntity.ok(member);
+		}
+		return ResponseEntity.notFound().build();
+		
+	}
+	@PutMapping("/members/password/{pk}")
+	public ResponseEntity<?> modifyPassword(@PathVariable("pk") Integer id, @RequestBody String json){
+		try {
+			Member member = memberservice.updatePassword(json, id);
+			if (member!=null) {
+				return ResponseEntity.ok(member);
+			}
+		} catch (JSONException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return ResponseEntity.notFound().build();
+	}
+	@PutMapping("/backend/members/status/{pk}")
+	public ResponseEntity<?> modifyStatus(@PathVariable("pk") Integer id, @RequestBody String json){
+		try {
+			Member member = memberservice.updateStatus(json, id);
+			if (member!=null) {
+				return ResponseEntity.ok(member);
+			}
+		} catch (JSONException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return ResponseEntity.notFound().build();
+	}
+
+	
+//    @GetMapping("/orderRoom/transactions/{pk}")
+//    public ResponseEntity<?> findById(@PathVariable("pk") Integer id){
+//        Transaction trans = transactionService.findById(id);
+//        if (trans != null){
+//            TransactionDTO transDTO = new JsonContainer().setTransaction(trans);
+//            ResponseEntity<TransactionDTO> ok = ResponseEntity.ok(transDTO);
+//            return ok;
+//        } else {
+//            ResponseEntity<Void> notFound = ResponseEntity.notFound().build();
+//            return notFound;
+//        }
+//    }
 }

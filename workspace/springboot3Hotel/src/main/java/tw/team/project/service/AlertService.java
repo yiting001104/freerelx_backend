@@ -14,13 +14,13 @@ import tw.team.project.model.CartRepository;
 
 @Service
 public class AlertService {
-	
+
 	@Autowired
 	private CartRepository cartRepository;
-	
+
 	@Autowired
 	private AlertRepository alertRepository;
-	
+
 	//新增一筆下架訊息
 	public boolean createalert(String json) {
 		try {
@@ -51,7 +51,7 @@ public class AlertService {
 		}
 		return null;
 	}
-	
+
 	public void deletealert(Integer id) {
 		alertRepository.deleteById(id);
 	}

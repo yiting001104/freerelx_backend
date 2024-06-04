@@ -16,4 +16,5 @@ public interface CartRepository extends JpaRepository<Cart, CartId> {
 	
 	@Query("from Cart c where c.cartId.id = :id")
     List<Cart> findByidCart(@Param("id") Integer id);
+	
 }

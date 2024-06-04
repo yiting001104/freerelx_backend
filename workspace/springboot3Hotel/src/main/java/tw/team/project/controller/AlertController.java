@@ -52,5 +52,4 @@ public class AlertController {
 		responseJson.put("list", array);
 		return responseJson.toString();
 	}
-	
 }

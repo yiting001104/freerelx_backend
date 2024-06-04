@@ -2,6 +2,7 @@ package tw.team.project.controller;
 
 import java.net.URI;
 
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
@@ -66,5 +67,25 @@ public class OrderRoomDetailController {
 		}
 		return ResponseEntity.notFound().build();
 	}
+	@PostMapping("/orderRooms/detailBuild")
+	public String isExists(@RequestBody OrderRoomDetail ordetail){
+		JSONObject responseJson = new JSONObject();
+		if (ordetail!=null) {
+			boolean result = orderRoomDetailService.isExists(ordetail);
+			if (result) {
+				responseJson.put("message", "訂單已建立成功");
+				responseJson.put("success", true);
+			}else {
+				responseJson.put("message", "訂單無法建立");
+				responseJson.put("success", false);
+			}
+		}else {
+			responseJson.put("message", "ordetail為null");
+			responseJson.put("success", false);
+		}
+		return responseJson.toString();
+	}
+	
+	
 	
 }

@@ -84,19 +84,42 @@ public class OrderRoomService {
 			String stay_person_phone = obj.isNull("stay_person_phone") ? null : obj.getString("stay_person_phone");
 			String stay_person_Email = obj.isNull("stay_person_Email") ? null : obj.getString("stay_person_Email");
 
+			Date reservation_status_date;
+			String status_date = obj.isNull("reservation_status_date") ? null : obj.getString("reservation_status_date");
+			if(status_date!=null && status_date.length()!=0) {
+				reservation_status_date = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(status_date);
+			} else 
+				reservation_status_date = null;
+			
+			String reservation_status = obj.isNull("reservation_status") ? null : obj.getString("reservation_status");
 			String remark = obj.isNull("remark") ? null : obj.getString("remark");
+			String cancellation_reason = obj.isNull("cancellation_reason") ? null : obj.getString("cancellation_reason");
 			Optional<OrderRoom> op = orderRoomRepo.findById(id);
 			if (op.isPresent()) {
 				OrderRoom order = op.get();
-				order.setTransactionPassword(transaction_password);
-				order.setCreditCard(credit_card);
-				order.setSPName(stay_person_name);
-				order.setSPBirth(stay_person_birth);
-				order.setSPGender(stay_person_gender);
-				order.setSPNationId(stay_person_national_id);
-				order.setSPPhone(stay_person_phone);
-				order.setSPEmail(stay_person_Email);
-				order.setRemark(remark);
+				if (transaction_password!=null) {
+					order.setTransactionPassword(transaction_password);
+				}
+				if (credit_card!=null) {
+					order.setCreditCard(credit_card);
+				}
+				if (stay_person_name!=null) {
+					order.setSPName(stay_person_name);
+				}
+				if (stay_person_birth!=null) {
+					order.setSPBirth(stay_person_birth);
+				}
+				if (stay_person_gender!=null) order.setSPGender(stay_person_gender);
+				if (stay_person_national_id!=null) order.setSPNationId(stay_person_national_id);
+				
+				if (stay_person_phone!=null) order.setSPPhone(stay_person_phone);
+				if (stay_person_Email!=null) order.setSPEmail(stay_person_Email);
+				
+				if (remark!=null) order.setRemark(remark);
+				if (reservation_status!=null) order.setReservationStatus(reservation_status);
+				if (reservation_status_date!=null) order.setReservationSaDate(reservation_status_date);
+				
+				if (cancellation_reason!=null) order.setCancellReason(cancellation_reason);
 				return order;
 			}
 		} catch (JSONException | ParseException e) {
@@ -108,12 +131,13 @@ public class OrderRoomService {
 	}
 	
 	// 新增訂單
-	public OrderRoom create(String json, Integer id) {
+	public OrderRoom create(String json) {
 		try {
 			JSONObject obj = new JSONObject(json);
 			Date birth1;
 			String order_person_name, gender, national_id, email, phone_number, credit_card, transaction_password;
 			Member member=null;
+			Integer id = obj.isNull("member_id") ? null : obj.getInt("member_id");
 			// 非會員
 			if (id == null) {			
 				order_person_name = obj.isNull("order_person_name") ? null : obj.getString("order_person_name");
@@ -150,6 +174,7 @@ public class OrderRoomService {
 			Integer child_pax = obj.isNull("child_pax") ? null : obj.getInt("child_pax");
 			Integer room_type_amount = obj.isNull("room_type_amount") ? null : obj.getInt("room_type_amount");
 			
+			System.out.println("room_type_amount"+ room_type_amount);
 			String arrival_date = obj.isNull("arrival_date") ? null : obj.getString("arrival_date");
 			Date arrivalDate;
 			if (arrival_date != null && arrival_date.length()!=0) {
@@ -229,6 +254,7 @@ public class OrderRoomService {
 				OrderRoom newOrder = orderRoomRepo.save(order);
 				trans.setAmount(basePrice);
 				trans.setOrderRoom(newOrder);
+				trans.setTransactionStatus("尚未完成付款");
 				transactionService.insert(trans);
 				return newOrder;
 
@@ -267,4 +293,41 @@ public class OrderRoomService {
 		}
 		return false;
 	}
+	// 找出會員的訂單
+	public Page<OrderRoom> findMemberOrderByPage(Integer pageNumber, Integer memberId, Integer dataNumber){
+		Pageable pgb = PageRequest.of(pageNumber-1, dataNumber, Sort.Direction.DESC, "orderDate");
+		Page<OrderRoom> page = orderRoomRepo.findMemberOrder(pgb, memberId);
+		
+		return page;
+	}
+	public Long memberFindTotal(Integer memberId) {
+		return orderRoomRepo.findMemberOrderTotal(memberId);
+	}
+	
+	public Integer findLatestOrderByName(String name) {
+		Integer id = orderRoomRepo.findLatestByOrderName(name);
+		if (id!=null) {
+			return id;
+		}
+		return null;
+	}
+	
+	public Integer findLatestOrderByEmail(String email) {
+		Integer id = orderRoomRepo.findLatestByOrderEmail(email);
+		if (id!=null) {
+			return id;
+		}
+		return null;
+	}
+	
+	public String findOrderInformation(Integer orderId) {
+		String line = orderRoomRepo.findorderInformation(orderId);
+		if (line!=null) {
+//			Map entity = (Map)line;
+//			System.out.println(entity);
+			return line;
+		}
+		return null;
+	}
+	
 }

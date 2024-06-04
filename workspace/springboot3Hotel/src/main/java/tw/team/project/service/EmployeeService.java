@@ -3,6 +3,8 @@ package tw.team.project.service;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.configurationprocessor.json.JSONException;
+import org.springframework.boot.configurationprocessor.json.JSONObject;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -55,6 +57,16 @@ public class EmployeeService {
     	
     }
     
+    public Employee findById(Integer id) {
+    	if (id!=null) {
+    		Optional<Employee> optional = repositoryEmployeeRepository.findById(id);
+    		if (optional.isPresent()) {
+    			return optional.get();
+    		}
+    	}
+    	return null;
+    }
+    
     public Employee checkLogin(String loginEmail, String loginPassword) {
     	if (loginEmail != null && loginPassword != null && loginEmail.length()!=0 && loginPassword.length()!=0) {
     		Optional<Employee> optional = repositoryEmployeeRepository.findByEmail(loginEmail);
@@ -84,6 +96,27 @@ public class EmployeeService {
     	}
     	return null;
     }
+    @Transactional
+    public Employee updatePassword(String json) throws JSONException {
+    	JSONObject obj = new JSONObject(json);
+    	Integer id = obj.isNull("employeeId")? null : obj.getInt("employeeId");
+    	String originalPassword = obj.isNull("originPassword") ? null : obj.getString("originPassword");
+    	String newPassword = obj.isNull("newPassword") ? null : obj.getString("newPassword");
+    	if (id!=null && originalPassword!=null && newPassword!=null) {
+    		Optional<Employee> optional = repositoryEmployeeRepository.findById(id);
+    		if (optional.isPresent()) {
+    			Employee origin = optional.get();
+    			boolean result = pwdEncoder.matches(originalPassword, origin.getPassword());
+    			if (result) {
+    				origin.setPassword(pwdEncoder.encode(newPassword));
+    				return origin;
+    			}	
+    		}
+
+    	}
+    	return null;
+    }
+    
     
     @Transactional
     public Employee manage(Employee employee) {

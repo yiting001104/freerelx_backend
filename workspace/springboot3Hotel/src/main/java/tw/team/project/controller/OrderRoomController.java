@@ -1,10 +1,14 @@
 package tw.team.project.controller;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.configurationprocessor.json.JSONArray;
 import org.springframework.boot.configurationprocessor.json.JSONException;
 import org.springframework.boot.configurationprocessor.json.JSONObject;
 import org.springframework.data.domain.Page;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -17,6 +21,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import jakarta.servlet.http.HttpSession;
+import tw.team.project.dto.LinePayDTO;
+import tw.team.project.dto.MemberOrdersDTO;
 import tw.team.project.model.OrderRoom;
 import tw.team.project.service.OrderRoomService;
 import tw.team.project.util.JsonContainer;
@@ -69,9 +75,9 @@ public class OrderRoomController {
 	@PostMapping("/orderRoom/add")
 	public String orderCreate(@RequestBody String json, HttpSession httpSession) {
 //		Integer id = (Integer)httpSession.getAttribute("loginUserId");
-		Integer id = null;
+//		Integer id = null;
 		JSONObject responseJson = new JSONObject();
-		OrderRoom orderRoom= ordRoomService.create(json, id);
+		OrderRoom orderRoom= ordRoomService.create(json);
         try {
 			if(orderRoom==null) {
 			    responseJson.put("success", false);
@@ -167,6 +173,7 @@ public class OrderRoomController {
         	if (order != null) {
                 responseJson.put("success", true);
                 responseJson.put("message", "登入成功");
+                responseJson.put("orderId", order.getOrderId());
                 httpSession.setAttribute("customer", order.getEmail());
                 httpSession.setAttribute("orderId", order.getOrderId());
         	} else {
@@ -179,4 +186,105 @@ public class OrderRoomController {
 	}
 	
 	// 新增交易記錄
+	
+	// 會員查詢紀錄
+	@GetMapping("/members/OrderRooms/{pk}")
+	public ResponseEntity<?> findOrderRoom(@RequestParam(value = "p",defaultValue = "1") Integer pageNumber, @RequestParam(value = "num",defaultValue = "4") Integer dataNmuber, @PathVariable("pk") Integer id){
+		Page<OrderRoom> page = ordRoomService.findMemberOrderByPage(pageNumber, id, dataNmuber);
+		List<MemberOrdersDTO> memberOrders = new ArrayList<>();
+		System.out.println(page.getNumber());
+		System.out.println(page.getTotalPages());
+		if (!page.isEmpty()) {
+			for (OrderRoom order : page.getContent()) {
+				memberOrders.add(new JsonContainer().setMemberOrders(order));
+			}
+			return ResponseEntity.ok(memberOrders);
+		}
+		return ResponseEntity.notFound().build();
+	}
+	@GetMapping("/members/OrderRooms/totals/{pk}")
+	public String findTotal(@PathVariable("pk") Integer id){
+		JSONObject obj = new JSONObject();
+		try {
+			if (id!=null) {
+				Long total = ordRoomService.memberFindTotal(id);
+				obj.put("total", total);
+				obj.put("success", true);
+			}else {
+				obj.put("message", "Id為null");
+				obj.put("success", false);
+			}
+		} catch (JSONException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return obj.toString();
+	}
+	@GetMapping("/orderRoom/latest/{name}")
+	public String findLatestByName(@PathVariable("name") String name) {
+		JSONObject obj = new JSONObject();
+		try {
+			if (name!=null && name.length()!=0) {
+				Integer orderId = ordRoomService.findLatestOrderByName(name);
+				if (orderId!=null) {
+					obj.put("orderId", orderId);
+					obj.put("success", true);
+				}
+			}else {
+				obj.put("success", false);
+			}
+		} catch (JSONException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		return obj.toString();
+	}
+	
+	@GetMapping("/orderRoom/latest/by-{email}")
+	public String findLatestByEmail(@PathVariable("email") String email) {
+		JSONObject obj = new JSONObject();
+		try {
+			if (email!=null && email.length()!=0) {
+				Integer orderId = ordRoomService.findLatestOrderByEmail(email);
+				if (orderId!=null) {
+					obj.put("orderId", orderId);
+					obj.put("success", true);
+				}
+			}else {
+				obj.put("success", false);
+			}
+		} catch (JSONException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		return obj.toString();
+	}
+	
+	@GetMapping("/orderRoom/datas/{pk}")
+	public String findLineOrderRoom(@PathVariable("pk") Integer orderId) {
+		JSONObject obj = new JSONObject();
+		try {
+			if (orderId!=null) {
+				String linePay = ordRoomService.findOrderInformation(orderId);
+				if (linePay!=null) {
+//					obj.put("orderTotalAmount", linePay.getBase_price());
+//					obj.put("singlePrice", linePay.getRoom_price());
+//					obj.put("roomQuality", linePay.getRoom_amount());
+					obj.put("roomInfoData", linePay);
+//					obj.put("roomName", linePay.getBed_type());
+//					obj.put("orderId", linePay.getOrder_id());
+					obj.put("success", true);
+				}
+			}else {
+				obj.put("success", false);
+			}
+		} catch (JSONException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		return obj.toString();
+	}
 }

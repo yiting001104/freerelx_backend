@@ -116,7 +116,7 @@ public class Member {
 	public void setOrdersRoom(List<OrderRoom> ordersRoom) {
 		this.ordersRoom = ordersRoom;
 	}
-	@JsonIgnore
+//	@JsonIgnore
 	@OneToMany(mappedBy = "member", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	private List<OrderRoom> ordersRoom;
 	
@@ -251,9 +251,14 @@ public class Member {
 	public void setLoginStatus(String loginStatus) {
 		this.loginStatus = loginStatus;
 	}
+	
 	@JsonIgnore
 	@OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
 	private List<Order> order = new ArrayList<>();
+
+	public List<Order> getOrder() {
+		return order;
+	}
 
 	public List<Alert> getAlert() {
 		return alert;
@@ -267,10 +272,6 @@ public class Member {
 	@OneToMany(mappedBy = "memberid", cascade = CascadeType.ALL)
 	private List<Alert> alert = new ArrayList<>();
 	
-	public List<Order> getOrder() {
-		return order;
-	}
-
 	public void setOrder(List<Order> order) {
 		this.order = order;
 	}

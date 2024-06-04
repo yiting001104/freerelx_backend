@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -28,6 +29,8 @@ import tw.team.project.util.JsonContainer2;
 @CrossOrigin
 public class AdditionalChargesController {
 
+	@Value("${local.serverPort}")
+	private String serverUri;
 	@Autowired
 	private AdditionalChargesService additionalChargesService;
 
@@ -84,7 +87,7 @@ public class AdditionalChargesController {
 		if (bean != null) {
 				AdditionalCharges product = additionalChargesService.create(bean);
 				if (product != null) {
-					String uri = "http://localhost:8080/hotel/additionalCharges" + product.getId();
+					String uri = serverUri+"/hotel/additionalCharges" + product.getId();
     				return ResponseEntity.created(URI.create(uri))
                             .contentType(MediaType.APPLICATION_JSON)
                             .body(product);

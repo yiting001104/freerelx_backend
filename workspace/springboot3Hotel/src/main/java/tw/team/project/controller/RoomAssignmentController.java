@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -30,6 +31,9 @@ import tw.team.project.util.JsonContainer2;
 @CrossOrigin
 public class RoomAssignmentController {
 
+	@Value("${local.serverPort}")
+	private String serverUri;
+	
 	@Autowired
 	private RoomAssignmentService roomAssignmentService;
 	
@@ -41,7 +45,7 @@ public class RoomAssignmentController {
 
 	
 	//查詢多筆資料~
-	@GetMapping("/roomAssignment")
+	@GetMapping("/backend/roomAssignment")
 	public ResponseEntity<?> listRoomAssignment(@RequestParam(value = "p", defaultValue = "1") Integer Number) {
 		Page<RoomAssignment> page = roomAssignmentService.findAll(Number);
 		List<RoomAssignmentDTO> roomList = new ArrayList<>();
@@ -50,6 +54,9 @@ public class RoomAssignmentController {
 		}
 		return ResponseEntity.ok(roomList);
 	}
+	
+	//findOrderById
+	
 	
 	//findById~
 	  @GetMapping("/roomAssignment/{pk}")
@@ -80,7 +87,7 @@ public class RoomAssignmentController {
 	}
 	
 	//update
-	@PutMapping("/roomAssignment/{pk}")
+	@PutMapping("/backend/roomAssignment/{pk}")
 	public ResponseEntity<?> modify(@PathVariable (name = "pk") Integer id, @RequestBody RoomAssignment bean) {
 		if(bean!=null && bean.getId()!=null && bean.getId()!=0) {
 			boolean exists = roomAssignmentService.existById(bean.getId());
@@ -101,7 +108,7 @@ public class RoomAssignmentController {
 			if(!exists) {
 				RoomAssignment room = roomAssignmentService.insert(bean);
 				if(room!=null) {
-					String uri = "http://localhost:8080/pages/roomAssignment/"+room.getId();
+					String uri = serverUri+"/pages/roomAssignment/"+room.getId();
 					return ResponseEntity.created(URI.create(uri))
     						.contentType(MediaType.APPLICATION_JSON)
     						.body(room);

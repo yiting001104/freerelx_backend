@@ -84,14 +84,15 @@ public class CommentService {
 		}
 		return false;
 	}
-// 6/1新增
-	public Comment findById(Integer id) {
-		if(id!=null) {
-			Optional<Comment> optional = commRepository.findById(id);
-			if(optional.isPresent()) {
-				return optional.get();
+	
+	// 6/1新增
+		public Comment findById(Integer id) {
+			if(id!=null) {
+				Optional<Comment> optional = commRepository.findById(id);
+				if(optional.isPresent()) {
+					return optional.get();
+				}
 			}
+			return null;
 		}
-		return null;
-	}
 }

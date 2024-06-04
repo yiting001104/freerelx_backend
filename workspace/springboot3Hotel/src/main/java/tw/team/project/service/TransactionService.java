@@ -2,7 +2,9 @@ package tw.team.project.service;
 
 import java.util.Optional;
 
+import org.json.JSONException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.configurationprocessor.json.JSONObject;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -11,6 +13,7 @@ import org.springframework.stereotype.Service;
 
 import jakarta.transaction.Transactional;
 import tw.team.project.dto.TransactionDTO;
+import tw.team.project.linepay.ConsumerCheck;
 import tw.team.project.model.CreditCardDiscount;
 import tw.team.project.model.CreditCardDiscountRepository;
 import tw.team.project.model.RefundType;
@@ -56,14 +59,60 @@ public class TransactionService {
             Optional<Transaction> optional = transactionRepository.findById(transDTO.getTransactionId());
             if (optional.isPresent()){
                 Transaction trans = optional.get();
-
-                trans.setAmount(transDTO.getAmount());
-                trans.setLastFiveAccNum(transDTO.getLastFiveAccNum());
-                trans.setTransferDate(transDTO.getTransferDate());
-                trans.setTaxIDNumber(transDTO.getTaxIDNumber());
-                trans.setUnsubscribeDate(transDTO.getUnsubscribeDate());
-                trans.setRffundAmount(transDTO.getRffundAmount());
-                trans.setRemark(transDTO.getRemark());
+                if (transDTO.getAmount()!=null) {
+                	trans.setAmount(transDTO.getAmount());
+                	System.out.println("transDTO.getAmount() " + transDTO.getAmount());
+                }else {
+                	transDTO.setAmount(trans.getAmount());
+                }
+                
+                if (transDTO.getLastFiveAccNum()!=null) {
+                	trans.setLastFiveAccNum(transDTO.getLastFiveAccNum());
+                }else {
+                	transDTO.setLastFiveAccNum(trans.getLastFiveAccNum());
+                }
+                
+                if (transDTO.getTransferDate()!=null) {
+                	trans.setTransferDate(transDTO.getTransferDate());
+                }else {
+                	transDTO.setTransferDate(trans.getTransferDate());
+                }
+                
+                if (transDTO.getTaxIDNumber()!=null) {
+                	trans.setTaxIDNumber(transDTO.getTaxIDNumber());
+                }else {
+                	transDTO.setTaxIDNumber(trans.getTaxIDNumber());
+                }
+                
+                if (transDTO.getUnsubscribeDate()!=null) {
+                	trans.setUnsubscribeDate(transDTO.getUnsubscribeDate());
+                }else {
+                	transDTO.setUnsubscribeDate(trans.getUnsubscribeDate());
+                }
+                
+                if (transDTO.getRffundAmount()!=null) {
+                	trans.setRffundAmount(transDTO.getRffundAmount());
+                }else {
+                	transDTO.setRffundAmount(trans.getRffundAmount());
+                }
+                
+                if (transDTO.getRemark()!=null) {
+                	trans.setRemark(transDTO.getRemark());
+                }else {
+                	transDTO.setRemark(trans.getRemark());
+                }
+                
+                if (transDTO.getPaymentMethod()!=null) {
+                	trans.setPaymentMethod(transDTO.getPaymentMethod());
+                }else {
+                	transDTO.setPaymentMethod(trans.getPaymentMethod());
+                }
+                
+                if (transDTO.getTransactionStatus()!=null) {
+                	trans.setTransactionStatus(transDTO.getTransactionStatus());
+                }else {
+                	transDTO.setTransactionStatus(trans.getTransactionStatus());
+                }
 
                 if (transDTO.getDiscount_id()!=null){
                     Optional<CreditCardDiscount> optional2 = creditCardDiscountRepository.findById(transDTO.getDiscount_id());
@@ -71,7 +120,7 @@ public class TransactionService {
                         bank = optional2.get();
                         trans.setDiscounts(bank);
                     }
-                    return null;
+//                    return null;
                 }
                 if (transDTO.getRefund_id()!=null){
                     Optional<RefundType> optional3 = refundTypeRepository.findById(transDTO.getRefund_id());
@@ -79,7 +128,7 @@ public class TransactionService {
                         refundType = optional3.get();
                         trans.setRefundType(refundType);
                     }
-                    return null;
+//                    return null;
                 }
                 return transDTO;
             }
@@ -103,6 +152,32 @@ public class TransactionService {
             }
         }
         return false;
+    }
+    
+    public Transaction finByOrderId(Integer orderId) {
+    	Transaction trans = transactionRepository.findByOrderId(orderId);
+    	if (trans!=null) {
+    		return trans;
+    	}
+    	return null;
+    }
+    
+     // 送請求給line
+    public String callLinePay(String json) throws org.springframework.boot.configurationprocessor.json.JSONException{
+    	JSONObject obj = new JSONObject(json);
+    	String encry = new ConsumerCheck().linePay(obj);
+    	System.out.println(encry);
+    	return encry;
+    	
+    }
+    
+    // 回應line付款完成
+    public String confirmLinePay(String json) throws org.springframework.boot.configurationprocessor.json.JSONException{
+    	JSONObject obj = new JSONObject(json);
+    	String encry = new ConsumerCheck().confirmLine(obj);
+    	System.out.println(encry);
+    	return encry;
+    	
     }
 
 }

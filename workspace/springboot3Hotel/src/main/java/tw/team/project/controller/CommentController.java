@@ -3,6 +3,7 @@ package tw.team.project.controller;
 import java.net.URI;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -26,7 +27,8 @@ import tw.team.project.service.MemberService;
 @RequestMapping("/hotel")
 @CrossOrigin
 public class CommentController {
-	
+	@Value("${local.serverPort}")
+	private String serverUri;
 	@Autowired
 	private CommentService commService;
 	@Autowired
@@ -37,7 +39,7 @@ public class CommentController {
         if (comment!=null){
             Comment newComment = commService.insert(comment);
             if (newComment!=null){
-                String uri = "http://localhost:8080/hotel/comments"+newComment.getCommentId();
+                String uri = serverUri+"/hotel/comments"+newComment.getCommentId();
                 return ResponseEntity.created(URI.create(uri)).contentType(MediaType.APPLICATION_JSON).body(newComment);
             }
             
@@ -92,6 +94,7 @@ public class CommentController {
     	}
  		return ResponseEntity.notFound().build();
     }
+    
 //	6/1新增的，用comments的pk-key找
     @GetMapping("/comments/one/{pk}")
     public ResponseEntity<?> findById(@PathVariable(name = "pk") Integer id) {
@@ -104,4 +107,5 @@ public class CommentController {
     		return notfound;
     	}
     }
+	
 }
