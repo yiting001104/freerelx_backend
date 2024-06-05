@@ -33,7 +33,7 @@ public class RoomManagementController {
 	//新增HousingManagemant時改變state
 	
 	
-	@GetMapping("/RoomManagement")
+	@GetMapping("/backend/roomManagement")
 	public ResponseEntity<?> listRoomPage(@RequestParam(value = "p", defaultValue = "1") Integer Number) {
 	    Page<RoomManagement> page = roomManagementService.findAll(Number);
 	    List<RoomManagementDTO> roomList = new ArrayList<>();
@@ -45,7 +45,7 @@ public class RoomManagementController {
 
 
 	
-	 @PutMapping("/RoomManagement/{pk}")
+	 @PutMapping("/backend/roomManagement/{pk}")
 	    public String modify(@PathVariable(name = "pk") Integer id, @RequestBody String json)throws JSONException  {
 	        JSONObject responseJson = new JSONObject();
 	        if(id==null) {
@@ -85,7 +85,7 @@ public class RoomManagementController {
 //    }
     
     
-    @GetMapping("/roomManagement/{pk}")
+    @GetMapping("/backend/roomManagement/{pk}")
     public ResponseEntity<?> findById(@PathVariable(name = "pk") Integer id) {
         RoomManagement room = roomManagementService.findById(id);
         if (room != null) {
@@ -96,7 +96,7 @@ public class RoomManagementController {
     }
 
 	 
-    @GetMapping("/roomManagement/number/{number}")
+    @GetMapping("/backend/roomManagement/number/{number}")
     public ResponseEntity<?> findByNumber(@PathVariable(name = "number") Integer number) {
         RoomManagement room = roomManagementService.findByNumber(number);
         if (room != null) {

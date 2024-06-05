@@ -1,7 +1,10 @@
 package tw.team.project.controller;
 
 import java.net.URI;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -59,7 +62,7 @@ public class RoomAssignmentController {
 	
 	
 	//findById~
-	  @GetMapping("/roomAssignment/{pk}")
+	  @GetMapping("/backend/roomAssignment/{pk}")
 	  public ResponseEntity<?> findById(@PathVariable(name = "pk") Integer id) {
 	  	RoomAssignment room = roomAssignmentService.findById(id);
 	  	if(room!=null) {
@@ -73,7 +76,7 @@ public class RoomAssignmentController {
 	  }
 
 	//delete~
-	@DeleteMapping("/roomAssignment/{pk}")
+	@DeleteMapping("/backend/roomAssignment/{pk}")
 	public ResponseEntity<Void> remove(@PathVariable(name = "pk") Integer id) {
 		if (id != null && id != 0) {
 			boolean exists = roomAssignmentService.existById(id);
@@ -101,7 +104,7 @@ public class RoomAssignmentController {
 	}
 	
 	//insert
-	@PostMapping("/roomAssignment")
+	@PostMapping("/backend/roomAssignment")
 	public ResponseEntity<?> create(@RequestBody RoomAssignment bean) {
 		if(bean!=null && bean.getId()!=null && bean.getId()!=0) {
 			boolean exists = roomAssignmentService.existById(bean.getId());
@@ -116,5 +119,27 @@ public class RoomAssignmentController {
     		}
     	}return ResponseEntity.noContent().build();
     }
+	
+	@PostMapping("/backend/roomAssignment/findID/{date}/{id}")
+	public ResponseEntity<?> findByDate(@PathVariable(name = "date") String date, @PathVariable(name = "id") Integer id, @RequestBody String json) {
+		Date inputDate=null;
+		try {
+			if (date!=null && date.length()!=0) {
+				inputDate = new SimpleDateFormat("yyyy-MM-dd").parse(date);
+			}
+		} catch (ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	  	RoomAssignment room = roomAssignmentService.findByDate(inputDate, id, json);//
+	  	if(room!=null) {
+	  		RoomAssignmentDTO roomDTO = new JsonContainer2().setRoomAssignment(room);
+	  		ResponseEntity<RoomAssignmentDTO> ok = ResponseEntity.ok(roomDTO);
+	  		return ok;
+	  	} else {
+	  		ResponseEntity<Void> notfound = ResponseEntity.notFound().build();
+	  		return notfound;
+	  	}
+	  }
 
 }

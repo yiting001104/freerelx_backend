@@ -30,7 +30,7 @@ public interface OrderRoomRepository extends JpaRepository<OrderRoom, Integer>{
 	@Query(value = "select top(1) order_id from orderRoom ordR where email = :email order by orderdate desc",nativeQuery = true)
 	public Integer findLatestByOrderEmail(@Param("email") String email);
 	
-	@Query(value = "select ordR.base_price, ordRD.room_amount, ordR.order_id, roin.bed_type, roIn.room_price, roin.room_type_id, traT.transaction_status, ordR.arrival_date, ordR.checkout_date from orderRoom ordR left join orderRoomDetail ordRD on ordR.order_id = ordRD.order_id left join roomInformation roIn on ordRD.room_information_id = roin.room_information_id left join transactionTable traT on ordR.order_id = traT.order_id where ordR.order_id= :orderId",nativeQuery = true)
+	@Query(value = "select ordR.base_price, ordRD.room_amount, ordR.order_id, roin.bed_type, roIn.room_price, roin.room_type_id, traT.transaction_status, ordR.arrival_date, ordR.checkout_date, roIn.room_photo from orderRoom ordR left join orderRoomDetail ordRD on ordR.order_id = ordRD.order_id left join roomInformation roIn on ordRD.room_information_id = roin.room_information_id left join transactionTable traT on ordR.order_id = traT.order_id where ordR.order_id= :orderId",nativeQuery = true)
 	public String findorderInformation(@Param("orderId") Integer id);
 }
 //room.orderdate, room.adult_pax, room.child_pax, room.room_type_amount,  room.arrival_date, room.checkout_date, room.reservation_status, room.reservation_status_date,room.base_price

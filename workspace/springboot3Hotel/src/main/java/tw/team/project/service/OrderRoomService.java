@@ -32,8 +32,8 @@ public class OrderRoomService {
 	@Autowired
 	private TransactionService transactionService;
 	
-	public Page<OrderRoom> findOrderByPage(Integer pageNumber){
-		Pageable pgb = PageRequest.of(pageNumber-1, 4, Sort.Direction.DESC, "orderDate");
+	public Page<OrderRoom> findOrderByPage(Integer pageNumber, Integer dataNmuber){
+		Pageable pgb = PageRequest.of(pageNumber-1, dataNmuber, Sort.Direction.DESC, "orderDate");
 		Page<OrderRoom> page = orderRoomRepo.findAll(pgb);
 		return page;
 	}
@@ -256,6 +256,8 @@ public class OrderRoomService {
 				trans.setOrderRoom(newOrder);
 				trans.setTransactionStatus("尚未完成付款");
 				transactionService.insert(trans);
+				
+				
 				return newOrder;
 
 				// 新增 orderdetail

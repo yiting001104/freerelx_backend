@@ -75,7 +75,7 @@ public class JsonContainer2 {
 				roomDTO.setRepairStatus(room.getRepairStatus());
 				roomDTO.setRoomInformation(room.getRoomInformation());
 //				roomDTO.setRoomInfoDTO(room.getRoomInformation());
-				roomDTO.setRoomstate(room.getRoomState());
+				roomDTO.setRoomState(room.getRoomState());
 				return roomDTO;
 			}
 	
