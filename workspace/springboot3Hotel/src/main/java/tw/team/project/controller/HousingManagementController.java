@@ -63,21 +63,6 @@ public class HousingManagementController {
         }
     }
     
-    
-//	//create
-//	@PostMapping("backend/housingManagement1")
-//	public ResponseEntity<?> create(@RequestBody AdditionalCharges bean) {
-//		if (bean != null) {
-//			HousingManagement housingManagement = housingManagementService.create(bean);
-//				if (housingManagement != null) {
-//					String uri = "http://localhost:8080/hotel/additionalCharges" + housingManagement.getId();
-//    				return ResponseEntity.created(URI.create(uri))
-//                            .contentType(MediaType.APPLICATION_JSON)
-//                            .body(housingManagement);
-//				}
-//			}
-//		return ResponseEntity.noContent().build();
-//	}
 
     @PostMapping("/backend/housingManagement")
     public ResponseEntity<String> create(@RequestBody String json, HttpSession httpSession) {
@@ -106,27 +91,30 @@ public class HousingManagementController {
     }
     
     
-//	@PostMapping("/housingManagement")
-//	public String create(@RequestBody String json, HttpSession httpSession) throws JSONException {
-//		Integer id = null;
-//		JSONObject responseJson = new JSONObject();
-//		HousingManagement housingManagement = housingManagementService.create(json, id);
-//		try {
-//			if (housingManagement == null) {
-//				responseJson.put("success", false);
-//				responseJson.put("message", "新增失敗");
-//			} else {
-//				responseJson.put("success", true);
-//				responseJson.put("message", "新增成功");
-//			}
-//		} catch (JSONException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		}
-//		return responseJson.toString();
-//	}
-    
-    
+	@PutMapping("/backend/housingManagement/{pk}/{roomid}")
+	public String updateData(@PathVariable("pk") Integer id, @PathVariable("roomid") Integer roomid, @RequestBody String json) {
+		JSONObject responseJson = new JSONObject();
+		try {
+			if (id != null) {
+				if (housingManagementService.modify(id, roomid, json) != null) {
+					responseJson.put("message", "更新成功");
+					responseJson.put("success", true);
+				} else {
+					responseJson.put("message", "請查資料是否完整");
+					responseJson.put("success", false);
+				}
+			} else {
+				responseJson.put("message", "資料已過期請重新登入");
+				responseJson.put("success", false);
+			}
+		} catch (JSONException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		return responseJson.toString();
+	}
+     
 
 	@GetMapping("/backend/housingManagement/number/{number}")
 	public String existsByItem(@PathVariable("number") Integer number) {
@@ -173,29 +161,55 @@ public class HousingManagementController {
 
 		return responseJson.toString();
 	}
-
+	
 	@PutMapping("/backend/housingManagement/{pk}")
-	public String updateData(@PathVariable("pk") Integer id, @RequestBody String json) {
-		JSONObject responseJson = new JSONObject();
-		try {
-			if (id != null) {
-				if (housingManagementService.modify(id, json) != null) {
-					responseJson.put("message", "更新成功");
-					responseJson.put("success", true);
-				} else {
-					responseJson.put("message", "請查資料是否完整");
-					responseJson.put("success", false);
-				}
-			} else {
-				responseJson.put("message", "資料已過期請重新登入");
-				responseJson.put("success", false);
-			}
-		} catch (JSONException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-
-		return responseJson.toString();
+	public String updateCheckOutTime(@PathVariable("pk") Integer id, @RequestBody String json) {
+	    JSONObject responseJson = new JSONObject();
+	    try {
+	        if (id != null) {
+	            if (housingManagementService.updateCheckOutTime(id, json) != null) {
+	                responseJson.put("message", "更新成功");
+	                responseJson.put("success", true);
+	            } else {
+	                responseJson.put("message", "請查資料是否完整");
+	                responseJson.put("success", false);
+	            }
+	        } else {
+	            responseJson.put("message", "資料已過期請重新登入");
+	            responseJson.put("success", false);
+	        }
+	    } catch (JSONException e) {
+	        e.printStackTrace();
+	    }
+	    return responseJson.toString();
 	}
+
+	
+	@PutMapping("/backend/housingManagement/changeRoom/{pk}")
+	public String changeRoom(@PathVariable("pk") Integer id, @RequestBody String json) {
+	    JSONObject responseJson = new JSONObject();
+	    try {
+	        JSONObject obj = new JSONObject(json);
+	        Integer newRoomId = obj.getInt("newRoomId");
+	        
+	        if (id != null && newRoomId != null) {
+	            if (housingManagementService.changeRoom(id, newRoomId) != null) {
+	                responseJson.put("message", "換房成功");
+	                responseJson.put("success", true);
+	            } else {
+	                responseJson.put("message", "換房失敗，請檢查資料");
+	                responseJson.put("success", false);
+	            }
+	        } else {
+	            responseJson.put("message", "資料不完整或已過期，請重試");
+	            responseJson.put("success", false);
+	        }
+	    } catch (JSONException e) {
+	        e.printStackTrace();
+	    }
+	    return responseJson.toString();
+	}
+
+
 
 }

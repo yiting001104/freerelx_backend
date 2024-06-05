@@ -9,6 +9,8 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.configurationprocessor.json.JSONException;
+import org.springframework.boot.configurationprocessor.json.JSONObject;
 import org.springframework.data.domain.Page;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -45,7 +47,6 @@ public class RoomAssignmentController {
 	//取消訂單後datedate的left做更動
 	//透過roomInfo做分類select date top5 left>0的page分頁
 	
-
 	
 	//查詢多筆資料~
 	@GetMapping("/backend/roomAssignment")
@@ -89,19 +90,43 @@ public class RoomAssignmentController {
 		return ResponseEntity.notFound().build();
 	}
 	
-	//update
-	@PutMapping("/backend/roomAssignment/{pk}")
-	public ResponseEntity<?> modify(@PathVariable (name = "pk") Integer id, @RequestBody RoomAssignment bean) {
-		if(bean!=null && bean.getId()!=null && bean.getId()!=0) {
-			boolean exists = roomAssignmentService.existById(bean.getId());
-			if(exists) {
-				RoomAssignment room = roomAssignmentService.update(bean);
-				if(room!=null) {
-					return ResponseEntity.ok(room);
-				}
-			}
-		}return ResponseEntity.notFound().build();
-	}
+//	//update
+//	@PutMapping("/backend/roomAssignment/{pk}")
+//	public ResponseEntity<?> modify(@PathVariable (name = "pk") Integer id, @RequestBody RoomAssignment bean) {
+//		if(bean!=null && bean.getId()!=null && bean.getId()!=0) {
+//			boolean exists = roomAssignmentService.existById(bean.getId());
+//			if(exists) {
+//				RoomAssignment room = roomAssignmentService.update(bean);
+//				if(room!=null) {
+//					return ResponseEntity.ok(room);
+//				}
+//			}
+//		}return ResponseEntity.notFound().build();
+//	}
+	
+	
+	 @PutMapping("/backend/roomAssignment/{pk}")
+	    public String modify(@PathVariable(name = "pk") Integer id, @RequestBody String json)throws JSONException  {
+	        JSONObject responseJson = new JSONObject();
+	        if(id==null) {
+	            responseJson.put("success", false);
+	            responseJson.put("message", "id是必要欄位");
+	        } else if(!roomAssignmentService.existById(id)) {
+	            responseJson.put("success", false);
+	            responseJson.put("message", "id不存在");
+	        } else {
+	        	RoomAssignment rooms = roomAssignmentService.updateData(json);
+	            if(rooms==null) {
+	                responseJson.put("success", false);
+	                responseJson.put("message", "修改失敗");
+	            } else {
+	                responseJson.put("success", true);
+	                responseJson.put("message", "修改成功");
+	            }
+	        }
+	        return responseJson.toString();
+	    }
+	
 	
 	//insert
 	@PostMapping("/backend/roomAssignment")
@@ -119,6 +144,9 @@ public class RoomAssignmentController {
     		}
     	}return ResponseEntity.noContent().build();
     }
+	
+	
+	
 	
 	@PostMapping("/backend/roomAssignment/findID/{date}/{id}")
 	public ResponseEntity<?> findByDate(@PathVariable(name = "date") String date, @PathVariable(name = "id") Integer id, @RequestBody String json) {

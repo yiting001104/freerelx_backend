@@ -23,6 +23,7 @@ import tw.team.project.model.OrderRoom;
 import tw.team.project.model.RoomManagement;
 import tw.team.project.model.RoomState;
 import tw.team.project.repository.HousingManagementRepository;
+import tw.team.project.repository.RoomManagementRepository;
 
 @Service
 @Transactional
@@ -34,6 +35,9 @@ public class HousingManagementService {
 //	@Autowired
 //	private RoomAssignmentService roomAssignmentService;
 
+	@Autowired
+	private RoomManagementRepository roomManagementRepo;
+	
 	@Autowired
 	private RoomManagementService roomManagementService;
 
@@ -110,83 +114,6 @@ public class HousingManagementService {
 		}
 		return result;
 	}
-
-//	public HousingManagement create(String json, Integer id) {
-//		try {
-//			JSONObject obj = new JSONObject(json);
-//			RoomManagement roomManagement = null;
-//			OrderRoom orderRoom = null;
-//
-//			roomManagement = roomManagemnantService.findById(id);
-//			orderRoom = orderRoomService.findById(id);
-//
-//			String remarks = obj.isNull("remarks") ? null : obj.getString("remarks");
-//			Date checkInTime = new Date();
-//			String check_Out_Time = obj.isNull("check_Out_Time") ? null : obj.getString("check_Out_Time");
-//			Date checkOutTime;
-//			if (check_Out_Time != null && check_Out_Time.length() != 0) {
-//				checkOutTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(check_Out_Time);
-//			} else {
-//				checkOutTime = null;
-//			}
-//			String totalAdditional = obj.isNull("totalAdditional") ? null : obj.getString("totalAdditional");
-//			BigDecimal totalAdditionalfee = new BigDecimal(totalAdditional);
-//			String totalCompensation = obj.isNull("totalCompensation") ? null : obj.getString("totalCompensation");
-//			BigDecimal totalCompensationfee = new BigDecimal(totalCompensation);
-//
-//			if (checkInTime != null) {
-//				Optional<HousingManagement> optional = housingManagementRepo.findById(id);
-//				if (optional.isEmpty()) {
-//					HousingManagement insert = new HousingManagement();
-//					insert.setRemarks(remarks);
-//					insert.setCheckInTime(checkInTime);
-//					insert.setCheckOutTime(checkOutTime);
-//					insert.setTotalAdditional(totalAdditionalfee);
-//					insert.setTotalCompensation(totalCompensationfee);
-//					insert.setOrderRoom(orderRoom);
-//					insert.setRoomManagement(roomManagement);
-//
-//					// 檢查是否為當日訂房 全部訂房皆不為當日訂房 所以只會做對 RoomManagement 的 roomState 狀態改變
-//					OrderRoom orderdate = orderRoomService.findById(id);
-//					if (!orderdate.getOrderDate().equals(checkInTime)) {
-//						// 當日有其他訂房，進行庫存減少修改
-//						RoomAssignment orderdate2 = roomAssignmentService.findById(id);
-//						if (orderdate2 != null && orderdate2.getLeft() != 0) {
-//							orderdate2.setLeft(orderdate2.getLeft() - 1);
-//						} else {
-//							// 當日沒有其他訂房，新增 RoomAssignment
-//							RoomAssignment rooomAssignment = new RoomAssignment();
-//							rooomAssignment.setDate(checkInTime);
-//							rooomAssignment.setLeft(orderdate2.getLeft() - 1);
-//							roomAssignmentService.insert(rooomAssignment);
-//						}
-//					} else {
-//						// 當日已有其他訂房
-//						return null;
-//					}
-//
-//					// 更新 RoomManagement 的 roomState
-//
-//		            if (checkOutTime != null) {
-//		                RoomManagement management = roomManagemnantService.findById(id);
-//		                if (management != null) {
-//		                	RoomState state  = roomStateService.findById(id);
-//		                	management.setRoomState(state); // 假設1表示特定的房間狀態
-//		                    roomManagemnantService.modify(json); // 更新 RoomManagement
-//		                }
-//		            }
-//
-//					HousingManagement newHousing = housingManagementRepo.save(insert);
-//					return newHousing;
-//				}
-//			}
-//		} catch (JSONException e) {
-//			e.printStackTrace();
-//		} catch (ParseException e) {
-//			e.printStackTrace();
-//		}
-//		return null;
-//	}
 	
 	
 	//new Create
@@ -196,8 +123,8 @@ public class HousingManagementService {
 	        RoomManagement roomManagement = null;
 			OrderRoom orderRoom = null;
 	        
+			roomManagement = roomManagementService.findById(roomid);
 	        orderRoom = orderRoomService.findById(orderid);
-	        roomManagement = roomManagementService.findById(roomid);
 
 	        String remarks = obj.isNull("remarks") ? null : obj.getString("remarks");
 	        Date checkInTime = new Date();
@@ -241,52 +168,138 @@ public class HousingManagementService {
 	    return null;
 	}
 
-
-
-
-
+	
 	@Transactional
-	public HousingManagement modify(Integer id, String json) {
-		try {
-			JSONObject obj = new JSONObject(json);
+	public HousingManagement modify(Integer id, Integer roomid, String json) {
+	    try {
+	        JSONObject obj = new JSONObject(json);
+	        RoomManagement roomManagement = roomManagementService.findById(roomid);
 
-			String remarks = obj.isNull("remarks") ? null : obj.getString("remarks");
-			String check_Out_Time = obj.isNull("check_Out_Time") ? null : obj.getString("check_Out_Time");
-			Date checkOutTime;
-			if (check_Out_Time != null && check_Out_Time.length() != 0) {
-				checkOutTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(check_Out_Time);
-			} else {
-				checkOutTime = null;
-			}
-			String totalAdditional = obj.isNull("totalAdditional") ? null : obj.getString("totalAdditional");
-			BigDecimal totalAdditionalfee = new BigDecimal(totalAdditional);
-			String totalCompensation = obj.isNull("totalCompensation") ? null : obj.getString("totalCompensation");
-			BigDecimal totalCompensationfee = new BigDecimal(totalCompensation);
+	        String remarks = obj.isNull("remarks") ? null : obj.getString("remarks");
+	        String check_Out_Time = obj.isNull("check_Out_Time") ? null : obj.getString("check_Out_Time");
+	        Date checkOutTime;
+	        if (check_Out_Time != null && check_Out_Time.length() != 0) {
+	            checkOutTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(check_Out_Time);
+	        } else {
+	            checkOutTime = null;
+	        }
 
-			Optional<HousingManagement> optional = housingManagementRepo.findById(id);
-			if (optional.isEmpty()) {
-				HousingManagement update = optional.get();
-				update.setRemarks(remarks);
-				update.setCheckOutTime(checkOutTime);
-				update.setTotalAdditional(totalAdditionalfee);
-				update.setTotalCompensation(totalCompensationfee);
-				
+	        String totalAdditional = obj.isNull("totalAdditional") ? null : obj.getString("totalAdditional");
+	        BigDecimal totalAdditionalfee = totalAdditional == null ? BigDecimal.ZERO : new BigDecimal(totalAdditional);
+
+	        String totalCompensation = obj.isNull("totalCompensation") ? null : obj.getString("totalCompensation");
+	        BigDecimal totalCompensationfee = totalCompensation == null ? BigDecimal.ZERO : new BigDecimal(totalCompensation);
+
+	        Optional<HousingManagement> optional = housingManagementRepo.findById(id);
+	        if (optional.isPresent()) {
+	            HousingManagement update = optional.get();
+	            update.setRemarks(remarks);
+	            update.setCheckOutTime(checkOutTime);
+	            update.setTotalAdditional(totalAdditionalfee);
+	            update.setTotalCompensation(totalCompensationfee);
+	            update.setRoomManagement(roomManagement);
+
 	            if (checkOutTime != null) {
 	                RoomManagement management = roomManagementService.findById(id);
 	                if (management != null) {
-	                	RoomState state  = roomStateService.findById(id);
+	                    RoomState state = roomStateService.findById(id);
 	                    management.setRoomState(state); // 假設1表示特定的房間狀態
 	                    roomManagementService.modify(json); // 更新 RoomManagement
 	                }
 	            }
-
 	            return update;
 	        }
-		} catch (JSONException | ParseException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-
-		return null;
+	    } catch (JSONException | ParseException e) {
+	        // TODO Auto-generated catch block
+	        e.printStackTrace();
+	    }
+	    return null;
 	}
+
+
+//	@Transactional
+//	public HousingManagement modify(Integer id, Integer roomid, String json) {
+//		try {
+//			JSONObject obj = new JSONObject(json);
+//			
+//			RoomManagement roomManagement  = roomManagementService.findById(roomid);
+//
+//			String remarks = obj.isNull("remarks") ? null : obj.getString("remarks");
+//			String check_Out_Time = obj.isNull("check_Out_Time") ? null : obj.getString("check_Out_Time");
+//			Date checkOutTime;
+//			if (check_Out_Time != null && check_Out_Time.length() != 0) {
+//				checkOutTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(check_Out_Time);
+//			} else {
+//				checkOutTime = null;
+//			}
+//			String totalAdditional = obj.isNull("totalAdditional") ? null : obj.getString("totalAdditional");
+//			BigDecimal totalAdditionalfee = new BigDecimal(totalAdditional);
+//			String totalCompensation = obj.isNull("totalCompensation") ? null : obj.getString("totalCompensation");
+//			BigDecimal totalCompensationfee = new BigDecimal(totalCompensation);
+//
+//			Optional<HousingManagement> optional = housingManagementRepo.findById(id);
+//			if (optional.isPresent()) {
+//				HousingManagement update = optional.get();
+//				update.setRemarks(remarks);
+//				update.setCheckOutTime(checkOutTime);
+//				update.setTotalAdditional(totalAdditionalfee);
+//				update.setTotalCompensation(totalCompensationfee);
+//				update.setRoomManagement(roomManagement);
+//				
+//	            if (checkOutTime != null) {
+//	                RoomManagement management = roomManagementService.findById(id);
+//	                if (management != null) {
+//	                	RoomState state  = roomStateService.findById(id);
+//	                    management.setRoomState(state); // 假設1表示特定的房間狀態
+//	                    roomManagementService.modify(json); // 更新 RoomManagement
+//	                }
+//	            }
+//
+//	            return update;
+//	        }
+//		} catch (JSONException | ParseException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
+//
+//		return null;
+//	}
+	
+	@Transactional
+	public HousingManagement updateCheckOutTime(Integer id, String json) {
+	    try {
+	        JSONObject obj = new JSONObject(json);
+	        String check_Out_Time = obj.isNull("checkOutTime") ? null : obj.getString("checkOutTime");
+	        Date checkOutTime = check_Out_Time != null ? new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX").parse(check_Out_Time) : null;
+
+	        Optional<HousingManagement> optional = housingManagementRepo.findById(id);
+	        if (optional.isPresent()) {
+	            HousingManagement update = optional.get();
+	            update.setCheckOutTime(checkOutTime);
+	            return update;
+	        }
+	    } catch (JSONException | ParseException e) {
+	        e.printStackTrace();
+	    }
+	    return null;
+	}
+
+	@Transactional
+	public HousingManagement changeRoom(Integer id, Integer newRoomId) {
+	    Optional<HousingManagement> optional = housingManagementRepo.findById(id);
+	    Optional<RoomManagement> newRoomOptional = roomManagementRepo.findById(newRoomId);
+	    if (optional.isPresent() && newRoomOptional.isPresent()) {
+	        HousingManagement housingManagement = optional.get();
+	        RoomManagement newRoom = newRoomOptional.get();
+	        
+	        housingManagement.setRoomManagement(newRoom);
+	        housingManagementRepo.save(housingManagement);
+	        
+	        return housingManagement;
+	    }
+	    return null;
+	}
+
+
+	
 }

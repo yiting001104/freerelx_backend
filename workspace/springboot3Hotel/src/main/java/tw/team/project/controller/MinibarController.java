@@ -1,6 +1,7 @@
 package tw.team.project.controller;
 
 import java.net.URI;
+import java.util.Base64;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,42 +39,53 @@ public class MinibarController {
 	// 判斷是否有minibar
 	@GetMapping("/minibar/item/{item}")
 	public String existsByItem(@PathVariable("item") String item) {
-		JSONObject responseJson = new JSONObject();
-		boolean exist = minibarService.existsByItem(item);
-		try {
-			if (exist) {
-				responseJson.put("success", false);
-				responseJson.put("message", "品項已存在");
-			} else {
-				responseJson.put("success", true);
-				responseJson.put("message", "品項不存在");
-			}
-			return responseJson.toString();
-		} catch (JSONException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		return null;
+	    JSONObject responseJson = new JSONObject();
+	    boolean exist = minibarService.existsByItem(item);
+	    try {
+	        if (exist) {
+	            responseJson.put("success", false);
+	            responseJson.put("message", "品項已存在");
+	        } else {
+	            responseJson.put("success", true);
+	            responseJson.put("message", "品項不存在");
+	        }
+	        return responseJson.toString();
+	    } catch (JSONException e) {
+	        e.printStackTrace();
+	    }
+	    return null;
 	}
 
 	// 編輯商品
 	@PutMapping("/minibar/{pk}")
 	public ResponseEntity<?> modify(@PathVariable("pk") Integer id, @RequestBody Minibar product) {
-		if(product != null && product.getId() != null && product.getId() != 0) {
-			boolean exists = minibarService.existById(product.getId());
-			if(exists) {
-				Minibar newProduct = minibarService.update(product);
-				if(newProduct != null) {
-					return ResponseEntity.ok(newProduct);
-				}
-			}
-		}return ResponseEntity.notFound().build();
+	    if (product != null && product.getId() != null && product.getId() != 0) {
+	        boolean exists = minibarService.existById(product.getId());
+	        if (exists) {
+	            Minibar newProduct = minibarService.update(product);
+	            if (newProduct != null) {
+	                return ResponseEntity.ok(newProduct);
+	            }
+	        }
+	    }
+	    return ResponseEntity.notFound().build();
 	}
 	
 	
 	// 新增商品
 	@PostMapping("/minibar")
 	public ResponseEntity<?> create(@RequestBody Minibar bean) {
+	    // if (bean != null) {
+	    //     Minibar product = minibarService.insert(bean);
+	    //     if (product != null) {
+	    //         String uri = "http://localhost:8080/hotel/minibar" + product.getId();
+	    //         return ResponseEntity.created(URI.create(uri))
+	    //                 .contentType(MediaType.APPLICATION_JSON)
+	    //                 .body(product);
+	    //     }
+	    // }
+	    // return ResponseEntity.noContent().build();
+
 		if (bean != null) {
 			Minibar product = minibarService.insert(bean);
 			if (product != null) {
@@ -82,6 +94,7 @@ public class MinibarController {
                         .contentType(MediaType.APPLICATION_JSON)
                         .body(product);			}
 		}return ResponseEntity.noContent().build();
+
 	}
 
 	// findAll~
@@ -101,31 +114,33 @@ public class MinibarController {
 
 		return array.toString();
 	}
-
-	// 依條件查詢~
-	@PostMapping("/minibar/find")
-	public String find(@RequestBody String json) throws JSONException {
-		JSONObject responseJson = new JSONObject();
-
-		JSONArray array = new JSONArray();
-		List<Minibar> products = minibarService.find(json);
-		if (products != null && !products.isEmpty()) {
-			for (Minibar minibar : products) {
-				String make = DatetimeConverter.toString(minibar.getMake(), "yyyy-MM-dd");
-				JSONObject item = new JSONObject().put("id", minibar.getId()).put("item", minibar.getItem())
-						.put("price", minibar.getPrice()).put("make", make).put("expire", minibar.getExpire())
-						.put("photo", minibar.getPhoto());
-
-				array.put(item);
-			}
-		}
-		responseJson.put("list", array);
-
-		long count = minibarService.count(json);
-		responseJson.put("count", count);
-
-		return responseJson.toString();
-	}
+	
+//	// 依條件查詢
+//	@PostMapping("/minibar/find")
+//	public String find(@RequestBody String json) throws JSONException {
+//	    JSONObject responseJson = new JSONObject();
+//	    JSONArray array = new JSONArray();
+//	    List<Minibar> products = minibarService.find(json);
+//	    if (products != null && !products.isEmpty()) {
+//	        for (Minibar minibar : products) {
+//	            String make = DatetimeConverter.toString(minibar.getMake(), "yyyy-MM-dd");
+//	            JSONObject item = new JSONObject()
+//	                    .put("id", minibar.getId())
+//	                    .put("item", minibar.getItem())
+//	                    .put("price", minibar.getPrice())
+//	                    .put("make", make)
+//	                    .put("expire", minibar.getExpire())
+//	                    .put("photoId", minibar.getId());
+//	            array.put(item);
+//	        }
+//	    }
+//	    responseJson.put("list", array);
+//
+//	    long count = minibarService.count(json);
+//	    responseJson.put("count", count);
+//
+//	    return responseJson.toString();
+//	}
 
 	// 移除商品~
 	@DeleteMapping("/minibar/{pk}")
@@ -148,73 +163,98 @@ public class MinibarController {
 		}
 		return responseJson.toString();
 	}
-
-	// findById~
+	
+	// 查詢商品
 	@GetMapping("/minibar/{pk}")
 	public String findById(@PathVariable(name = "pk") Integer id) throws JSONException {
-		JSONObject responseJson = new JSONObject();
-		JSONArray array = new JSONArray();
-		Minibar product = minibarService.findById(id);
-		if (product != null) {
-			String make = DatetimeConverter.toString(product.getMake(), "yyyy-MM-dd");
-			JSONObject item = new JSONObject().put("id", product.getId()).put("item", product.getItem())
-					.put("price", product.getPrice()).put("make", make).put("expire", product.getExpire())
-					.put("photo", product.getPhoto());
-			array.put(item);
-		}
-		responseJson.put("list", array);
-		return responseJson.toString();
+	    JSONObject responseJson = new JSONObject();
+	    JSONArray array = new JSONArray();
+	    Minibar product = minibarService.findById(id);
+	    if (product != null) {
+	        String make = DatetimeConverter.toString(product.getMake(), "yyyy-MM-dd");
+	        JSONObject item = new JSONObject()
+	                .put("id", product.getId())
+	                .put("item", product.getItem())
+	                .put("price", product.getPrice())
+	                .put("make", make)
+	                .put("expire", product.getExpire())
+	                .put("photo", product.getPhoto());
+	        array.put(item);
+	    }
+	    responseJson.put("list", array);
+	    return responseJson.toString();
 	}
 	
-	// 編輯商品
-//	@PutMapping("/minibar/{pk}")
-//	public String modify(@PathVariable(name = "pk") Integer id, @RequestParam("file") MultipartFile file,
-//			@RequestBody String json) throws JSONException {
-//		JSONObject responseJson = new JSONObject();
-//		if (id == null) {
-//			responseJson.put("success", false);
-//			responseJson.put("message", "id是必要欄位");
-//		} else if (!minibarService.existById(id)) {
-//			responseJson.put("success", false);
-//			responseJson.put("message", "id不存在");
-//		} else {
-//			Minibar product = minibarService.modify(json, file);
-//			if (product == null) {
-//				responseJson.put("success", false);
-//				responseJson.put("message", "修改失敗");
-//			} else {
-//				responseJson.put("success", true);
-//				responseJson.put("message", "修改成功");
-//			}
-//		}
-//		return responseJson.toString();
-//	}
+	@PostMapping("/minibar/find")
+	public String find(@RequestBody String json) throws JSONException {
+	    JSONObject responseJson = new JSONObject();
+	    JSONArray array = new JSONArray();
+	    List<Minibar> products = minibarService.find(json);
+	    if (products != null && !products.isEmpty()) {
+	        for (Minibar minibar : products) {
+	            String make = DatetimeConverter.toString(minibar.getMake(), "yyyy-MM-dd");
+	            String photoBase64 = Base64.getEncoder().encodeToString(minibar.getPhoto());
+	            JSONObject item = new JSONObject()
+	                    .put("id", minibar.getId())
+	                    .put("item", minibar.getItem())
+	                    .put("price", minibar.getPrice())
+	                    .put("make", make)
+	                    .put("expire", minibar.getExpire())
+	                    .put("photo", photoBase64);
+	            array.put(item);
+	        }
+	    }
+	    responseJson.put("list", array);
 
-//	// 新增商品
-//	@PostMapping("/minibar")
-//	public String create(@RequestParam("file") MultipartFile file, @RequestBody String json) throws JSONException {
-//		JSONObject responseJson = new JSONObject();
-//		JSONObject obj = new JSONObject(json);
-//		Integer id = obj.isNull("id") ? null : obj.getInt("id");
-//		
-//				
-//		if (id == null) {
-//			responseJson.put("success", false);
-//			responseJson.put("message", "id是必要欄位");
-//		} else if (minibarService.existById(id)) {
-//			responseJson.put("success", false);
-//			responseJson.put("message", "id已存在");
-//		} else {
-//			Minibar product = minibarService.create(json, file);
-//			if (product == null) {
-//				responseJson.put("success", false);
-//				responseJson.put("message", "新增失敗");
-//			} else {
-//				responseJson.put("success", true);
-//				responseJson.put("message", "新增成功");
-//			}
-//		}
-//		return responseJson.toString();
-//	}
+	    long count = minibarService.count(json);
+	    responseJson.put("count", count);
+
+	    return responseJson.toString();
+	}
+
+	
+	
+//	private byte[] photo = null;
+//	@GetMapping(path = "/minibar/photos/{photoid}", produces = MediaType.IMAGE_JPEG_VALUE)
+//	public @ResponseBody byte[] findPhotoByPhotoId(@PathVariable("photoid") Integer id) {
+//	    Minibar minibar = minibarService.findById(id);
+//	    byte[] result = this.photo;
+//	    if (minibar != null) {
+//	    	result = minibar.getPhoto();
+//	    }
+//	        return result;
+//	    }
+	
+
+    
 //
+//    private byte[] photo = null;
+//
+//    @PostConstruct
+//    public void initialize() throws IOException {
+//        byte[] buffer = new byte[8192];
+//
+//        ClassLoader classLoader = getClass().getClassLoader();
+//        ByteArrayOutputStream os = new ByteArrayOutputStream();
+//        BufferedInputStream is = new BufferedInputStream(
+//                classLoader.getResourceAsStream("static/images/no-image.jpg"));
+//        int len = is.read(buffer);
+//        while (len != -1) {
+//            os.write(buffer, 0, len);
+//            len = is.read(buffer);
+//        }
+//        is.close();
+//        this.photo = os.toByteArray();
+//    }
+//    
+//    @GetMapping(path = "/minibar/photo/{photoid}", produces = MediaType.IMAGE_JPEG_VALUE)
+//    public @ResponseBody byte[] findPhotoByPhotoId(@PathVariable(name = "photoid") Integer photoid) {
+//        Minibar minibar = minibarService.findById(photoid);
+//        byte[] result = this.photo;
+//        if (minibar != null && minibar.getPhoto() != null) {
+//            result = minibar.getPhoto();
+//        }
+//        return result;
+//    }
+
 }

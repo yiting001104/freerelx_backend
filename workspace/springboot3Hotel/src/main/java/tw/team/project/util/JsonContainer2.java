@@ -1,5 +1,7 @@
 package tw.team.project.util;
 
+import org.springframework.stereotype.Component;
+
 import tw.team.project.dto.AdditionalChargesDTO;
 import tw.team.project.dto.CheckOutInspectionDTO;
 import tw.team.project.dto.HousingManagementDTO;
@@ -11,6 +13,7 @@ import tw.team.project.model.HousingManagement;
 import tw.team.project.model.RoomAssignment;
 import tw.team.project.model.RoomManagement;
 
+@Component
 public class JsonContainer2 {
 
 
@@ -74,7 +77,7 @@ public class JsonContainer2 {
 				roomDTO.setNumber(room.getNumber());
 				roomDTO.setRepairStatus(room.getRepairStatus());
 				roomDTO.setRoomInformation(room.getRoomInformation());
-//				roomDTO.setRoomInfoDTO(room.getRoomInformation());
+//				roomDTO.setHousingManagement(room.getHousingManagement());
 				roomDTO.setRoomState(room.getRoomState());
 				return roomDTO;
 			}

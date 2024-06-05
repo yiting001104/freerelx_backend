@@ -1,14 +1,12 @@
 package tw.team.project.controller;
 
 import java.net.URI;
-import java.util.ArrayList;
 import java.util.List;
 
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.configurationprocessor.json.JSONException;
-import org.springframework.boot.configurationprocessor.json.JSONObject;
-import org.springframework.data.domain.Page;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -19,7 +17,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import tw.team.project.dto.CheckOutInspectionDTO;
@@ -43,15 +40,21 @@ public class CheckOutInspectionController {
 	// findAll~
 	
     @GetMapping("/backend/checkOutInspection")
-    public ResponseEntity<?> LisgCheckOutInspection(@RequestParam(value = "p",defaultValue = "1") Integer pageNumber){
-        Page<CheckOutInspection> page = checkOutInspectionService.findAll(pageNumber);
-        List<CheckOutInspectionDTO> checkOutInspectionList = new ArrayList<>();
-        for (CheckOutInspection checkOutInspection : page.getContent()){
-        	checkOutInspectionList.add(new JsonContainer2().setCheckOutInspection(checkOutInspection));
-        }
-        return ResponseEntity.ok(checkOutInspectionList);
-        
+    public ResponseEntity<List<CheckOutInspection>> getAllCheckOutInspections() {
+        List<CheckOutInspection> inspections = checkOutInspectionService.findAll();
+        return ResponseEntity.ok(inspections);
     }
+	
+//    @GetMapping("/backend/checkOutInspection")
+//    public ResponseEntity<?> LisgCheckOutInspection(@RequestParam(value = "p",defaultValue = "1") Integer pageNumber){
+//        Page<CheckOutInspection> page = checkOutInspectionService.findAll(pageNumber);
+//        List<CheckOutInspectionDTO> checkOutInspectionList = new ArrayList<>();
+//        for (CheckOutInspection checkOutInspection : page.getContent()){
+//        	checkOutInspectionList.add(new JsonContainer2().setCheckOutInspection(checkOutInspection));
+//        }
+//        return ResponseEntity.ok(checkOutInspectionList);
+//        
+//    }
 	
 	// findById~
     @GetMapping("/backend/checkOutInspection/{pk}")
@@ -68,54 +71,41 @@ public class CheckOutInspectionController {
     }
 	
     
-	// update~
+	// update~	
 	@PutMapping("/backend/checkOutInspection/{pk}")
 	public ResponseEntity<?> modify(@PathVariable("pk") Integer id, @RequestBody CheckOutInspection entity) {
-		if(entity != null && entity.getId() != null && entity.getId() != 0) {
-			boolean exists = checkOutInspectionService.existById(entity.getId());
-			if(exists) {
-				CheckOutInspection newCheck = checkOutInspectionService.update(entity);
-				if(newCheck != null) {
-					return ResponseEntity.ok(newCheck);
-				}
-			}
-		}return ResponseEntity.notFound().build();
+	    if (entity != null && entity.getId() != null && entity.getId() != 0) {
+	        boolean exists = checkOutInspectionService.existById(entity.getId());
+	        if (exists) {
+	            CheckOutInspection newCheck = checkOutInspectionService.update(entity);
+	            if (newCheck != null) {
+	                return ResponseEntity.ok(newCheck);
+	            }
+	        }
+	    }
+	    // 返回具體的錯誤訊息
+	    return ResponseEntity.badRequest().body("更新失敗：無法找到相應的記錄或資料不完整");
 	}
-	
-	// create
-//    @PostMapping("/checkOutInspection")
-//    public ResponseEntity<?> create(@RequestBody CheckOutInspection bean) {
-//    	if(bean!=null && bean.getId()!=null && bean.getId()!=0) {
-//    		boolean exists = checkOutInspectionService.existById(bean.getId());
-//    		if(!exists) {
-//    			CheckOutInspection check = checkOutInspectionService.insert(bean);
-//    			if(check!=null) {
-//    				String uri = "http://localhost:8080/hotel/checkOutInspection/"+check.getId();
-//    				return ResponseEntity.created(URI.create(uri))
-//    						.contentType(MediaType.APPLICATION_JSON)
-//    						.body(check);
-//    			}
-//    		}
-//    	}return ResponseEntity.noContent().build();
-//    }
-    
- // create~
-    @PostMapping("/backend/checkOutInspection")
-    public ResponseEntity<?> create(@RequestBody CheckOutInspection bean) {
-        if (bean != null) {
-       
-                // Insert the entity
-                CheckOutInspection check = checkOutInspectionService.insert(bean);
-                if (check != null) {
-                    // Build the URI for the created resource
-                	String uri = serverUri+"/hotel/checkOutInspection"+check.getId();
-    				return ResponseEntity.created(URI.create(uri))
-                            .contentType(MediaType.APPLICATION_JSON)
-                            .body(check);
-            }
-        }
-        return ResponseEntity.notFound().build();
-    }
+
+	// create~
+	@PostMapping("/backend/checkOutInspection")
+	public ResponseEntity<?> create(@RequestBody CheckOutInspection bean) {
+	    if (bean != null) {
+	        // Insert the entity
+	        CheckOutInspection check = checkOutInspectionService.insert(bean);
+	        if (check != null) {
+	            // Build the URI for the created resource
+	            String uri = serverUri + "/hotel/checkOutInspection/" + check.getId();
+	            return ResponseEntity.created(URI.create(uri))
+	                    .contentType(MediaType.APPLICATION_JSON)
+	                    .body(check); // 回應新增的 CheckOutInspection 物件
+	        }
+	    }
+	    // 返回具體的錯誤訊息
+	    return ResponseEntity.badRequest().body("新增失敗：資料不完整或無效");
+	}
+
+
 
     @DeleteMapping("/backend/checkOutInspection/{pk}")
 	public String remove(@PathVariable(name = "pk") Integer id) throws JSONException {
