@@ -26,11 +26,17 @@ public class AlertService {
 		try {
 			JSONObject obj = new JSONObject(json);
 			Integer productId = obj.isNull("productId") ? null : obj.getInt("productId");
+			Integer newPrice = obj.isNull("newPrice") ? null : obj.getInt("newPrice");
 			List<Cart> all=cartRepository.findByidCart(productId);
 			for (Cart one : all) {
 				Alert alert = new Alert();
 				alert.setMemberid(one.getMember());//得到成員id
-				alert.setAlertmessage("您購物車中{"+one.getId().getProductName()+"}價格改變了!");//得到產品名稱
+				//
+				if(newPrice>one.getId().getProductPrice()) {
+					alert.setAlertmessage("您購物車中{"+one.getId().getProductName()+"}價格從"+one.getId().getProductPrice()+"\u2191"+(newPrice));//得到產品名稱	
+				}else {
+					alert.setAlertmessage("您購物車中{"+one.getId().getProductName()+"}價格從"+one.getId().getProductPrice()+"\u2193"+(newPrice));
+				}
 				alertRepository.save(alert); //儲存
 			}
 			return true;
