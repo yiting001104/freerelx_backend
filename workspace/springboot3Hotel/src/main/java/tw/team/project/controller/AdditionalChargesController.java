@@ -39,7 +39,7 @@ public class AdditionalChargesController {
 	
 	
 	// findAll
-    @GetMapping("/additionalCharges")
+    @GetMapping("/backend/additionalCharges")
     public ResponseEntity<?> LisgAdditionalCharges(@RequestParam(value = "p",defaultValue = "1") Integer pageNumber){
         Page<AdditionalCharges> page = additionalChargesService.findAll(pageNumber);
         List<AdditionalChargesDTO> additionalChargesList = new ArrayList<>();
@@ -68,7 +68,7 @@ public class AdditionalChargesController {
 
 	// findById 修改JSP
 
-	@GetMapping("/additionalCharges/{mid}/{hid}")
+	@GetMapping("/backend/additionalCharges/{mid}/{hid}")
 	public ResponseEntity<?> findById(@PathVariable(name = "mid") Integer minibarId,
 			@PathVariable(name = "hid") Integer housingManagementId) {
 		AdditionalCharges addition = additionalChargesService.findById(minibarId, housingManagementId);
@@ -82,7 +82,7 @@ public class AdditionalChargesController {
 	}
 
 	//create
-	@PostMapping("/additionalCharges")
+	@PostMapping("/backend/additionalCharges")
 	public ResponseEntity<?> create(@RequestBody AdditionalCharges bean) {
 		if (bean != null) {
 				AdditionalCharges product = additionalChargesService.create(bean);
@@ -98,7 +98,7 @@ public class AdditionalChargesController {
 	}
 
 	// update
-	@PutMapping("/additionalCharges/{mid}/{hid}")
+	@PutMapping("/backend/additionalCharges/{mid}/{hid}")
 	public ResponseEntity<?> modify(
 			@PathVariable(name = "mid") Integer minibarId,
 			@PathVariable(name = "hid") Integer housingManagementId, 

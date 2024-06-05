@@ -1,6 +1,7 @@
 package tw.team.project.repository;
 
-import java.sql.Date;
+
+import java.util.Date;
 import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -17,8 +18,8 @@ public interface RoomAssignmentRepository extends JpaRepository<RoomAssignment, 
 	@Query("select count(*) from RoomAssignment where date = :date")
 	public long countByDate(@Param("date")Date date);
 	
-	@Query("from RoomAssignment d where d.date = :date")
-	public Optional<RoomAssignment> findByDate(@Param("date")Date date);
+	@Query("from RoomAssignment d where d.date = :date and d.roomInformation.id = :id")
+	public Optional<RoomAssignment> findByDate(@Param("date")Date date, @Param("id")Integer id);
 	
 //	Optional<RoomAssignment> findAllByDate(Date date);
 }

@@ -15,6 +15,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import jakarta.transaction.Transactional;
 import tw.team.project.model.RoomAssignment;
 import tw.team.project.repository.RoomAssignmentRepository;
 
@@ -68,13 +69,35 @@ public class RoomAssignmentService {
 //		}
 //		return null;
 //	}
-	// 依日期查詢
-//	public RoomAssignment findByDate(Date date) {
-//	    if (date != null) {
-//	        return roomAssignmentRepo.findByDate(date);
-//	    }
-//	    return null;
-//	}
+	// 依日期查詢修改房間數量
+	@Transactional
+	public RoomAssignment findByDate(Date date, Integer id, String json) {
+	    if (date != null) {
+	       Optional<RoomAssignment> optional = roomAssignmentRepo.findByDate(date, id);
+	       if (optional.isPresent()) {
+	    	   try {
+				JSONObject obj = new JSONObject(json);
+				   
+				   RoomAssignment roomAss= optional.get();
+				   Integer rooms = obj.isNull("rooms") ? null : obj.getInt("rooms");
+				   boolean booking = obj.isNull("booking") ? false : obj.getBoolean("booking");
+				   if (rooms!=null) {
+					   if (booking) {
+						   roomAss.setLeft(roomAss.getLeft()-rooms);
+					   }else {
+						   roomAss.setLeft(roomAss.getLeft()+rooms); 
+					   }
+					   
+					   return roomAss;
+				   }
+			} catch (JSONException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+	       }
+	    }
+	    return null;
+	}
 
 	
 	//新增

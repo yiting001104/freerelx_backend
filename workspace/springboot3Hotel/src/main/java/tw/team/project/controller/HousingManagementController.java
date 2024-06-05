@@ -128,7 +128,7 @@ public class HousingManagementController {
     
     
 
-	@GetMapping("/housingManagement/number/{number}")
+	@GetMapping("/backend/housingManagement/number/{number}")
 	public String existsByItem(@PathVariable("number") Integer number) {
 		JSONObject responseJson = new JSONObject();
 		boolean exist = housingManagementService.existsById(number);
@@ -148,7 +148,7 @@ public class HousingManagementController {
 		return null;
 	}
 
-	@PostMapping("/housingManagement/find")
+	@PostMapping("/backend/housingManagement/find")
 	public String find(@RequestBody String json) throws JSONException {
 		JSONObject responseJson = new JSONObject();
 
@@ -174,7 +174,7 @@ public class HousingManagementController {
 		return responseJson.toString();
 	}
 
-	@PutMapping("/housingManagement/{pk}")
+	@PutMapping("/backend/housingManagement/{pk}")
 	public String updateData(@PathVariable("pk") Integer id, @RequestBody String json) {
 		JSONObject responseJson = new JSONObject();
 		try {

@@ -37,15 +37,17 @@ public class OrderRoomController {
 
 	
 	@GetMapping("/orderRoom/page")
-	public String listOrderPage(@RequestParam(value = "p",defaultValue = "1") Integer pageNumber) {
-		Page<OrderRoom> page = ordRoomService.findOrderByPage(pageNumber);
+	public String listOrderPage(@RequestParam(value = "p",defaultValue = "1") Integer pageNumber, @RequestParam(value = "num",defaultValue = "4") Integer dataNmuber) {
+		Page<OrderRoom> page = ordRoomService.findOrderByPage(pageNumber, dataNmuber);
 		JSONObject responseJson = new JSONObject();
 		JSONArray array = new JSONArray();
+		System.out.println("資料筆數 " + page.getTotalElements());
 		try {
 			for (OrderRoom order:page.getContent()) {
 				array.put(new JsonContainer().getOrderRoom(order));
 			}
-			responseJson.put("data", array);
+			responseJson.put("data", array)
+						.put("totalNumber", page.getTotalElements());
 			return responseJson.toString();
 		} catch (JSONException e) {
 			// TODO Auto-generated catch block
@@ -53,6 +55,26 @@ public class OrderRoomController {
 		}
 		return null;
 	}
+	
+//	@GetMapping("/OrderRooms/totals/{pk}")
+//	public String findTotalOrders(@PathVariable("pk") Integer id){
+//		JSONObject obj = new JSONObject();
+//		try {
+//			if (id!=null) {
+//				Long total = ordRoomService.memberFindTotal(id);
+//				obj.put("total", total);
+//				obj.put("success", true);
+//			}else {
+//				obj.put("message", "Id為null");
+//				obj.put("success", false);
+//			}
+//		} catch (JSONException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
+//		return obj.toString();
+//	}
+	
 	
 	@GetMapping("/orderRoom/page2")
 	public String listOrderCusPage(@RequestParam(value = "p",defaultValue = "1") Integer pageNumber) {

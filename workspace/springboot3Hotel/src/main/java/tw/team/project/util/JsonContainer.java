@@ -18,6 +18,9 @@ public class JsonContainer {
 		try {
 			if (order != null) {
 				System.out.print(order.getMember()==null);
+				String date = order.getCheckoutDate()+"";
+				String CheckoutDate = date.split(" ")[0];
+				System.out.println(CheckoutDate);
 				JSONObject obj  = new JSONObject()
 						.put("order_id", order.getOrderId())
 						.put("orderdate", order.getOrderDate())
@@ -32,7 +35,7 @@ public class JsonContainer {
 						.put("child_pax", order.getChildPax())
 						.put("room_type_amount", order.getRoomAmount())
 						.put("arrival_date", order.getArrivateDate())
-						.put("checkout_date", order.getCheckoutDate())
+						.put("checkout_date", CheckoutDate)
 						.put("reservation_status", order.getReservationStatus())
 						.put("reservation_status_date", order.getReservationSaDate())
 						.put("transaction_password", order.getTransactionPassword())

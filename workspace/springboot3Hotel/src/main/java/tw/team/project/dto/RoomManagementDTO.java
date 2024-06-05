@@ -13,7 +13,7 @@ public class RoomManagementDTO {
 
 	private RoomInformation roomInformation;
 	
-	private RoomState roomstate;
+	private RoomState roomState;
 
 	public Integer getId() {
 		return id;
@@ -48,12 +48,12 @@ public class RoomManagementDTO {
 		this.roomInformation = roomInformation;
 	}
 
-	public RoomState getRoomstate() {
-		return roomstate;
+	public RoomState getRoomState() {
+		return roomState;
 	}
 
-	public void setRoomstate(RoomState roomstate) {
-		this.roomstate = roomstate;
+	public void setRoomState(RoomState roomstate) {
+		this.roomState = roomstate;
 	}
 	
 }
