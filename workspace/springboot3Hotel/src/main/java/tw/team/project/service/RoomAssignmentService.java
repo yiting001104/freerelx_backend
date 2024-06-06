@@ -117,20 +117,19 @@ public class RoomAssignmentService {
         }
         return null;
     }
-    
-    // 查詢日期範圍內 left 最小的記錄
-    public RoomAssignment findMinLeftByDateRangeAndRoomInfo(Date startDate, Date endDate, Integer roomId) {
-        Pageable pageable = PageRequest.of(0, 1);
-        List<RoomAssignment> roomAssignments = roomAssignmentRepo.findByDateRangeAndRoomInfo(startDate, endDate, roomId, pageable);
-        if (roomAssignments != null && !roomAssignments.isEmpty()) {
-            return roomAssignments.get(0);
-        }
-        return null;
+
+    public List<RoomAssignment> findAvailableAssignmentsInRange(Date startDate, Date endDate, Integer roomId) {
+        return roomAssignmentRepo.findAvailableAssignmentsInRange(startDate, endDate, roomId);
     }
-    
-    // 查詢在指定日期範圍內 left > 0 的房間資料
-    public List<RoomAssignment> findAvailableRoomsByDateRange(Date startDate, Date endDate) {
-        return roomAssignmentRepo.findByDateRangeAndMinLeftGreaterThan(startDate, endDate, 0, Sort.by(Sort.Direction.ASC, "date"));
+
+    public Integer findMinLeftInRange(Date startDate, Date endDate, Integer roomId) {
+        return roomAssignmentRepo.findMinLeftInRange(startDate, endDate, roomId);
+    }
+
+    public boolean isFullyAvailableInRange(Date startDate, Date endDate, Integer roomId) {
+        long availableDaysCount = roomAssignmentRepo.countAvailableDaysInRange(startDate, endDate, roomId);
+        long totalDays = (endDate.getTime() - startDate.getTime()) / (1000 * 60 * 60 * 24) + 1;
+        return availableDaysCount == totalDays;
     }
 
 

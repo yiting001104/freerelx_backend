@@ -24,11 +24,14 @@ public interface RoomAssignmentRepository extends JpaRepository<RoomAssignment, 
     @Query("from RoomAssignment d where d.date = :date")
     public Optional<RoomAssignment> findByDate(@Param("date") Date date);
 
-    @Query("from RoomAssignment ra where ra.date between :startDate and :endDate and ra.roomInformation.id = :roomId and ra.left > 0 order by ra.left asc")
-    public List<RoomAssignment> findByDateRangeAndRoomInfo(@Param("startDate") Date startDate, @Param("endDate") Date endDate, @Param("roomId") Integer roomId, Pageable pageable);
+    @Query("select count(distinct ra.date) from RoomAssignment ra where ra.date between :startDate and :endDate and ra.roomInformation.id = :roomId and ra.left > 0")
+    long countAvailableDaysInRange(@Param("startDate") Date startDate, @Param("endDate") Date endDate, @Param("roomId") Integer roomId);
 
-    @Query("from RoomAssignment ra where ra.date between :startDate and :endDate and ra.left > :minLeft")
-    public List<RoomAssignment> findByDateRangeAndMinLeftGreaterThan(@Param("startDate") Date startDate, @Param("endDate") Date endDate, @Param("minLeft") int minLeft, Sort sort);
+    @Query("from RoomAssignment ra where ra.date between :startDate and :endDate and ra.roomInformation.id = :roomId and ra.left > 0")
+    List<RoomAssignment> findAvailableAssignmentsInRange(@Param("startDate") Date startDate, @Param("endDate") Date endDate, @Param("roomId") Integer roomId);
+
+    @Query("select min(ra.left) from RoomAssignment ra where ra.date between :startDate and :endDate and ra.roomInformation.id = :roomId and ra.left > 0")
+    Integer findMinLeftInRange(@Param("startDate") Date startDate, @Param("endDate") Date endDate, @Param("roomId") Integer roomId);
 	
 	@Query("from RoomAssignment d where d.date = :date and d.roomInformation.id = :id")
 	public Optional<RoomAssignment> findByDateOrd(@Param("date")Date date, @Param("id")Integer id);

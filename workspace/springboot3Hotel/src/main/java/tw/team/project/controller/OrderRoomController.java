@@ -309,4 +309,27 @@ public class OrderRoomController {
 		
 		return obj.toString();
 	}
+	
+	@PostMapping("/orderRoom/confirm")
+	public void sendConfirmEmail(@RequestBody String json) {
+		try {
+			JSONObject obj = new JSONObject(json);
+			String receiver = obj.isNull("receiver") ? null : obj.getString("receiver");
+			String subject = obj.isNull("subject") ? null : obj.getString("subject");
+			String context = obj.isNull("context") ? null : obj.getString("context");
+			
+			if (receiver!=null && receiver.length()!=0 && subject.length()!=0 && subject!=null && context.length()!=0 && context!=null) {
+				ordRoomService.sendConfirmMail(receiver, subject, context);
+			}
+		} catch (JSONException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		
+		
+	}
 }

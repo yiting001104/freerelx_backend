@@ -13,6 +13,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.mail.SimpleMailMessage;
+import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
 
 import jakarta.transaction.Transactional;
@@ -31,6 +33,9 @@ public class OrderRoomService {
 	private MemberService memberservice;
 	@Autowired
 	private TransactionService transactionService;
+	
+	@Autowired
+    private JavaMailSender javaMailSender;
 	
 	public Page<OrderRoom> findOrderByPage(Integer pageNumber, Integer dataNmuber){
 		Pageable pgb = PageRequest.of(pageNumber-1, dataNmuber, Sort.Direction.DESC, "orderDate");
@@ -331,5 +336,15 @@ public class OrderRoomService {
 		}
 		return null;
 	}
+	
+	public void sendConfirmMail(String recrvier, String subject, String context) throws Exception {
+	        SimpleMailMessage message = new SimpleMailMessage();
+	        message.setFrom("Relax Hotel<kawhi060941@gmail.com>");
+	        message.setTo("r10522805@g.ntu.edu.tw");//recrvier
+	        message.setSubject(subject);
+	        message.setText(context);
+
+	        javaMailSender.send(message);
+	    }
 	
 }

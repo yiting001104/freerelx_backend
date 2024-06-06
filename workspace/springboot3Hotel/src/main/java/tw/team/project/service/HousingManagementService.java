@@ -32,9 +32,6 @@ public class HousingManagementService {
 	@Autowired
 	private HousingManagementRepository housingManagementRepo;
 
-//	@Autowired
-//	private RoomAssignmentService roomAssignmentService;
-
 	@Autowired
 	private RoomManagementRepository roomManagementRepo;
 	

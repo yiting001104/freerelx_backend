@@ -10,11 +10,12 @@ import org.apache.commons.codec.digest.HmacUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.configurationprocessor.json.JSONException;
 import org.springframework.boot.configurationprocessor.json.JSONObject;
+import org.springframework.stereotype.Component;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-
+@Component
 public class ConsumerCheck {
 	@Value("${local.frontendPort}")
 	private String frontendUri;
@@ -64,8 +65,8 @@ public class ConsumerCheck {
 
 			form.setPackages(Arrays.asList(productPackageForm));
 			RedirectUrls redirectUrls = new RedirectUrls();
-			redirectUrls.setConfirmUrl(frontendUri+"/member/paySuccess");			// 成功後的轉導頁面  
-			redirectUrls.setCancelUrl(frontendUri+"/member/payFalse");  		// 失敗後的轉導頁面  
+			redirectUrls.setConfirmUrl("http://localhost:5173/member/paySuccess");			// 成功後的轉導頁面  
+			redirectUrls.setCancelUrl("http://localhost:5173/member/payFalse");  		// 失敗後的轉導頁面  
 			form.setRedirectUrls(redirectUrls);
 
 			ObjectMapper mapper = new ObjectMapper();
@@ -79,6 +80,7 @@ public class ConsumerCheck {
 				   .put("signature", signature)
 				   .put("body", mapper.writeValueAsString(form));
 				System.out.println("body" + mapper.writeValueAsString(form));
+				System.out.println("frontendUri "+ frontendUri);
 				return obj.toString();
 			} catch (JsonProcessingException e) {
 				// TODO Auto-generated catch block

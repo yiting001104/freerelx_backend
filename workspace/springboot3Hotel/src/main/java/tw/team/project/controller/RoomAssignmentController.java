@@ -126,9 +126,9 @@ public class RoomAssignmentController {
 	    return responseJson.toString();
 	}
 
-	 // 查詢日期範圍內 left 最小的記錄
-	@GetMapping("/backend/roomAssignment/minLeft")
-    public ResponseEntity<?> findMinLeftByDateRangeAndRoomInfo(
+	// 查詢日期範圍內 left 最小的記錄
+    @GetMapping("/backend/roomAssignment/fullAvailability")
+    public ResponseEntity<?> findFullyAvailableAssignments(
             @RequestParam(name = "startDate") String startDate,
             @RequestParam(name = "endDate") String endDate,
             @RequestParam(name = "roomId") Integer roomId) {
@@ -136,37 +136,26 @@ public class RoomAssignmentController {
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
             Date start = new Date(sdf.parse(startDate).getTime());
             Date end = new Date(sdf.parse(endDate).getTime());
-            
-            RoomAssignment roomAssignment = roomAssignmentService.findMinLeftByDateRangeAndRoomInfo(start, end, roomId);
-            if (roomAssignment != null) {
-                RoomAssignmentDTO roomAssignmentDTO = new JsonContainer2().setRoomAssignment(roomAssignment);
-                return ResponseEntity.ok(roomAssignmentDTO);
+
+            boolean isFullyAvailable = roomAssignmentService.isFullyAvailableInRange(start, end, roomId);
+            if (isFullyAvailable) {
+                List<RoomAssignment> assignments = roomAssignmentService.findAvailableAssignmentsInRange(start, end, roomId);
+                Integer minLeft = roomAssignmentService.findMinLeftInRange(start, end, roomId);
+
+                List<RoomAssignmentDTO> assignmentDTOs = new ArrayList<>();
+                for (RoomAssignment assignment : assignments) {
+                    assignmentDTOs.add(new JsonContainer2().setRoomAssignment(assignment));
+                }
+
+                JSONObject responseJson = new JSONObject();
+                responseJson.put("assignments", assignmentDTOs);
+                responseJson.put("minLeft", minLeft);
+
+                return ResponseEntity.ok(responseJson.toString());
             } else {
-                return ResponseEntity.notFound().build();
+                return ResponseEntity.ok("The room is not fully available in the specified date range.");
             }
-        } catch (ParseException e) {
-            e.printStackTrace();
-            return ResponseEntity.badRequest().body("Invalid date format");
-        }
-    }
-	
-	// 查詢在指定日期範圍內 left > 0 的房間資料
-    @GetMapping("/backend/roomAssignment/availableRooms")
-    public ResponseEntity<?> findAvailableRooms(
-            @RequestParam(name = "startDate") String startDate,
-            @RequestParam(name = "endDate") String endDate) {
-        try {
-            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-            Date start = new Date(sdf.parse(startDate).getTime());
-            Date end = new Date(sdf.parse(endDate).getTime());
-            
-            List<RoomAssignment> availableRooms = roomAssignmentService.findAvailableRoomsByDateRange(start, end);
-            List<RoomAssignmentDTO> roomAssignmentDTOs = new ArrayList<>();
-            for (RoomAssignment room : availableRooms) {
-                roomAssignmentDTOs.add(new JsonContainer2().setRoomAssignment(room));
-            }
-            return ResponseEntity.ok(roomAssignmentDTOs);
-        } catch (ParseException e) {
+        } catch (ParseException | JSONException e) {
             e.printStackTrace();
             return ResponseEntity.badRequest().body("Invalid date format");
         }
