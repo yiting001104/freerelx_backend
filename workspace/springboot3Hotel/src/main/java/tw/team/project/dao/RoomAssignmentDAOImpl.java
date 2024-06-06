@@ -15,7 +15,6 @@ import jakarta.persistence.criteria.CriteriaQuery;
 import jakarta.persistence.criteria.Predicate;
 import jakarta.persistence.criteria.Root;
 import tw.team.project.model.RoomAssignment;
-import tw.team.project.model.RoomManagement;
 
 @Repository
 public class RoomAssignmentDAOImpl implements RoomAssignmentDAO{

@@ -35,7 +35,6 @@ import tw.team.project.util.JsonContainer2;
 @RequestMapping("/hotel")
 @CrossOrigin
 public class RoomAssignmentController {
-
 	@Value("${local.serverPort}")
 	private String serverUri;
 	
@@ -105,28 +104,73 @@ public class RoomAssignmentController {
 //	}
 	
 	
-	 @PutMapping("/backend/roomAssignment/{pk}")
-	    public String modify(@PathVariable(name = "pk") Integer id, @RequestBody String json)throws JSONException  {
-	        JSONObject responseJson = new JSONObject();
-	        if(id==null) {
+	@PutMapping("/backend/roomAssignment/{pk}")
+	public String modify(@PathVariable(name = "pk") Integer id, @RequestBody String json) throws JSONException {
+	    JSONObject responseJson = new JSONObject();
+	    if (id == null) {
+	        responseJson.put("success", false);
+	        responseJson.put("message", "id是必要欄位");
+	    } else if (!roomAssignmentService.existById(id)) {
+	        responseJson.put("success", false);
+	        responseJson.put("message", "id不存在");
+	    } else {
+	        RoomAssignment rooms = roomAssignmentService.updateData(id, json);
+	        if (rooms == null) {
 	            responseJson.put("success", false);
-	            responseJson.put("message", "id是必要欄位");
-	        } else if(!roomAssignmentService.existById(id)) {
-	            responseJson.put("success", false);
-	            responseJson.put("message", "id不存在");
+	            responseJson.put("message", "修改失敗");
 	        } else {
-	        	RoomAssignment rooms = roomAssignmentService.updateData(json);
-	            if(rooms==null) {
-	                responseJson.put("success", false);
-	                responseJson.put("message", "修改失敗");
-	            } else {
-	                responseJson.put("success", true);
-	                responseJson.put("message", "修改成功");
-	            }
+	            responseJson.put("success", true);
+	            responseJson.put("message", "修改成功");
 	        }
-	        return responseJson.toString();
 	    }
+	    return responseJson.toString();
+	}
+
+	 // 查詢日期範圍內 left 最小的記錄
+	@GetMapping("/backend/roomAssignment/minLeft")
+    public ResponseEntity<?> findMinLeftByDateRangeAndRoomInfo(
+            @RequestParam(name = "startDate") String startDate,
+            @RequestParam(name = "endDate") String endDate,
+            @RequestParam(name = "roomId") Integer roomId) {
+        try {
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+            Date start = new Date(sdf.parse(startDate).getTime());
+            Date end = new Date(sdf.parse(endDate).getTime());
+            
+            RoomAssignment roomAssignment = roomAssignmentService.findMinLeftByDateRangeAndRoomInfo(start, end, roomId);
+            if (roomAssignment != null) {
+                RoomAssignmentDTO roomAssignmentDTO = new JsonContainer2().setRoomAssignment(roomAssignment);
+                return ResponseEntity.ok(roomAssignmentDTO);
+            } else {
+                return ResponseEntity.notFound().build();
+            }
+        } catch (ParseException e) {
+            e.printStackTrace();
+            return ResponseEntity.badRequest().body("Invalid date format");
+        }
+    }
 	
+	// 查詢在指定日期範圍內 left > 0 的房間資料
+    @GetMapping("/backend/roomAssignment/availableRooms")
+    public ResponseEntity<?> findAvailableRooms(
+            @RequestParam(name = "startDate") String startDate,
+            @RequestParam(name = "endDate") String endDate) {
+        try {
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+            Date start = new Date(sdf.parse(startDate).getTime());
+            Date end = new Date(sdf.parse(endDate).getTime());
+            
+            List<RoomAssignment> availableRooms = roomAssignmentService.findAvailableRoomsByDateRange(start, end);
+            List<RoomAssignmentDTO> roomAssignmentDTOs = new ArrayList<>();
+            for (RoomAssignment room : availableRooms) {
+                roomAssignmentDTOs.add(new JsonContainer2().setRoomAssignment(room));
+            }
+            return ResponseEntity.ok(roomAssignmentDTOs);
+        } catch (ParseException e) {
+            e.printStackTrace();
+            return ResponseEntity.badRequest().body("Invalid date format");
+        }
+    }
 	
 	//insert
 	@PostMapping("/backend/roomAssignment")

@@ -32,6 +32,11 @@ public class RoomManagementController {
 	
 	//新增HousingManagemant時改變state
 	
+    @GetMapping("/backend/list/roomManagement")
+    public ResponseEntity<List<RoomManagementDTO>> getAllCheckOutInspections() {
+        List<RoomManagementDTO> inspections = roomManagementService.findAllListDTO();
+        return ResponseEntity.ok(inspections);
+    }
 	
 	@GetMapping("/backend/roomManagement")
 	public ResponseEntity<?> listRoomPage(@RequestParam(value = "p", defaultValue = "1") Integer Number) {
@@ -42,47 +47,29 @@ public class RoomManagementController {
 	    }
 	    return ResponseEntity.ok(roomList);
 	}
-
-
 	
-	 @PutMapping("/backend/roomManagement/{pk}")
-	    public String modify(@PathVariable(name = "pk") Integer id, @RequestBody String json)throws JSONException  {
-	        JSONObject responseJson = new JSONObject();
-	        if(id==null) {
+	
+	@PutMapping("/backend/roomManagement/{pk}")
+	public String modify(@PathVariable(name = "pk") Integer id, @RequestBody String json) throws JSONException {
+	    JSONObject responseJson = new JSONObject();
+	    if (id == null) {
+	        responseJson.put("success", false);
+	        responseJson.put("message", "id是必要欄位");
+	    } else if (!roomManagementService.existById(id)) {
+	        responseJson.put("success", false);
+	        responseJson.put("message", "id不存在");
+	    } else {
+	        RoomManagement rooms = roomManagementService.modify(json);
+	        if (rooms == null) {
 	            responseJson.put("success", false);
-	            responseJson.put("message", "id是必要欄位");
-	        } else if(!roomManagementService.existById(id)) {
-	            responseJson.put("success", false);
-	            responseJson.put("message", "id不存在");
+	            responseJson.put("message", "修改失敗");
 	        } else {
-	        	RoomManagement rooms = roomManagementService.modify(json);
-	            if(rooms==null) {
-	                responseJson.put("success", false);
-	                responseJson.put("message", "修改失敗");
-	            } else {
-	                responseJson.put("success", true);
-	                responseJson.put("message", "修改成功");
-	            }
+	            responseJson.put("success", true);
+	            responseJson.put("message", "修改成功");
 	        }
-	        return responseJson.toString();
 	    }
-	
-	
-//    @GetMapping("/roomManagement/{pk}")
-//    public String findById(@PathVariable(name = "pk") Integer id)throws JSONException  {
-//        JSONObject responseJson = new JSONObject();
-//        JSONArray array = new JSONArray();
-//        RoomManagement rooms = roomManagementService.findById(id);
-//        if(rooms!=null) {
-//            JSONObject item = new JSONObject()
-//                    .put("id", rooms.getId())
-//                    .put("number", rooms.getNumber())
-//            		.put("repairStatus", rooms.getRepairStatus());
-//                array.put(item);
-//        }
-//        responseJson.put("list", array);
-//        return responseJson.toString();
-//    }
+	    return responseJson.toString();
+	}
     
     
     @GetMapping("/backend/roomManagement/{pk}")

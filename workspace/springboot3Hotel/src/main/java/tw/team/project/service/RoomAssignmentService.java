@@ -22,58 +22,123 @@ import tw.team.project.repository.RoomAssignmentRepository;
 @Service
 public class RoomAssignmentService {
 	
-	@Autowired
-	private RoomAssignmentRepository roomAssignmentRepo;
-	
-	public Page<RoomAssignment> findAll(Integer id) {
-        Pageable pgb = PageRequest.of(id-1, 7, Sort.Direction.ASC,"id");
+    @Autowired
+    private RoomAssignmentRepository roomAssignmentRepo;
+    
+    public Page<RoomAssignment> findAll(Integer id) {
+        Pageable pgb = PageRequest.of(id-1, 15, Sort.Direction.ASC, "id");
         Page<RoomAssignment> page = roomAssignmentRepo.findAll(pgb);
         return page;
-	}
-	
-	public List<RoomAssignment> find(String json) {
-		try {
-			JSONObject obj = new JSONObject(json);
-			return roomAssignmentRepo.find(obj);
-		} catch (JSONException e) {
-			e.printStackTrace();
-		}
-		return null;
-	}
-	
-	public boolean existById(Integer id) {
-		if(id!=null) {
-			return roomAssignmentRepo.existsById(id);
-		}
-		return false;
-	}
-	
-	public boolean delete(Integer id) {
-		if(id!=null) {
-			Optional<RoomAssignment> optional = roomAssignmentRepo.findById(id);
-			if(optional.isPresent()) {
-				roomAssignmentRepo.deleteById(id);
-				return true;
-			}
-		}
-		return false;
-	}
-	
-//	//依日期查詢
-//	public RoomAssignment findByDate(java.sql.Date date) {
-//		if(date!=null) {
-//			Optional<RoomAssignment> optional = roomAssignmentRepo.findByDate(date);
-//			if(optional.isPresent()) {
-//				return optional.get();
-//			}
-//		}
-//		return null;
-//	}
+    }
+    
+//    public List<RoomAssignment> find(String json) {
+//        try {
+//            JSONObject obj = new JSONObject(json);
+//            return roomAssignmentRepo.find(obj);
+//        } catch (JSONException e) {
+//            e.printStackTrace();
+//        }
+//        return null;
+//    }
+    
+    public boolean existById(Integer id) {
+        if (id != null) {
+            return roomAssignmentRepo.existsById(id);
+        }
+        return false;
+    }
+    
+    public boolean delete(Integer id) {
+        if (id != null) {
+            Optional<RoomAssignment> optional = roomAssignmentRepo.findById(id);
+            if (optional.isPresent()) {
+                roomAssignmentRepo.deleteById(id);
+                return true;
+            }
+        }
+        return false;
+    }
+    
+    // 新增
+    public RoomAssignment insert(RoomAssignment bean) {
+        if (bean != null && bean.getId() != null) {
+            Optional<RoomAssignment> optional = roomAssignmentRepo.findById(bean.getId());
+            if (optional.isEmpty()) {
+                return roomAssignmentRepo.save(bean);
+            }
+        }
+        return null;
+    }
+    
+    public RoomAssignment findById(Integer id) {
+        Optional<RoomAssignment> optional = roomAssignmentRepo.findById(id);
+        if (optional.isPresent()) {
+            return optional.get();
+        } else {
+            return null;
+        }
+    }
+    
+    public RoomAssignment update(RoomAssignment bean) {
+        if (bean != null && bean.getId() != null) {
+            Optional<RoomAssignment> optional = roomAssignmentRepo.findById(bean.getId());
+            if (optional.isPresent()) {
+                return roomAssignmentRepo.save(bean);
+            }
+        }
+        return null;
+    }
+
+    // 更新資料
+    public RoomAssignment updateData(Integer id, String json) {
+        try {
+            JSONObject obj = new JSONObject(json);
+
+            Integer left = obj.isNull("left") ? null : obj.getInt("left");
+            String dateStr = obj.isNull("date") ? null : obj.getString("date");
+            Date newDate = null;
+            if (dateStr != null) {
+                newDate = new Date(new SimpleDateFormat("yyyy-MM-dd").parse(dateStr).getTime());
+            }
+
+            Optional<RoomAssignment> optional = roomAssignmentRepo.findById(id);
+            if (optional.isPresent()) {
+                RoomAssignment existingAssignment = optional.get();
+                if (left != null) {
+                    existingAssignment.setLeft(left);
+                }
+                if (newDate != null) {
+                    existingAssignment.setDate(newDate);
+                }
+                return roomAssignmentRepo.save(existingAssignment);
+            }
+        } catch (JSONException | ParseException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+    
+    // 查詢日期範圍內 left 最小的記錄
+    public RoomAssignment findMinLeftByDateRangeAndRoomInfo(Date startDate, Date endDate, Integer roomId) {
+        Pageable pageable = PageRequest.of(0, 1);
+        List<RoomAssignment> roomAssignments = roomAssignmentRepo.findByDateRangeAndRoomInfo(startDate, endDate, roomId, pageable);
+        if (roomAssignments != null && !roomAssignments.isEmpty()) {
+            return roomAssignments.get(0);
+        }
+        return null;
+    }
+    
+    // 查詢在指定日期範圍內 left > 0 的房間資料
+    public List<RoomAssignment> findAvailableRoomsByDateRange(Date startDate, Date endDate) {
+        return roomAssignmentRepo.findByDateRangeAndMinLeftGreaterThan(startDate, endDate, 0, Sort.by(Sort.Direction.ASC, "date"));
+    }
+
+
 	// 依日期查詢修改房間數量
 	@Transactional
 	public RoomAssignment findByDate(Date date, Integer id, String json) {
 	    if (date != null) {
-	       Optional<RoomAssignment> optional = roomAssignmentRepo.findByDate(date, id);
+	       Optional<RoomAssignment> optional = roomAssignmentRepo.findByDateOrd(date, id);
 	       if (optional.isPresent()) {
 	    	   try {
 				JSONObject obj = new JSONObject(json);
@@ -98,79 +163,5 @@ public class RoomAssignmentService {
 	    }
 	    return null;
 	}
-
-	
-	//新增
-	public RoomAssignment insert(RoomAssignment bean) {
-		if(bean!=null && bean.getId()!=null) {
-			Optional<RoomAssignment> optional = roomAssignmentRepo.findById(bean.getId());
-			if(optional.isEmpty()) {
-				return roomAssignmentRepo.save(bean);
-			}
-		}
-		return null;
-	}
-	
-	public RoomAssignment findById(Integer id) {
-		Optional<RoomAssignment> optional = roomAssignmentRepo.findById(id);
-		if (optional.isPresent()) {
-			return optional.get();
-		}else {
-			return null;
-		}
-	}
-	
-	
-	
-	public RoomAssignment update(RoomAssignment bean) {
-		if(bean!=null && bean.getId()!=null) {
-			Optional<RoomAssignment> optional = roomAssignmentRepo.findById(bean.getId());
-			if(optional.isPresent()) {
-				return roomAssignmentRepo.save(bean);
-			}
-		}
-		return null;
-	}
-
-	//更新資料
-	public RoomAssignment updateData(String json) {
-		try {
-			JSONObject obj = new JSONObject(json);
-			
-			Integer left = obj.isNull("left") ? null : obj.getInt("left");
-			String date = obj.isNull("date") ? null : obj.getString("date");
-			Date newdate;
-			if (date != null) {
-				newdate=new SimpleDateFormat("yyyy-MM-dd").parse(date);
-			} else
-				newdate = null;
-			
-			if (left != null && newdate != null) {
-					RoomAssignment newReserve = new RoomAssignment();
-					newReserve.setLeft(left);
-					newReserve.setDate(newdate);
-				return roomAssignmentRepo.save(newReserve);
-			}
-		} catch (JSONException | ParseException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		return null;
-	}
-	
-	
-//	//依日期刪除
-//	public boolean delete(Date date) {
-//		if(date!=null) {
-//			Optional<RoomAssignment> optional = roomAssignmentRepo.findByDate(date);
-//			if(optional.isPresent()) {
-//				roomAssignmentRepo.deleteByDate(date);
-//				return true;
-//			}
-//		}return false;
-//	}
-//	
-
-
 
 }

@@ -15,7 +15,9 @@ import org.springframework.stereotype.Service;
 
 import tw.team.project.dto.RoomManagementDTO;
 import tw.team.project.model.RoomManagement;
+import tw.team.project.model.RoomState;
 import tw.team.project.repository.RoomManagementRepository;
+import tw.team.project.repository.RoomStateRepository;
 import tw.team.project.util.JsonContainer2;
 
 @Service
@@ -23,6 +25,9 @@ public class RoomManagementService {
 
 	@Autowired
 	private RoomManagementRepository roomManagementRepo;
+	
+    @Autowired
+    private RoomStateRepository roomStateRepo;
 	
     @Autowired
     private JsonContainer2 jsonContainer;
@@ -49,31 +54,70 @@ public class RoomManagementService {
     }
     
 
-	public RoomManagement modify(String json) {
-		try {
-			JSONObject obj = new JSONObject(json);
+    public RoomManagement modify(String json) {
+        try {
+            JSONObject obj = new JSONObject(json);
 
-			Integer id = obj.isNull("id") ? null : obj.getInt("id");
-			Integer number = obj.isNull("number") ? null : obj.getInt("number");
-	        String repairStatus = obj.isNull("repairStatus") ? null : obj.getString("repairStatus");
+            Integer id = obj.isNull("id") ? null : obj.getInt("id");
+            JSONObject roomStateObj = null;
+            if (!obj.isNull("roomState")) {
+                try {
+                    roomStateObj = obj.getJSONObject("roomState");
+                } catch (JSONException e) {
+                    Integer roomStateId = obj.getInt("roomState");
+                    roomStateObj = new JSONObject();
+                    roomStateObj.put("id", roomStateId);
+                }
+            }
+            Integer roomStateId = roomStateObj == null ? null : roomStateObj.getInt("id");
 
-			if (id != null) {
-				Optional<RoomManagement> optional = roomManagementRepo.findById(id);
-				if (optional.isPresent()) {
-					RoomManagement update = optional.get();
-					update.setId(id);
-					update.setNumber(number);
-					update.setRepairStatus(repairStatus);
+            if (id != null) {
+                Optional<RoomManagement> optional = roomManagementRepo.findById(id);
+                if (optional.isPresent()) {
+                    RoomManagement update = optional.get();
 
-					return roomManagementRepo.save(update);
-				}
-			}
+                    if (roomStateId != null) {
+                        Optional<RoomState> roomStateOptional = roomStateRepo.findById(roomStateId);
+                        if (roomStateOptional.isPresent()) {
+                            update.setRoomState(roomStateOptional.get());
+                        }
+                    }
+                    return roomManagementRepo.save(update);
+                }
+            }
 
-		} catch (JSONException e) {
-			e.printStackTrace();
-		}
-		return null;
-	}
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    
+//	public RoomManagement modify(String json) {
+//		try {
+//			JSONObject obj = new JSONObject(json);
+//
+//			Integer id = obj.isNull("id") ? null : obj.getInt("id");
+//			Integer number = obj.isNull("number") ? null : obj.getInt("number");
+//	        String repairStatus = obj.isNull("repairStatus") ? null : obj.getString("repairStatus");
+//
+//			if (id != null) {
+//				Optional<RoomManagement> optional = roomManagementRepo.findById(id);
+//				if (optional.isPresent()) {
+//					RoomManagement update = optional.get();
+//					update.setId(id);
+//					update.setNumber(number);
+//					update.setRepairStatus(repairStatus);
+//
+//					return roomManagementRepo.save(update);
+//				}
+//			}
+//
+//		} catch (JSONException e) {
+//			e.printStackTrace();
+//		}
+//		return null;
+//	}
 	
 	public RoomManagement modify1(RoomManagement roomManagement) {
 	    return roomManagementRepo.save(roomManagement);
