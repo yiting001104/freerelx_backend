@@ -18,7 +18,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 @WebFilter(
-		urlPatterns = {"/hotel/products/find"}
+		urlPatterns = {"/hotel/products/find", "/hotel/orders/mes/*"}
 )
 public class JsonWebTokenFilter implements Filter {
 	private JsonWebTokenUtility jsonWebTokenUtility;

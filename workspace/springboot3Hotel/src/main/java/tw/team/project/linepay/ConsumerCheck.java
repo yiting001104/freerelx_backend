@@ -7,6 +7,7 @@ import java.util.UUID;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.codec.digest.HmacAlgorithms;
 import org.apache.commons.codec.digest.HmacUtils;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.configurationprocessor.json.JSONException;
 import org.springframework.boot.configurationprocessor.json.JSONObject;
 
@@ -15,6 +16,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 
 public class ConsumerCheck {
+	@Value("${local.frontendPort}")
+	private String frontendUri;
 	
 	public static String encrypt(final String keys, final String data) {
 		return toBase64String(HmacUtils.getInitializedMac(HmacAlgorithms.HMAC_SHA_256, keys.getBytes()).doFinal(data.getBytes()));
@@ -61,8 +64,8 @@ public class ConsumerCheck {
 
 			form.setPackages(Arrays.asList(productPackageForm));
 			RedirectUrls redirectUrls = new RedirectUrls();
-			redirectUrls.setConfirmUrl("http://localhost:5173/member/paySuccess");			// 成功後的轉導頁面  
-			redirectUrls.setCancelUrl("http://localhost:5173/member/payFalse");  		// 失敗後的轉導頁面  
+			redirectUrls.setConfirmUrl(frontendUri+"/member/paySuccess");			// 成功後的轉導頁面  
+			redirectUrls.setCancelUrl(frontendUri+"/member/payFalse");  		// 失敗後的轉導頁面  
 			form.setRedirectUrls(redirectUrls);
 
 			ObjectMapper mapper = new ObjectMapper();

@@ -8,6 +8,8 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.configurationprocessor.json.JSONException;
+import org.springframework.mail.SimpleMailMessage;
+import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -46,6 +48,10 @@ public class CartAjaxController {
 	
 	@Autowired
 	private ProductService productService;
+	
+	@Autowired
+    private JavaMailSender javaMailSender;
+
 
 	@PostMapping("/carts/post") // 顧客新增購物車一筆資料的功能
 	public String createcart(@RequestBody String json) throws JSONException {
@@ -164,7 +170,13 @@ public class CartAjaxController {
 			memberRepository.save(member);
 		}
 		responseJson.put("list", array);
-
+		SimpleMailMessage message = new SimpleMailMessage();
+        message.setTo("kawhi060941@gmail.com"); //設置收件人信箱
+        message.setSubject("已收到您的訂單"); //設置信箱主題
+        message.setText("謝謝您"); //設置信箱內容
+        message.setFrom("Relax Hotel<kawhi060941@gmail.com>");// 寄信人
+        System.out.println(message);
+        javaMailSender.send(message); //發送郵件
 		return responseJson.toString();
 	}
 
