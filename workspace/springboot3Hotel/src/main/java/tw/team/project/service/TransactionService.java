@@ -4,7 +4,7 @@ import java.util.Optional;
 
 import org.json.JSONException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.configurationprocessor.json.JSONObject;
+import org.json.JSONObject;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -163,7 +163,7 @@ public class TransactionService {
     }
     
      // 送請求給line
-    public String callLinePay(String json) throws org.springframework.boot.configurationprocessor.json.JSONException{
+    public String callLinePay(String json) throws org.json.JSONException{
     	JSONObject obj = new JSONObject(json);
     	String encry = new ConsumerCheck().linePay(obj);
     	System.out.println(encry);
@@ -172,7 +172,7 @@ public class TransactionService {
     }
     
     // 回應line付款完成
-    public String confirmLinePay(String json) throws org.springframework.boot.configurationprocessor.json.JSONException{
+    public String confirmLinePay(String json) throws org.json.JSONException{
     	JSONObject obj = new JSONObject(json);
     	String encry = new ConsumerCheck().confirmLine(obj);
     	System.out.println(encry);

@@ -12,6 +12,7 @@
 	<groupId>tw.team</groupId>
 	<artifactId>springboot3Hotel</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
+	<packaging>war</packaging>  <!-- need to change file from jar to war -->
 	<name>springboot3Hotel</name>
 	<description>Demo project for Spring Boot</description>
 	<properties>
@@ -73,6 +74,13 @@
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-web</artifactId>
+		</dependency>
+		
+		<!-- need to change file from jar to war -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-tomcat</artifactId>
+			<scope>provided</scope>
 		</dependency>
 
 		<dependency>

@@ -7,8 +7,8 @@ import java.util.Date;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.configurationprocessor.json.JSONException;
-import org.springframework.boot.configurationprocessor.json.JSONObject;
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -199,7 +199,7 @@ public class OrderRoomService {
 			// 用預設
 //			String reservation_status = obj.isNull("reservation_status") ? null : obj.getString("reservation_status");
 
-			String base_price = obj.isNull("base_price") ? null : obj.getString("base_price");
+			Integer base_price = obj.isNull("base_price") ? null : obj.getInt("base_price");
 			BigDecimal basePrice = new BigDecimal(base_price) ;
 			
 			// 判斷是訂房和住房是否為同一人

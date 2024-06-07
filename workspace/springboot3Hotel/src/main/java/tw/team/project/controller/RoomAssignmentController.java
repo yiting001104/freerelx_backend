@@ -1,16 +1,18 @@
 package tw.team.project.controller;
 
+import java.io.IOException;
 import java.net.URI;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.configurationprocessor.json.JSONException;
-import org.springframework.boot.configurationprocessor.json.JSONObject;
 import org.springframework.data.domain.Page;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -24,6 +26,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import tw.team.project.dto.RoomAssignmentDTO;
 import tw.team.project.model.RoomAssignment;
@@ -127,39 +131,41 @@ public class RoomAssignmentController {
 	}
 
 	// 查詢日期範圍內 left 最小的記錄
-    @GetMapping("/backend/roomAssignment/fullAvailability")
-    public ResponseEntity<?> findFullyAvailableAssignments(
-            @RequestParam(name = "startDate") String startDate,
-            @RequestParam(name = "endDate") String endDate,
-            @RequestParam(name = "roomId") Integer roomId) {
-        try {
-            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-            Date start = new Date(sdf.parse(startDate).getTime());
-            Date end = new Date(sdf.parse(endDate).getTime());
+	 @GetMapping("/backend/roomAssignment/fullAvailability")
+	 public ResponseEntity<?> findFullyAvailableAssignments(
+	         @RequestParam(name = "startDate") String startDate,
+	         @RequestParam(name = "endDate") String endDate,
+	         @RequestParam(name = "roomId") Integer roomId) {
+	     try {
+	         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+	         Date start = new Date(sdf.parse(startDate).getTime());
+	         Date end = new Date(sdf.parse(endDate).getTime());
 
-            boolean isFullyAvailable = roomAssignmentService.isFullyAvailableInRange(start, end, roomId);
-            if (isFullyAvailable) {
-                List<RoomAssignment> assignments = roomAssignmentService.findAvailableAssignmentsInRange(start, end, roomId);
-                Integer minLeft = roomAssignmentService.findMinLeftInRange(start, end, roomId);
+	         boolean isFullyAvailable = roomAssignmentService.isFullyAvailableInRange(start, end, roomId);
+	         if (isFullyAvailable) {
+	             List<RoomAssignment> assignments = roomAssignmentService.findAvailableAssignmentsInRange(start, end, roomId);
+	             Integer minLeft = roomAssignmentService.findMinLeftInRange(start, end, roomId);
 
-                List<RoomAssignmentDTO> assignmentDTOs = new ArrayList<>();
-                for (RoomAssignment assignment : assignments) {
-                    assignmentDTOs.add(new JsonContainer2().setRoomAssignment(assignment));
-                }
+	             List<RoomAssignmentDTO> assignmentDTOs = new ArrayList<>();
+	             for (RoomAssignment assignment : assignments) {
+	                 assignmentDTOs.add(new JsonContainer2().setRoomAssignment(assignment));
+	             }
 
-                JSONObject responseJson = new JSONObject();
-                responseJson.put("assignments", assignmentDTOs);
-                responseJson.put("minLeft", minLeft);
+	             ObjectMapper objectMapper = new ObjectMapper();
+	             String responseJson = objectMapper.writeValueAsString(Map.of(
+	                 "assignments", assignmentDTOs,
+	                 "minLeft", minLeft
+	             ));
 
-                return ResponseEntity.ok(responseJson.toString());
-            } else {
-                return ResponseEntity.ok("The room is not fully available in the specified date range.");
-            }
-        } catch (ParseException | JSONException e) {
-            e.printStackTrace();
-            return ResponseEntity.badRequest().body("Invalid date format");
-        }
-    }
+	             return ResponseEntity.ok(responseJson);
+	         } else {
+	             return ResponseEntity.ok("The room is not fully available in the specified date range.");
+	         }
+	     } catch (ParseException | JSONException | IOException e) {
+	         e.printStackTrace();
+	         return ResponseEntity.badRequest().body("Invalid date format");
+	     }
+	 }
 	
 	//insert
 	@PostMapping("/backend/roomAssignment")

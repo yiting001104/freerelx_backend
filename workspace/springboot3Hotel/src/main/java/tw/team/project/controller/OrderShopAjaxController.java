@@ -5,7 +5,7 @@ import java.util.List;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.configurationprocessor.json.JSONException;
+import org.json.JSONException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -56,7 +56,7 @@ public class OrderShopAjaxController {
 	public String findId(@PathVariable(name = "pk") Integer id) throws JSONException {
 		JSONObject responseJson = new JSONObject();
 		JSONArray array = new JSONArray();
-//		Order order = orderShopService.findByid(id);
+		Order order = orderShopService.findByid(id);
 		JSONObject item = new JSONObject().put("mes", "hi");
 		array.put(item);
 		responseJson.put("list", array);
