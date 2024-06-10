@@ -11,10 +11,10 @@ import org.springframework.boot.web.servlet.support.SpringBootServletInitializer
 @ServletComponentScan
 public class Springboot3HotelApplication extends SpringBootServletInitializer{
 	
-    @Override
-    protected SpringApplicationBuilder configure(SpringApplicationBuilder application) {
-        return application.sources(Springboot3HotelApplication.class);
-    }
+	@Override
+	protected SpringApplicationBuilder configure(SpringApplicationBuilder application) {
+		return application.sources(Springboot3HotelApplication.class);
+	}
 
 	public static void main(String[] args) {
 		SpringApplication.run(Springboot3HotelApplication.class, args);

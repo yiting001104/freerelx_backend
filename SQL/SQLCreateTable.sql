@@ -2,11 +2,11 @@ use Hotel;
  drop table if exists alert;
  drop table if exists cart;
  drop table if exists order_details;
- drop table if exists productphoto;
- drop table if exists orders;
- drop table if exists product;
+ --drop table if exists productphoto;
+drop table if exists orders;
+-- drop table if exists product;
  drop table if exists category
- drop table if exists supplier;
+ --drop table if exists supplier;
  drop table if exists AdditionalCharges;
  drop table if exists CheckOutInspection;
  drop table if exists HousingManagement;

@@ -193,14 +193,14 @@ public class MinibarController {
 	    if (products != null && !products.isEmpty()) {
 	        for (Minibar minibar : products) {
 	            String make = DatetimeConverter.toString(minibar.getMake(), "yyyy-MM-dd");
-	            String photoBase64 = Base64.getEncoder().encodeToString(minibar.getPhoto());
+//	            String photoBase64 = Base64.getEncoder().encodeToString(minibar.getPhoto());
 	            JSONObject item = new JSONObject()
 	                    .put("id", minibar.getId())
 	                    .put("item", minibar.getItem())
 	                    .put("price", minibar.getPrice())
 	                    .put("make", make)
-	                    .put("expire", minibar.getExpire())
-	                    .put("photo", photoBase64);
+	                    .put("expire", minibar.getExpire());
+//	                    .put("photo", photoBase64);
 	            array.put(item);
 	        }
 	    }

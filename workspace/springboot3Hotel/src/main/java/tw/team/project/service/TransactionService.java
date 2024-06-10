@@ -179,5 +179,41 @@ public class TransactionService {
     	return encry;
     	
     }
+    
+    // 送請求給line
+   public String callLinePayV2(String json) throws org.json.JSONException{
+   	JSONObject inputJson = new JSONObject(json);
+   	JSONObject responseJson = new JSONObject();
+	Integer orderId = inputJson.isNull("orderId") ? null : inputJson.getInt("orderId");                            // v2 orderId
+	Integer totalPrice = inputJson.isNull("totalPrice") ? null : inputJson.getInt("totalPrice");				   // v2 amount
+	String productName = inputJson.isNull("productName") ? null : inputJson.getString("productName");			   // v2 productName
+	String productPicture = inputJson.isNull("productPicture") ? null : inputJson.getString("productPicture");	   // v2 productPicture
+	
+	String successUri = inputJson.isNull("successUri") ? null : inputJson.getString("successUri");  
+
+	if (orderId!=null && totalPrice!=null && productName!=null && successUri!=null) {
+		responseJson.put("productName", productName);
+		responseJson.put("amount", totalPrice);
+		responseJson.put("currency", "TWD");
+		responseJson.put("confirmUrl", successUri);
+		responseJson.put("orderId", orderId);
+		responseJson.put("payType", "NORMAL");
+		return responseJson.toString();
+		
+	}else {
+		return null;
+	}
+   	
+   	
+   }
+   
+   // 回應line付款完成
+   public String confirmLinePayV2(String json) throws org.json.JSONException{
+   	JSONObject obj = new JSONObject(json);
+   	String encry = new ConsumerCheck().confirmLine(obj);
+   	System.out.println(encry);
+   	return encry;
+   	
+   }
 
 }

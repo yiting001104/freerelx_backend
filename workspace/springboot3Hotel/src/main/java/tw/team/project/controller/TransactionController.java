@@ -108,10 +108,15 @@ public class TransactionController {
 			headers.add("X-LINE-Authorization-Nonce", obj.getString("nonce"));
 			headers.add("X-LINE-Authorization",obj.getString("signature"));
 			RequestEntity<String> request = new RequestEntity<>(obj.getString("body"), headers, method, uri);
+			System.out.println("拿到傳給linePay的 header "+request.getHeaders());
+			System.out.println("拿到傳給linePay的 methods "+request.getMethod());
 			
 			if (request.hasBody()) {
-				ResponseEntity<String> result = template.exchange(request, String.class);
-				return ResponseEntity.ok(result.getBody());
+//				ResponseEntity<String> result = template.exchange(request, String.class);
+//				System.out.println("line回復付款 "+result);
+//				System.out.println("result.getBody() "+result.getBody());
+//				return ResponseEntity.ok(result.getBody());
+				return ResponseEntity.noContent().build();
 			}
 		} catch (JSONException e) {
 			// TODO Auto-generated catch block
@@ -139,8 +144,82 @@ public class TransactionController {
 			headers.add("X-LINE-Authorization",obj.getString("signatureConfirm"));
 			RequestEntity<String> request = new RequestEntity<>(obj.getString("confrimBody"), headers, method, uri);
 			
+			
+			
 			if (request.hasBody()) {
 				ResponseEntity<String> result = template.exchange(request, String.class);
+				System.out.println(result);
+				return ResponseEntity.ok(result.getBody());
+			}
+		} catch (JSONException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+    	return ResponseEntity.noContent().build();
+    }
+    
+    
+    //linePayv2
+    @PostMapping("/orderRoom/transactions/line-payV2")
+    public ResponseEntity<?> requestToLinePayV2(@RequestBody String json){
+    	
+    	try {
+    		String requestObkect = transactionService.callLinePayV2(json);
+			if (requestObkect!=null) {
+				System.out.println(requestObkect);
+				
+			
+			
+				URI uri = URI.create("https://sandbox-api-pay.line.me/v2/payments/request");
+				HttpMethod method = HttpMethod.POST;
+				
+				HttpHeaders headers = new HttpHeaders();
+				headers.add("Content-Type", "application/json");
+				headers.add("X-LINE-ChannelId", "2005471992");
+				headers.add("X-LINE-ChannelSecret", "1958c77216e3e214b2604182db455bc5");
+				RequestEntity<String> request = new RequestEntity<>(requestObkect, headers, method, uri);
+				System.out.println("拿到傳給linePay的 header in v2"+request.getHeaders());
+				System.out.println("拿到傳給linePay的 methods "+request.getMethod());
+				if (request.hasBody()) {
+					ResponseEntity<String> result = template.exchange(request, String.class);
+					System.out.println("line回復付款 "+result);
+					System.out.println("result.getBody() "+result.getBody());
+					return ResponseEntity.ok(result.getBody());
+					
+				}
+			}
+			
+		} catch (JSONException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+    	return ResponseEntity.noContent().build();
+    }
+    
+    
+    @PostMapping("/orderRoom/transactions/confirm/line-payV2")
+    public ResponseEntity<?> confirmToLinePayV2(@RequestBody String json){
+    	JSONObject responseJson = new JSONObject();
+    	String endPoint = "https://sandbox-api-pay.line.me";
+    	try {
+			String response = transactionService.confirmLinePay(json);
+			HttpMethod method = HttpMethod.POST;
+			JSONObject obj = new JSONObject(response);
+			
+			URI uri = URI.create(endPoint+obj.getString("confirmUri"));
+			
+			HttpHeaders headers = new HttpHeaders();
+			headers.add("Content-Type", "application/json");
+			headers.add("X-LINE-ChannelId", "2005471992");
+			headers.add("X-LINE-Authorization-Nonce", obj.getString("confirmNonce"));
+			headers.add("X-LINE-Authorization",obj.getString("signatureConfirm"));
+			RequestEntity<String> request = new RequestEntity<>(obj.getString("confrimBody"), headers, method, uri);
+			
+			
+			
+			if (request.hasBody()) {
+				ResponseEntity<String> result = template.exchange(request, String.class);
+				System.out.println(result);
 				return ResponseEntity.ok(result.getBody());
 			}
 		} catch (JSONException e) {

@@ -340,7 +340,7 @@ public class OrderRoomService {
 	public void sendConfirmMail(String recrvier, String subject, String context) throws Exception {
 	        SimpleMailMessage message = new SimpleMailMessage();
 	        message.setFrom("Relax Hotel<kawhi060941@gmail.com>");
-	        message.setTo("r10522805@g.ntu.edu.tw");//recrvier
+	        message.setTo("kawhi060941@gmail.com");//recrvier
 	        message.setSubject(subject);
 	        message.setText(context);
 

@@ -9,12 +9,11 @@ import org.apache.commons.codec.digest.HmacAlgorithms;
 import org.apache.commons.codec.digest.HmacUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.springframework.stereotype.Component;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-@Component
+
 public class ConsumerCheck {
 
 	
@@ -79,7 +78,10 @@ public class ConsumerCheck {
 				obj.put("nonce", nonce)
 				   .put("signature", signature)
 				   .put("body", mapper.writeValueAsString(form));
-				System.out.println("body" + mapper.writeValueAsString(form));
+				System.out.println("body " + mapper.writeValueAsString(form));
+				System.out.println("nonce " + nonce);
+				System.out.println("signature " + signature);
+				System.out.println("ChannelSecret " + ChannelSecret);
 
 				return obj.toString();
 			} catch (JsonProcessingException e) {
@@ -109,7 +111,7 @@ public class ConsumerCheck {
  			confirmData.setAmount(new BigDecimal(orderTotalAmount));
  			confirmData.setCurrency("TWD");
  			
- 			String confirmUri = "/v3/payments/"+transactionId+"/confirm";   // 含{transactionId}
+ 			String confirmUri = "/v3/payments/"+transactionId+"/confirm";   // 含{transactionId} 先拿掉開頭
  			
  			
  			try {														  
@@ -138,5 +140,7 @@ public class ConsumerCheck {
          return null;
     	
     }
+    
+    
 }
 
